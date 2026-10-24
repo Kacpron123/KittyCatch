@@ -1,0 +1,14 @@
+{
+  "units": {
+    "scout": {"hp": 50, "speed": 2.5, "reward": 10},
+    "tank": {"hp": 200, "speed": 1.0, "reward": 25}
+  },
+  "towers": {
+    "basic": {"cost": 50, "range": 3.0, "damage": 15, "cooldown": 1.0, "rotation": 30}
+  },
+  "map": {
+    "tile_size_px": 32,
+    "width_tiles": 20,
+    "height_tiles": 15
+  }
+}
