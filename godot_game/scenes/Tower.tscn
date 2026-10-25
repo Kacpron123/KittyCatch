@@ -16,7 +16,8 @@ projectile_scene = ExtResource("2_6dv47")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1851759785]
 texture = ExtResource("2_02lgm")
 
-[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=939633486]
+[node name="TurretSprite" type="Sprite2D" parent="." unique_id=939633486]
+rotation = 1.5707964
 texture = ExtResource("3_6dv47")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=2121471190]

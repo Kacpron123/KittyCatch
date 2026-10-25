@@ -6,7 +6,8 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_sy6b1"]
 radius = 8.0
 
-[node name="Enemy" type="Node2D" unique_id=1695166130]
+[node name="Enemy" type="PathFollow2D" unique_id=1375380625]
+loop = false
 script = ExtResource("1_55jtl")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=1149638341]

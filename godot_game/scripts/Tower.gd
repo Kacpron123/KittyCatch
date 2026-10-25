@@ -16,9 +16,9 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	update_target()
-	
 	if current_target and is_instance_valid(current_target):
 		turret_sprite.look_at(current_target.global_position)
+		turret_sprite.rotate(90)
 		if shoot_timer.is_stopped():
 			shoot()
 			shoot_timer.start()
@@ -27,11 +27,9 @@ func _process(_delta: float) -> void:
 
 func update_target() -> void:
 	targets = targets.filter(func(target): return is_instance_valid(target))
-	
 	if targets.is_empty():
 		current_target = null
 		return
-	
 	current_target = targets[0]
 
 func _on_range_area_area_entered(area: Area2D) -> void:
