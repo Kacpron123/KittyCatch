@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://dclklkd2q0xge"
 WaveManager="*uid://f2hqqjv46wmd"
+ConfigManager="*uid://cfwdvm5i8hunb"
 
 [dotnet]
 
