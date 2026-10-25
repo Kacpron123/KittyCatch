@@ -15,6 +15,11 @@ run/main_scene="uid://ct437xawkoq6"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameManager="*uid://dclklkd2q0xge"
+WaveManager="*uid://f2hqqjv46wmd"
+
 [dotnet]
 
 project/assembly_name="KittyCatch"
@@ -25,4 +30,6 @@ project/assembly_name="KittyCatch"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
+2d/snap/snap_2d_transforms_to_pixel=true
