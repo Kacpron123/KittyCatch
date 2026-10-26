@@ -10,6 +10,8 @@ extends Node2D
 var damage: int = 15
 var fire_rate: float = 1.0
 var base_rotation_deg: float = 0.0
+var range_radius_px: float = 96.0
+var is_selected: bool = true
 
 var targets: Array[Node2D] = []
 var current_target: Node2D = null
@@ -31,12 +33,22 @@ func apply_balance() -> void:
 
 	var tile_size = ConfigManager.get_map_data().get("tile_size_px", 32)
 	var range_tiles = float(data.get("range", 3.0))
-	var range_px = range_tiles * tile_size
+	var range_radius_px = range_tiles * tile_size
 
 	if range_collision and range_collision.shape is CircleShape2D:
 		range_collision.shape = range_collision.shape.duplicate()
-		range_collision.shape.radius = range_px
+		range_collision.shape.radius = range_radius_px
+		
+func _draw() -> void:
+	if not is_selected:
+		return
 
+	var fill_color = Color(0.2, 0.6, 1.0, 0.15)
+	draw_circle(Vector2.ZERO, range_radius_px, fill_color)
+
+	var border_color = Color(0.2, 0.6, 1.0, 0.6)
+	draw_arc(Vector2.ZERO, range_radius_px, 0.0, TAU, 64, border_color, 2.0, true)
+	
 func _process(_delta: float) -> void:
 	update_target()
 

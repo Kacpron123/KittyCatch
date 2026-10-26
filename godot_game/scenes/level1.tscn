@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dujivvyo0b104" path="res://scripts/MapExporter.gd" id="1_wwpf4"]
 [ext_resource type="PackedScene" uid="uid://cpb4yhqb3kwpv" path="res://scenes/Tower.tscn" id="2_dwgg1"]
 [ext_resource type="Script" uid="uid://f2hqqjv46wmd" path="res://WaveManager.gd" id="3_6sh32"]
+[ext_resource type="PackedScene" uid="uid://bp0vtw7rldgkf" path="res://scripts/HUD.tscn" id="3_ejswk"]
 [ext_resource type="PackedScene" uid="uid://rcxjttbgf8k7" path="res://scenes/Enemy.tscn" id="4_ejswk"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r02uq"]
@@ -168,6 +169,8 @@ point_count = 6
 [node name="main level" type="Node2D" unique_id=640538909]
 script = ExtResource("1_m7ahb")
 tower_scene = ExtResource("2_dwgg1")
+
+[node name="Hud" parent="." unique_id=1006872190 instance=ExtResource("3_ejswk")]
 
 [node name="WaveManager" type="Node2D" parent="." unique_id=1924985435 node_paths=PackedStringArray("path_2d")]
 script = ExtResource("3_6sh32")

@@ -38,6 +38,7 @@ func reach_end() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	GameManager.take_damage(1)
 	queue_free()
 
 func die() -> void:
