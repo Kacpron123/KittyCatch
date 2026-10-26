@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://6g6ng2kind7o" path="res://assets/Tower-basic-turret.png" id="3_6dv47"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f6a36"]
-radius = 160.0
+radius = 159.99998
 
 [node name="Tower" type="Node2D" unique_id=1063690747]
 scale = Vector2(0.4, 0.4)

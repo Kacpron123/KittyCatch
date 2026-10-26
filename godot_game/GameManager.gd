@@ -5,6 +5,8 @@ signal health_changed(new_health: int)
 signal game_over
 
 @export var starting_gold: int = 150
+@export var tile_size: int = 64
+
 var gold: int = 0
 var base_health: int = 20
 

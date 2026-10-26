@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var tower_scene: PackedScene
-@export var tower_cost: int = 100
+@export var tower_cost: int = 50
 
 @onready var map_layer: TileMapLayer = $map/Map
 @onready var road_layer: TileMapLayer = $map/Road

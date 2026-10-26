@@ -19,12 +19,10 @@ var is_spawning: bool = false
 
 func start_next_wave() -> void:
 	if is_spawning or active_enemies > 0:
-		print("Fala w toku, nie można wystartować kolejnej!")
+		print("Wave in progress, Cannot start next one!")
 		return
 
 	if current_wave_index >= waves.size():
-		print("Wszystkie fale ukończone - wygrana!")
-		all_waves_completed.emit()
 		return
 
 	wave_started.emit(current_wave_index)
@@ -43,7 +41,7 @@ func spawn_wave(count: int, interval: float) -> void:
 
 func spawn_enemy() -> void:
 	if not enemy_basic_scene or not path_2d:
-		push_warning("Brak przypisanej sceny wroga lub węzła Path2D!")
+		push_warning("not enemy attached or node Path2D!")
 		return
 
 	var enemy = enemy_basic_scene.instantiate()
@@ -57,5 +55,11 @@ func _on_enemy_removed() -> void:
 	active_enemies -= 1
 	
 	if not is_spawning and active_enemies <= 0:
-		print("Fala ", current_wave_index, " pokonana!")
+		print("Wave ", current_wave_index, " defeated!")
 		wave_completed.emit(current_wave_index)
+		if current_wave_index < waves.size():
+			await get_tree().create_timer(2.0).timeout
+			start_next_wave()
+		else:
+			print("All waves finished!")
+			all_waves_completed.emit()

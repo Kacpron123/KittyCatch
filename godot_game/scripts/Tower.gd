@@ -28,16 +28,19 @@ func apply_balance() -> void:
 		return
 
 	damage = int(data.get("damage", damage))
-	fire_rate = float(data.get("cooldown", fire_rate))
+	fire_rate = 1.0 / float(data.get("cooldown", fire_rate))
 	base_rotation_deg = float(data.get("rotation", 0.0))
 
-	var tile_size = ConfigManager.get_map_data().get("tile_size_px", 32)
+	var tile_size = GameManager.tile_size
 	var range_tiles = float(data.get("range", 3.0))
-	var range_radius_px = range_tiles * tile_size
+	
+	range_radius_px = range_tiles * tile_size
 
 	if range_collision and range_collision.shape is CircleShape2D:
 		range_collision.shape = range_collision.shape.duplicate()
 		range_collision.shape.radius = range_radius_px
+
+	queue_redraw()
 		
 func _draw() -> void:
 	if not is_selected:
@@ -54,9 +57,6 @@ func _process(_delta: float) -> void:
 
 	if current_target and is_instance_valid(current_target):
 		turret_sprite.look_at(current_target.global_position)
-		if base_rotation_deg != 0.0:
-			turret_sprite.rotate(deg_to_rad(base_rotation_deg))
-
 		if shoot_timer.is_stopped():
 			shoot()
 			shoot_timer.start()
