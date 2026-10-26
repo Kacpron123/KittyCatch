@@ -15,6 +15,10 @@ class Enemy:
 
         self.reached_end = False
 
+
+
+
+
     def move(self, dt):
         if self.reached_end:
             return
@@ -76,6 +80,11 @@ class Simulator:
         self.enemies = []
         self.towers = []
 
+        self.sim_time = 0.0
+        self.attacker_budget = None
+        self.spawn_cooldown = 0.0
+        self.episode_done = False
+
     def build_tower(self, x, y, tower_type="basic"):
         if not (0 <= x < self.width and 0 <= y < self.height):
             return False
@@ -102,6 +111,16 @@ class Simulator:
     def step(self, dt=0.1):
         """Wykonuje jeden logiczny krok symulacji (tick)"""
 
+        self.sim_time += dt
+
+        self.spawn_cooldown = max(
+            0.0,
+            self.spawn_cooldown - dt
+        )
+
+        if self.base_hp <= 0:
+            self.episode_done = True
+
         for tower in self.towers:
             if tower.current_cooldown > 0:
                 tower.current_cooldown -= dt
@@ -123,3 +142,32 @@ class Simulator:
             if enemy.reached_end:
                 self.base_hp -= 1
                 self.enemies.remove(enemy)
+
+    def to_dict(self):
+        return {
+            "gold": self.gold,
+            "base_hp": self.base_hp,
+            "enemies": [
+                {
+                    "unit_type": enemy.unit_type,
+                    "hp": enemy.hp,
+                    "max_hp": enemy.max_hp,
+                    "x": enemy.x,
+                    "y": enemy.y,
+                    "reached_end": enemy.reached_end
+                }
+                for enemy in self.enemies
+            ],
+            "towers": [
+                {
+                    "tower_type": tower.tower_type,
+                    "x": tower.x,
+                    "y": tower.y,
+                    "range": tower.range,
+                    "damage": tower.damage,
+                    "cooldown_time": tower.cooldown_time,
+                    "current_cooldown": tower.current_cooldown
+                }
+                for tower in self.towers
+            ]
+        }

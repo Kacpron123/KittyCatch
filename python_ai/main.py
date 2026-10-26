@@ -2,6 +2,7 @@ import os
 from src.data import load_game_data
 from src.simulator import Simulator
 from src.visualization import render_state
+from src.visualization import write_state_to_file
 
 def main():
     os.makedirs("frames", exist_ok=True)
@@ -19,6 +20,7 @@ def main():
 
         frame_path = f"frames/frame_{i:03d}.png"
         render_state(sim, frame_path)
+        write_state_to_file(sim, f"frames/state_{i:03d}.json")
 
         if not sim.enemies:
             print(f"Tick {i}: Koniec wrogów. Złoto: {sim.gold}, HP Bazy: {sim.base_hp}")

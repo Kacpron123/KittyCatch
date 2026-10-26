@@ -1,3 +1,5 @@
+import json
+
 from PIL import Image, ImageDraw
 
 def render_state(sim, filename="state.png"):
@@ -47,3 +49,17 @@ def render_state(sim, filename="state.png"):
         draw.rectangle([ex - 10, ey - 12, ex - 10 + (20 * hp_percent), ey - 9], fill=(0, 255, 0))
 
     img.save(filename)
+
+
+def write_state_to_file(sim, filename="state.json"):
+    state = sim.to_dict()
+
+    state.update({
+        "time": sim.sim_time,
+        "attacker_budget": sim.attacker_budget,
+        "spawn_cooldown": sim.spawn_cooldown,
+        "episode_done": sim.episode_done
+    })
+
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=4)

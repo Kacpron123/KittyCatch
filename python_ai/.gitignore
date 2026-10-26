@@ -29,3 +29,6 @@ htmlcov/
 # OS files
 .DS_Store
 Thumbs.db
+
+frame_*.png
+state_*.json
