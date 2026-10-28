@@ -1,18 +1,17 @@
 import math
 
 class Enemy:
-    def __init__(self, unit_type, stats, waypoints):
+    def __init__(self, unit_type, stats, reward, waypoints):
         self.unit_type = unit_type
         self.hp = stats["hp"]
         self.max_hp = stats["hp"]
         self.speed = stats["speed"]
-        self.reward = stats["reward"]
+        self.reward = reward
 
         self.waypoints = waypoints
         self.target_wp_idx = 1
 
         self.x, self.y = float(waypoints[0][0]), float(waypoints[0][1])
-
         self.reached_end = False
 
 
@@ -32,8 +31,8 @@ class Enemy:
         move_dist = self.speed * dt
 
         if distance <= move_dist:
-            self.x = target_x
-            self.y = target_y
+            self.x = float(target_x)
+            self.y = float(target_y)
             self.target_wp_idx += 1
 
             if self.target_wp_idx >= len(self.waypoints):
@@ -54,7 +53,8 @@ class Tower:
         self.tower_type = tower_type
         self.range = stats["range"]
         self.damage = stats["damage"]
-        self.cooldown_time = stats["cooldown"]
+        self.attack_speed = stats["attack_speed"]
+        self.cooldown_time = 1.0 / self.attack_speed if self.attack_speed > 0 else float("inf")
         self.current_cooldown = 0.0
 
     def can_shoot(self):
@@ -106,9 +106,11 @@ class Simulator:
 
     def spawn_enemy(self, unit_type):
         stats = self.config["units"][unit_type]
-        self.enemies.append(Enemy(unit_type, stats, self.waypoints))
+        reward = self.config["others"]["reward"]
+        self.enemies.append(Enemy(unit_type, stats, reward, self.waypoints))
 
     def step(self, dt=0.1):
+<<<<<<< Updated upstream
         """Wykonuje jeden logiczny krok symulacji (tick)"""
 
         self.sim_time += dt
@@ -121,12 +123,14 @@ class Simulator:
         if self.base_hp <= 0:
             self.episode_done = True
 
+=======
+>>>>>>> Stashed changes
         for tower in self.towers:
             if tower.current_cooldown > 0:
                 tower.current_cooldown -= dt
 
             if tower.can_shoot():
-                for enemy in self.enemies:
+                for enemy in self.enemies[:]:
                     if tower.distance_to(enemy) <= tower.range:
                         is_dead = enemy.take_damage(tower.damage)
                         tower.current_cooldown = tower.cooldown_time
@@ -134,7 +138,6 @@ class Simulator:
                         if is_dead:
                             self.gold += enemy.reward
                             self.enemies.remove(enemy)
-
                         break
 
         for enemy in self.enemies[:]:

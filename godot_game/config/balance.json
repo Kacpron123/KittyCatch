@@ -11,5 +11,8 @@
 	"tile_size_px": 64,
 	"width_tiles": 20,
 	"height_tiles": 15
+  },
+  "others": {
+	"reward": 5
   }
 }
