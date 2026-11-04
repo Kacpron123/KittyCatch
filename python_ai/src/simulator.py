@@ -85,7 +85,7 @@ class Simulator:
         self.spawn_cooldown = 0.0
         self.episode_done = False
 
-    def build_tower(self, x, y, tower_type="basic"):
+    def build_tower(self, x, y, tower_type="BASIC"):
         if not (0 <= x < self.width and 0 <= y < self.height):
             return False
 
@@ -110,7 +110,6 @@ class Simulator:
         self.enemies.append(Enemy(unit_type, stats, reward, self.waypoints))
 
     def step(self, dt=0.1):
-<<<<<<< Updated upstream
         """Wykonuje jeden logiczny krok symulacji (tick)"""
 
         self.sim_time += dt
@@ -123,8 +122,6 @@ class Simulator:
         if self.base_hp <= 0:
             self.episode_done = True
 
-=======
->>>>>>> Stashed changes
         for tower in self.towers:
             if tower.current_cooldown > 0:
                 tower.current_cooldown -= dt

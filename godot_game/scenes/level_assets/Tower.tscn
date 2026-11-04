@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dkd4i3vfmw840" path="res://scripts/Tower.gd" id="1_7itwv"]
 [ext_resource type="Texture2D" uid="uid://dwrc7j5615mxe" path="res://assets/Tower-basic-fixed.png" id="2_02lgm"]
-[ext_resource type="PackedScene" uid="uid://bfoliqmbcw46d" path="res://scenes/Projectile.tscn" id="2_6dv47"]
+[ext_resource type="PackedScene" uid="uid://bfoliqmbcw46d" path="res://scenes/level_assets/Projectile.tscn" id="2_6dv47"]
 [ext_resource type="Texture2D" uid="uid://6g6ng2kind7o" path="res://assets/Tower-basic-turret.png" id="3_6dv47"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f6a36"]

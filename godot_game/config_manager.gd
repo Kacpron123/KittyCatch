@@ -21,10 +21,12 @@ func load_balance_config(path: String) -> void:
 	else:
 		push_error("Error parsing JSON in line %d: %s" % [json.get_error_line(), json.get_error_message()])
 
-func get_unit_data(unit_name: String) -> Dictionary:
-	return config_data.get("units", {}).get(unit_name, {})
+func get_enemy_data(enemy_id: GameEnums.enemyID) -> Dictionary:
+	var enemy_name: String = GameEnums.enemyID.keys()[enemy_id]
+	return config_data.get("units", {}).get(enemy_name, {})
 
-func get_tower_data(tower_name: String) -> Dictionary:
+func get_tower_data(tower_id: GameEnums.TowerID) -> Dictionary:
+	var tower_name: String = GameEnums.TowerID.keys()[tower_id]
 	return config_data.get("towers", {}).get(tower_name, {})
 
 func get_map_data() -> Dictionary:

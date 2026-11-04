@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var tower_id: String = "basic"
+@export var tower_id: GameEnums.TowerID = GameEnums.TowerID.BASIC
 @export var projectile_scene: PackedScene
 
 @onready var turret_sprite: Node2D = $Turret
@@ -24,7 +24,7 @@ func _ready() -> void:
 func apply_balance() -> void:
 	var data = ConfigManager.get_tower_data(tower_id)
 	if data.is_empty():
-		push_warning("No data in JSON for tower: " + tower_id)
+		push_warning("No data in JSON for tower: " + GameEnums.TowerID.keys()[tower_id])
 		return
 
 	damage = int(data.get("damage", damage))

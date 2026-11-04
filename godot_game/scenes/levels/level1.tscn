@@ -1,15 +1,15 @@
 [gd_scene format=4 uid="uid://ct437xawkoq6"]
 
-[ext_resource type="Texture2D" uid="uid://c2hmlsnxklye1" path="res://assets/Topdown RPG 32x32 - Ground Tileset 1.2.PNG" id="1_g2h75"]
-[ext_resource type="Script" uid="uid://we7x5wrnx45a" path="res://scenes/level_1.gd" id="1_m7ahb"]
-[ext_resource type="Script" uid="uid://dujivvyo0b104" path="res://scripts/MapExporter.gd" id="1_wwpf4"]
-[ext_resource type="PackedScene" uid="uid://cpb4yhqb3kwpv" path="res://scenes/Tower.tscn" id="2_dwgg1"]
-[ext_resource type="Script" uid="uid://f2hqqjv46wmd" path="res://WaveManager.gd" id="3_6sh32"]
-[ext_resource type="PackedScene" uid="uid://bp0vtw7rldgkf" path="res://scripts/HUD.tscn" id="3_ejswk"]
-[ext_resource type="PackedScene" uid="uid://rcxjttbgf8k7" path="res://scenes/Enemy.tscn" id="4_ejswk"]
+[ext_resource type="Script" uid="uid://we7x5wrnx45a" path="res://scenes/levels/level.gd" id="1_2r1tl"]
+[ext_resource type="PackedScene" uid="uid://cpb4yhqb3kwpv" path="res://scenes/level_assets/Tower.tscn" id="2_8a7m2"]
+[ext_resource type="PackedScene" uid="uid://bp0vtw7rldgkf" path="res://scripts/HUD.tscn" id="3_plydf"]
+[ext_resource type="Script" uid="uid://f2hqqjv46wmd" path="res://WaveManager.gd" id="4_5ntmo"]
+[ext_resource type="PackedScene" uid="uid://rcxjttbgf8k7" path="res://scenes/level_assets/Enemy.tscn" id="5_nkeig"]
+[ext_resource type="Script" uid="uid://dujivvyo0b104" path="res://scripts/MapExporter.gd" id="6_nfihu"]
+[ext_resource type="Texture2D" uid="uid://c2hmlsnxklye1" path="res://assets/Topdown RPG 32x32 - Ground Tileset 1.2.PNG" id="7_lgguw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r02uq"]
-texture = ExtResource("1_g2h75")
+texture = ExtResource("7_lgguw")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 1:0/0 = 0
@@ -167,18 +167,18 @@ _data = {
 point_count = 6
 
 [node name="main level" type="Node2D" unique_id=640538909]
-script = ExtResource("1_m7ahb")
-tower_scene = ExtResource("2_dwgg1")
+script = ExtResource("1_2r1tl")
+tower_scene = ExtResource("2_8a7m2")
 
-[node name="Hud" parent="." unique_id=1006872190 instance=ExtResource("3_ejswk")]
+[node name="Hud" parent="." unique_id=1006872190 instance=ExtResource("3_plydf")]
 
 [node name="WaveManager" type="Node2D" parent="." unique_id=1924985435 node_paths=PackedStringArray("path_2d")]
-script = ExtResource("3_6sh32")
+script = ExtResource("4_5ntmo")
 path_2d = NodePath("../map/EnemyRoute")
-enemy_basic_scene = ExtResource("4_ejswk")
+enemy_basic_scene = ExtResource("5_nkeig")
 
 [node name="map" type="Node2D" parent="." unique_id=286162728 node_paths=PackedStringArray("grass_layer", "road_layer", "path_2d")]
-script = ExtResource("1_wwpf4")
+script = ExtResource("6_nfihu")
 grass_layer = NodePath("Map")
 road_layer = NodePath("Road")
 path_2d = NodePath("EnemyRoute")

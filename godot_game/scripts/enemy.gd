@@ -1,6 +1,6 @@
 extends PathFollow2D
 
-@export var unit_id: String = "scout"
+@export var unit_id: GameEnums.enemyID = GameEnums.enemyID.SCOUT
 var health: int = 20
 var speed: float = 1.0
 var reward: int = 5
@@ -11,9 +11,9 @@ func _ready() -> void:
 	apply_balance()
 
 func apply_balance() -> void:
-	var data = ConfigManager.get_unit_data(unit_id)
+	var data = ConfigManager.get_enemy_data(unit_id)
 	if data.is_empty():
-		push_warning("No data in JSON for enemy: " + unit_id)
+		push_warning("No data in JSON for enemy: " + GameEnums.enemyID.keys()[unit_id])
 		return
 
 	health = int(data.get("hp", health))

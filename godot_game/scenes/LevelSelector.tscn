@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://by5f22ucxfol4"]
+
+[ext_resource type="Script" uid="uid://cv0y7x6rysant" path="res://scenes/level_selector.gd" id="1_vlf68"]
+
+[node name="LevelSelector" type="Control" unique_id=69361763]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_vlf68")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1814625141]
+layout_mode = 1
+offset_right = 608.0
+offset_bottom = 408.0
