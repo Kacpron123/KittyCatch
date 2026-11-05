@@ -18,8 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameManager="*uid://dclklkd2q0xge"
-WaveManager="*uid://f2hqqjv46wmd"
 ConfigManager="*uid://cfwdvm5i8hunb"
+NetworkManager="*uid://d1qv8nq3m6w22"
 
 [dotnet]
 

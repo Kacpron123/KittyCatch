@@ -1,18 +1,19 @@
 {
   "units": {
-    "SCOUT": {"hp": 10, "speed": 1.0},
-    "TANK": {"hp": 20, "speed": 0.6}
+	"SCOUT": {"hp": 10, "speed": 1.0},
+	"TANK": {"hp": 20, "speed": 0.8},
+	"SPEED": {"hp": 15, "speed": 1.2}
   },
   "towers": {
-    "BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},
-    "SNIPER": {"cost": 80, "range": 4.5, "damage": 60, "attack_speed": 0.25, "rotation": 45}
+	"BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},
+	"SNIPER": {"cost": 80, "range": 4.5, "damage": 60, "attack_speed": 0.25, "rotation": 45}
   },
   "map": {
-    "tile_size_px": 64,
-    "width_tiles": 20,
-    "height_tiles": 15
+	"tile_size_px": 64,
+	"width_tiles": 20,
+	"height_tiles": 15
   },
   "others": {
-    "reward": 5
+	"reward": 5
   }
 }

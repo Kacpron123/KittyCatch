@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://51q2m5g1ekvr"]
+
+[ext_resource type="Script" uid="uid://ljdhrtsag3ot" path="res://scenes/core/level_master.gd" id="1_itpyb"]
+[ext_resource type="Script" uid="uid://cdw26d0h18c77" path="res://scenes/managers/map_manager.gd" id="2_f04xa"]
+[ext_resource type="Script" uid="uid://br7gdykbbu1ds" path="res://scenes/managers/wave_manager.gd" id="3_03xjq"]
+[ext_resource type="PackedScene" uid="uid://y0288cmjxbk3" path="res://scenes/ui/ControlPanel.tscn" id="4_03xjq"]
+
+[node name="LevelMaster" type="Node2D" unique_id=1650179674]
+script = ExtResource("1_itpyb")
+
+[node name="LevelContainer" type="Node2D" parent="." unique_id=556952849]
+
+[node name="Entities" type="Node2D" parent="." unique_id=702294741]
+
+[node name="Enemies" type="Node2D" parent="Entities" unique_id=1952426468]
+
+[node name="Towers" type="Node2D" parent="Entities" unique_id=1186894414]
+
+[node name="Managers" type="Node2D" parent="." unique_id=735511013]
+
+[node name="MapManager" type="Node2D" parent="Managers" unique_id=1562033829]
+script = ExtResource("2_f04xa")
+
+[node name="WaveManager" type="Node2D" parent="Managers" unique_id=1412930484]
+script = ExtResource("3_03xjq")
+
+[node name="UILayer" type="CanvasLayer" parent="." unique_id=1385433161]
+
+[node name="HUD" type="Control" parent="UILayer" unique_id=38670863]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ControlPanel" parent="UILayer" unique_id=938676144 instance=ExtResource("4_03xjq")]
+offset_left = -350.0
+grow_vertical = 2
