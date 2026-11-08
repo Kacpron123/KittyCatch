@@ -20,6 +20,7 @@ var _kill_grid: Array = []
 var _leak_grid: Array = []
 var _tower_grid: Array = []
 var _route_grid: Array = []
+var _route_points: Array = []
 var _kills_by_type: Dictionary = {}
 var _leaks_by_type: Dictionary = {}
 var _metrics := {
@@ -68,6 +69,7 @@ func _ready():
 			_route_grid = _create_empty_grid()
 		else:
 			_route_grid = map_manager.generate_route_grid(enemy_route)
+			_route_points = map_manager.get_route_points(enemy_route)
 			control_panel.wave_ready_to_start.connect(
 				_on_wave_ready_to_start.bind(enemy_route)
 			)
@@ -84,6 +86,10 @@ func _ready():
 			combat,
 			map_manager.buildable_grid,
 			_route_grid,
+			_route_points,
+			map_manager.get_cell_size_px(),
+			GameManager.tile_size,
+			map_manager.grid_to_world(0, 0),
 			_episode_id
 		)
 
@@ -285,6 +291,12 @@ func _build_game_state() -> Dictionary:
 			"width": map_manager.map_width,
 			"height": map_manager.map_height,
 			"orientation": "x_major",
+			"cell_size_px": map_manager.get_cell_size_px(),
+			"game_tile_size_px": GameManager.tile_size,
+			"grid_origin_world": [
+				map_manager.grid_to_world(0, 0).x,
+				map_manager.grid_to_world(0, 0).y
+			],
 			"buildable_grid": map_manager.buildable_grid,
 			"available_buildable_cells": total_buildable - towers.size(),
 			"route_grid": _route_grid,

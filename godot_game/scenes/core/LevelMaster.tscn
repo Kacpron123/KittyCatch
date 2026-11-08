@@ -36,4 +36,3 @@ offset_left = -350.0
 grow_vertical = 2
 
 [node name="PauseMenu" parent="UILayer" unique_id=1559921809 instance=ExtResource("5_v64kp")]
-visible = false

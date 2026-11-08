@@ -50,6 +50,20 @@ func generate_route_grid(route: Path2D) -> Array:
 		previous_cell = current_cell
 	return route_grid
 
+func get_route_points(route: Path2D) -> Array:
+	var points: Array = []
+	if route.curve == null:
+		return points
+
+	for point in route.curve.get_baked_points():
+		var cell = world_to_grid(route.to_global(point))
+		if points.is_empty() or points.back() != [cell.x, cell.y]:
+			points.append([cell.x, cell.y])
+	return points
+
+func get_cell_size_px() -> int:
+	return buildable_layer.tile_set.tile_size.x
+
 func grid_to_world(x: int, y: int) -> Vector2:
 	var rect = buildable_layer.get_used_rect()
 	var tile_coords = Vector2i(x + rect.position.x, y + rect.position.y)

@@ -1,0 +1,112 @@
+import copy
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from src.data import load_game_data
+from src.simulation import Simulation
+from src.visualization import render_state, write_state_to_file
+
+
+class SimulationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.config, self.map_data = load_game_data()
+        self.simulation = Simulation(copy.deepcopy(self.config), self.map_data, seed=7)
+
+    def test_map_is_converted_to_godot_x_major_coordinates(self) -> None:
+        self.assertEqual((self.simulation.width, self.simulation.height), (20, 15))
+        self.assertEqual(self.simulation.grid[1][7], 0)
+        self.assertEqual(self.simulation.grid[10][6], 1)
+
+    def test_wave_cost_and_energy_refund_follow_balance_config(self) -> None:
+        self.assertTrue(self.simulation.launch_wave(["SCOUT", "TANK"], 0.3))
+        self.assertEqual(self.simulation.energy, 25)
+        enemy = self.simulation.spawn_enemy("SCOUT")
+        self.simulation._damage_enemy(enemy, 100)
+        self.assertEqual(self.simulation.energy, 28)
+        self.assertEqual(self.simulation.ai_money, 155)
+        self.assertEqual(self.simulation.metrics["kills_total"], 1)
+
+    def test_tower_action_spends_funds_and_rejects_repeated_cell(self) -> None:
+        self.assertTrue(self.simulation.build_tower(10, 6, "BASIC"))
+        self.assertEqual(self.simulation.ai_money, 100)
+        rejected = self.simulation.apply_action(
+            {"action": "build_tower", "tower_type": "BASIC", "x": 10, "y": 6}
+        )
+        self.assertFalse(rejected["accepted"])
+        self.assertEqual(rejected["reason"], "cell_not_buildable")
+        self.assertEqual(self.simulation.ai_money, 100)
+
+    def test_tower_combat_kills_units_and_awards_configured_money(self) -> None:
+        self.assertTrue(self.simulation.build_tower(10, 6, "BASIC"))
+        self.simulation.spawn_enemy("SCOUT")
+        for _ in range(150):
+            self.simulation.step(0.1)
+            if self.simulation.metrics["kills_total"]:
+                break
+        self.assertEqual(self.simulation.metrics["kills_total"], 1)
+        self.assertEqual(self.simulation.ai_money, 105)
+        self.assertGreaterEqual(self.simulation.energy, 43)
+
+    def test_base_leak_accelerates_enemies_with_configured_cap(self) -> None:
+        enemy = self.simulation.spawn_enemy("SCOUT")
+        self.simulation._leak(enemy)
+        self.assertEqual(self.simulation.enemy_speed_multiplier, 1.005)
+        for _ in range(30):
+            self.simulation._leak(self.simulation.spawn_enemy("SCOUT"))
+        self.assertAlmostEqual(self.simulation.enemy_speed_multiplier, 1.1)
+        self.assertEqual(self.simulation.base_health, 969)
+
+    def test_snapshot_matches_godot_observation_shape(self) -> None:
+        snapshot = self.simulation.to_dict()
+        self.assertEqual(snapshot["protocol_version"], 2)
+        self.assertEqual(snapshot["map"]["orientation"], "x_major")
+        self.assertIn("feature_vector", snapshot)
+        self.assertEqual(len(snapshot["feature_vector"]), 11)
+        self.assertIn("ai_money_earned_total", snapshot["resources"])
+
+    def test_from_godot_init_uses_ordered_route_and_starting_resources(self) -> None:
+        init_message = {
+            "type": "init",
+            "protocol_version": 2,
+            "episode_id": "godot-episode",
+            "grid_orientation": "x_major",
+            "map_size": {"width": self.simulation.width, "height": self.simulation.height},
+            "map_grid": self.simulation.grid,
+            "map": {
+                "buildable_grid": self.simulation.buildable_grid,
+                "route_grid": self.simulation.route_grid,
+                "route_points": self.map_data["path"],
+            },
+            "unit_types": self.config["units"],
+            "tower_types": self.config["towers"],
+            "economy": self.config["economy"],
+            "combat": self.config["combat"],
+            "ai_money": 220,
+            "player": {"energy": 35, "max_energy": 90},
+            "base": {"health": 800, "max_health": 1000},
+        }
+        live_simulation = Simulation.from_init(init_message, seed=3)
+        self.assertEqual(live_simulation.episode_id, "godot-episode")
+        self.assertEqual(live_simulation.route_points[0], (1.0, 7.0))
+        self.assertEqual(live_simulation.ai_money, 220)
+        self.assertEqual(live_simulation.energy, 35)
+        self.assertEqual(live_simulation.base_health, 800)
+
+    def test_visualization_accepts_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            image_path = Path(directory) / "nested" / "frame.png"
+            state_path = Path(directory) / "nested" / "state.json"
+            snapshot = self.simulation.to_dict()
+            render_state(snapshot, image_path)
+            write_state_to_file(snapshot, state_path)
+            self.assertTrue(image_path.is_file())
+            self.assertEqual(
+                json.loads(state_path.read_text(encoding="utf-8"))["type"],
+                "update",
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

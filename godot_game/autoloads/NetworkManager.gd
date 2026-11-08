@@ -125,6 +125,10 @@ func send_game_start(
 	combat: Dictionary,
 	buildable_grid: Array,
 	route_grid: Array,
+	route_points: Array,
+	cell_size_px: int,
+	game_tile_size_px: int,
+	grid_origin_world: Vector2,
 	episode_id: String
 ) -> void:
 	_pending_game_start = {
@@ -136,7 +140,11 @@ func send_game_start(
 		"grid_orientation": "x_major",
 		"map": {
 			"buildable_grid": buildable_grid,
-			"route_grid": route_grid
+			"route_grid": route_grid,
+			"route_points": route_points,
+			"cell_size_px": cell_size_px,
+			"game_tile_size_px": game_tile_size_px,
+			"grid_origin_world": [grid_origin_world.x, grid_origin_world.y]
 		},
 		"money": GameManager.ai_money,
 		"ai_money": GameManager.ai_money,

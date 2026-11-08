@@ -23,6 +23,10 @@ The `init` message contains:
   `2` occupied by a tower).
 - `map.buildable_grid`: static buildability mask; `map.route_grid`: sampled
   enemy route mask. Both use `1` for true and `0` for false.
+- `map.route_points`: ordered route points in x/y grid coordinates, from spawn
+  to base; use this order to simulate enemy movement.
+- `map.cell_size_px`, `game_tile_size_px`, and `grid_origin_world`: convert
+  grid coordinates to the Godot world scale.
 - `unit_types`, `tower_types`, `economy`, and `combat`: current balance data.
 - Initial AI funds, player energy, base health, speed modifier, action-space
   description, and `feature_schema`.
