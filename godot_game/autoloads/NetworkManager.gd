@@ -2,77 +2,196 @@ extends Node
 
 signal connected_to_ai
 signal disconnected_from_ai
-signal ai_build_command_received(tower_type: String, grid_x: int, grid_y: int)
+signal ai_build_command_received(tower_type: int, grid_x: int, grid_y: int, command_id: String)
+signal ai_command_rejected(command: Dictionary, reason: String)
+
+const RECONNECT_INTERVAL: float = 2.0
 
 var tcp := StreamPeerTCP.new()
 var host := "127.0.0.1"
 var port := 8080
 
 var _buffer := ""
+var _is_connected := false
+var _reconnect_elapsed := 0.0
+var _pending_game_start: Dictionary = {}
+var _has_game_start := false
+var _latest_game_state: Dictionary = {}
+var _has_game_state := false
 
-func _ready():
+func _ready() -> void:
 	connect_to_server()
 
-func connect_to_server():
-	print("Łączenie z AI na porcie ", port, "...")
-	tcp.connect_to_host(host, port)
-
-func _process(_delta):
+func _process(delta: float) -> void:
 	tcp.poll()
 	var state = tcp.get_status()
-	
+
 	if state == StreamPeerTCP.STATUS_CONNECTED:
+		if not _is_connected:
+			_is_connected = true
+			connected_to_ai.emit()
+			_send_pending_game_data()
+
 		var available_bytes = tcp.get_available_bytes()
 		if available_bytes > 0:
-			var data = tcp.get_utf8_string(available_bytes)
-			_process_incoming_data(data)
-			
-	elif state == StreamPeerTCP.STATUS_ERROR or state == StreamPeerTCP.STATUS_NONE:
-		pass
+			_process_incoming_data(tcp.get_utf8_string(available_bytes))
+		return
 
-func _process_incoming_data(new_data: String):
+	if _is_connected:
+		_is_connected = false
+		_buffer = ""
+		disconnected_from_ai.emit()
+
+	if state == StreamPeerTCP.STATUS_ERROR:
+		tcp.disconnect_from_host()
+
+	_reconnect_elapsed += delta
+	if _reconnect_elapsed >= RECONNECT_INTERVAL:
+		_reconnect_elapsed = 0.0
+		connect_to_server()
+
+func connect_to_server() -> void:
+	_reconnect_elapsed = 0.0
+	var result = tcp.connect_to_host(host, port)
+	if result != OK:
+		push_warning("Nie udało się rozpocząć połączenia z AI: " + error_string(result))
+
+func _process_incoming_data(new_data: String) -> void:
 	_buffer += new_data
-	
 	var messages = _buffer.split("\n")
 	_buffer = messages[messages.size() - 1]
-	
+
 	for i in range(messages.size() - 1):
 		var msg_str = messages[i].strip_edges()
-		if msg_str.is_empty(): continue
+		if msg_str.is_empty():
+			continue
+
 		var parsed_data = JSON.parse_string(msg_str)
-		
-		if typeof(parsed_data) == TYPE_DICTIONARY:
+		if parsed_data is Dictionary:
 			_handle_message(parsed_data)
 		else:
-			push_error("Błąd parsowania JSON od AI: ", msg_str)
+			push_error("Błąd parsowania JSON od AI: " + msg_str)
 
-func _handle_message(message: Dictionary):
-	if message.has("action") and message["action"] == "build_tower":
-		var tower_type = message.get("tower_type", "laser")
-		var x = message.get("x", 0)
-		var y = message.get("y", 0)
-		ai_build_command_received.emit(tower_type, x, y)
-	
-	elif message.has("action") and message["action"] == "upgrade":
-		print("AI Upgrade?") 
+func _handle_message(message: Dictionary) -> void:
+	if message.get("action", "") != "build_tower":
+		if message.has("action"):
+			var reason = "unsupported_action"
+			push_warning("Nieobsługiwana komenda AI: " + str(message["action"]))
+			ai_command_rejected.emit(message, reason)
+		return
 
-func send_json(data: Dictionary):
-	if tcp.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		var json_string = JSON.stringify(data)
-		var packet = json_string + "\n"
-		tcp.put_data(packet.to_utf8_buffer())
+	var tower_type_value = message.get("tower_type", "")
+	var tower_type := -1
+	if typeof(tower_type_value) == TYPE_INT:
+		tower_type = int(tower_type_value)
+	elif typeof(tower_type_value) == TYPE_STRING:
+		tower_type = int(GameEnums.TowerID.get(String(tower_type_value).to_upper(), -1))
 
-func send_game_start(map_grid: Array, initial_money: int):
-	var msg = {
+	var grid_x = message.get("x")
+	var grid_y = message.get("y")
+	if (
+		tower_type < 0
+		or tower_type >= GameEnums.TowerID.size()
+		or typeof(grid_x) != TYPE_INT
+		or typeof(grid_y) != TYPE_INT
+	):
+		push_warning("AI wysłało nieprawidłową komendę budowy: " + str(message))
+		ai_command_rejected.emit(message, "invalid_build_command")
+		return
+
+	ai_build_command_received.emit(
+		tower_type,
+		int(grid_x),
+		int(grid_y),
+		str(message.get("command_id", ""))
+	)
+
+func send_json(data: Dictionary) -> void:
+	if tcp.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+		return
+
+	var packet = JSON.stringify(data) + "\n"
+	var result = tcp.put_data(packet.to_utf8_buffer())
+	if result != OK:
+		push_warning("Nie udało się wysłać danych do AI: " + error_string(result))
+
+func send_game_start(
+	map_grid: Array,
+	map_width: int,
+	map_height: int,
+	unit_types: Dictionary,
+	tower_types: Dictionary,
+	economy: Dictionary,
+	combat: Dictionary,
+	buildable_grid: Array,
+	route_grid: Array,
+	episode_id: String
+) -> void:
+	_pending_game_start = {
+		"protocol_version": 2,
 		"type": "init",
-		"map_grid": map_grid,
-		"money": initial_money
+		"episode_id": episode_id,
+		"map_grid": map_grid.duplicate(true),
+		"map_size": {"width": map_width, "height": map_height},
+		"grid_orientation": "x_major",
+		"map": {
+			"buildable_grid": buildable_grid,
+			"route_grid": route_grid
+		},
+		"money": GameManager.ai_money,
+		"ai_money": GameManager.ai_money,
+		"player": {
+			"energy": GameManager.energy,
+			"max_energy": GameManager.max_energy
+		},
+		"base": {
+			"health": GameManager.base_health,
+			"max_health": GameManager.max_health
+		},
+		"unit_types": unit_types,
+		"tower_types": tower_types,
+		"economy": economy,
+		"combat": combat,
+		"enemy_speed_multiplier": GameManager.enemy_speed_multiplier,
+		"action_space": {
+			"build_tower": {
+				"tower_type": GameEnums.TowerID.keys(),
+				"x": "zero-based grid column",
+				"y": "zero-based grid row"
+			}
+		},
+		"feature_schema": [
+			"ai_money_fraction",
+			"player_energy_fraction",
+			"base_health_fraction",
+			"enemy_speed_bonus_fraction",
+			"buildable_occupancy_fraction",
+			"active_scout_count",
+			"active_tank_count",
+			"active_speed_count",
+			"basic_tower_count",
+			"sniper_tower_count",
+			"wave_active"
+		]
 	}
-	send_json(msg)
+	_has_game_start = true
+	_latest_game_state.clear()
+	_has_game_state = false
+	send_json(_pending_game_start)
 
-func send_unit_positions(units_data: Array):
-	var msg = {
-		"type": "update",
-		"units": units_data
-	}
-	send_json(msg)
+func send_game_update(game_state: Dictionary) -> void:
+	_latest_game_state = game_state.duplicate(true)
+	_has_game_state = true
+	send_json(_latest_game_state)
+
+func send_unit_positions(units_data: Array) -> void:
+	var game_state = _latest_game_state.duplicate(true)
+	game_state["type"] = "update"
+	game_state["units"] = units_data
+	send_game_update(game_state)
+
+func _send_pending_game_data() -> void:
+	if _has_game_start:
+		send_json(_pending_game_start)
+	if _has_game_state:
+		send_json(_latest_game_state)

@@ -28,7 +28,7 @@ func apply_balance() -> void:
 		return
 
 	damage = int(data.get("damage", damage))
-	fire_rate = 1.0 / float(data.get("cooldown", fire_rate))
+	fire_rate = 1.0 / maxf(float(data.get("attack_speed", 1.0)), 0.01)
 	base_rotation_deg = float(data.get("rotation", 0.0))
 
 	var tile_size = GameManager.tile_size

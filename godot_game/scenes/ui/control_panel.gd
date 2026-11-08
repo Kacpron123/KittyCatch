@@ -8,6 +8,7 @@ extends Panel
 @onready var btn_fast = $MarginContainer/VBoxContainer/HBoxContainer/BtnFast
 
 @onready var btn_start = $MarginContainer/VBoxContainer/BtnStartWave
+@onready var wave_cost_label = $MarginContainer/VBoxContainer/WaveCostLabel
 
 var wave_composition: Dictionary = {}
 signal wave_ready_to_start(wave_queue: Array[String], density: float)
@@ -21,7 +22,12 @@ var selected_density: float = 0.3
 
 func _ready():
 	btn_normal.button_pressed = true
+	btn_slow.pressed.connect(_on_density_selected.bind("slow"))
+	btn_normal.pressed.connect(_on_density_selected.bind("normal"))
+	btn_fast.pressed.connect(_on_density_selected.bind("fast"))
+	GameManager.energy_changed.connect(_on_energy_changed)
 	_generate_enemy_ui()
+	_refresh_wave_cost(GameManager.energy, GameManager.max_energy)
 
 func _generate_enemy_ui():
 	var enemy_keys = GameEnums.enemyID.keys()
@@ -42,7 +48,10 @@ func _generate_enemy_ui():
 		row.add_child(icon)
 		
 		var name_label = Label.new()
-		name_label.text = enemy_name.capitalize()
+		name_label.text = "%s (%d e)" % [
+			enemy_name.capitalize(),
+			int(enemy_data.get("energy_cost", 0))
+		]
 		name_label.custom_minimum_size = Vector2(80, 0)
 		row.add_child(name_label)
 		
@@ -82,6 +91,7 @@ func _on_mod_button_pressed(enemy_name: String, amount: int):
 	var labels = get_tree().get_nodes_in_group("label_" + enemy_name)
 	if labels.size() > 0:
 		labels[0].text = str(wave_composition[enemy_name])
+	_refresh_wave_cost(GameManager.energy, GameManager.max_energy)
 
 func _on_density_selected(density_key: String):
 	selected_density = density_speeds[density_key]
@@ -101,10 +111,36 @@ func _on_start_wave_pressed():
 	if final_wave_queue.is_empty():
 		print("Fala jest pusta! Dodaj jednostki.")
 		return
-		
-	var wave_manager = get_node("/root/LevelMaster/Managers/WaveManager") 
-	var active_path = get_node("/root/LevelMaster/LevelContainer").get_child(0).get_node("EnemyRoute")
-	
-	wave_manager.start_custom_wave(final_wave_queue, active_path, selected_density)
+
+	var energy_cost = _get_wave_energy_cost()
+	if not GameManager.spend_energy(energy_cost):
+		_refresh_wave_cost(GameManager.energy, GameManager.max_energy)
+		return
+
+	wave_ready_to_start.emit(final_wave_queue, selected_density)
+	for enemy_name in wave_composition:
+		wave_composition[enemy_name] = 0
+		var labels = get_tree().get_nodes_in_group("label_" + enemy_name)
+		if not labels.is_empty():
+			labels[0].text = "0"
+	_refresh_wave_cost(GameManager.energy, GameManager.max_energy)
 	
 	print("Rozpoczęto falę z prędkością: ", selected_density)
+
+func _get_wave_energy_cost() -> int:
+	var total_cost = 0
+	for enemy_name in wave_composition:
+		var enemy_id = GameEnums.enemyID.get(enemy_name, -1)
+		if enemy_id < 0:
+			continue
+		var unit_data = ConfigManager.get_enemy_data(enemy_id)
+		total_cost += wave_composition[enemy_name] * int(unit_data.get("energy_cost", 0))
+	return total_cost
+
+func _on_energy_changed(current_energy: int, max_energy: int) -> void:
+	_refresh_wave_cost(current_energy, max_energy)
+
+func _refresh_wave_cost(current_energy: int, _max_energy: int) -> void:
+	var energy_cost = _get_wave_energy_cost()
+	wave_cost_label.text = "Wave cost: %d | Energy: %d" % [energy_cost, current_energy]
+	btn_start.disabled = energy_cost <= 0 or energy_cost > current_energy

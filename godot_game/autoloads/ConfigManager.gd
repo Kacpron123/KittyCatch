@@ -29,5 +29,8 @@ func get_tower_data(tower_id: GameEnums.TowerID) -> Dictionary:
 	var tower_name: String = GameEnums.TowerID.keys()[tower_id]
 	return config_data.get("towers", {}).get(tower_name, {})
 
+func get_economy_data() -> Dictionary:
+	return config_data.get("economy", {})
+
 func get_map_data() -> Dictionary:
 	return config_data.get("map", {})

@@ -85,6 +85,10 @@ text = "fast"
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=2143851522]
 layout_mode = 2
 
+[node name="WaveCostLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Wave cost: 0 | Energy: 40"
+
 [node name="BtnStartWave" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1165516962]
 layout_mode = 2
 size_flags_horizontal = 3

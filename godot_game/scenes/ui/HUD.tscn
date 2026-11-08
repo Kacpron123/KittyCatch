@@ -48,6 +48,10 @@ step = 1.0
 value = 1000.0
 show_percentage = false
 
+[node name="AIMoneyLabel" type="Label" parent="Bottom/VBoxContainer"]
+layout_mode = 2
+text = "AI funds: 150"
+
 [node name="LivesLabel" type="Label" parent="Bottom/VBoxContainer/LivesProgress" unique_id=1725575065]
 layout_mode = 1
 anchors_preset = 6
