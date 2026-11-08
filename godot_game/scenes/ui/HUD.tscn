@@ -2,29 +2,95 @@
 
 [ext_resource type="Script" uid="uid://b81wdm8wkb6i6" path="res://scenes/ui/hud.gd" id="1_5s13k"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5jfb"]
+bg_color = Color(0.49315646, 0, 0.15084521, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6a36"]
+bg_color = Color(1, 0, 0, 1)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kw0id"]
+bg_color = Color(0.424207, 0.4178187, 3.85046e-07, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pd38"]
+bg_color = Color(0.81226707, 0.79906166, 0, 1)
+
 [node name="Hud" type="CanvasLayer" unique_id=1667583939]
 script = ExtResource("1_5s13k")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=62294933]
-offset_right = 1152.0
-offset_bottom = 648.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+[node name="Bottom" type="MarginContainer" parent="." unique_id=1129198845]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 420
+theme_override_constants/margin_bottom = 5
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1822355637]
+[node name="VBoxContainer" type="VBoxContainer" parent="Bottom" unique_id=471212506]
 layout_mode = 2
 
-[node name="GoldLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=114817563]
+[node name="HealthLavel" type="Label" parent="Bottom/VBoxContainer" unique_id=1795722361]
 layout_mode = 2
-size_flags_vertical = 0
+text = "Health"
 
-[node name="VSeparator" type="VSeparator" parent="MarginContainer/HBoxContainer" unique_id=1946668860]
-visible = false
+[node name="LivesProgress" type="ProgressBar" parent="Bottom/VBoxContainer" unique_id=1344004383]
+custom_minimum_size = Vector2(0, 15)
 layout_mode = 2
-size_flags_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_t5jfb")
+theme_override_styles/fill = SubResource("StyleBoxFlat_f6a36")
+max_value = 1000.0
+step = 1.0
+value = 1000.0
+show_percentage = false
 
-[node name="HealthLabel" type="Label" parent="MarginContainer/HBoxContainer" unique_id=565604985]
+[node name="LivesLabel" type="Label" parent="Bottom/VBoxContainer/LivesProgress" unique_id=1725575065]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -682.0
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "1000/1000"
+horizontal_alignment = 2
+
+[node name="Left" type="MarginContainer" parent="." unique_id=1798363566]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -312.0
+offset_right = 65.0
+grow_vertical = 0
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Left" unique_id=998722742]
 layout_mode = 2
-size_flags_vertical = 0
+
+[node name="EnergyLabel" type="Label" parent="Left/VBoxContainer" unique_id=1424835205]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Energy"
+
+[node name="EnergyProgress" type="ProgressBar" parent="Left/VBoxContainer" unique_id=1259149591]
+custom_minimum_size = Vector2(1, 175)
+custom_maximum_size = Vector2(20, -1)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9490196, 0.9490196, 0.15686275, 1)
+theme_override_styles/background = SubResource("StyleBoxFlat_kw0id")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5pd38")
+step = 1.0
+value = 100.0
+fill_mode = 3
+show_percentage = false
