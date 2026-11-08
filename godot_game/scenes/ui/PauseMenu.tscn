@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://bwlp2wbwfn56d"]
+
+[ext_resource type="Script" uid="uid://bvccg05dblnax" path="res://scenes/ui/pause_menu.gd" id="1_vb6pq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6a36"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=1559921809]
+process_mode = 3
+script = ExtResource("1_vb6pq")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1727846556]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09411765, 0.10980392, 0.15294118, 0.7764706)
+
+[node name="window" type="ColorRect" parent="." unique_id=280559183]
+custom_minimum_size = Vector2(6.525, 0)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.00003
+offset_top = -88.0
+offset_right = 120.0
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05490196, 0.06666667, 0.101960786, 0.81960785)
+
+[node name="CenterContainer" type="CenterContainer" parent="window" unique_id=421491710]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="window/CenterContainer" unique_id=2134188705]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="window/CenterContainer/VBoxContainer" unique_id=196660783]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "PAUSE"
+
+[node name="Resume" type="Button" parent="window/CenterContainer/VBoxContainer" unique_id=423191088]
+process_mode = 3
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_f6a36")
+text = "Resume Game"
+
+[node name="BtnMainMenu" type="Button" parent="window/CenterContainer/VBoxContainer" unique_id=208123395]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_f6a36")
+text = "Back to Menu"
+
+[connection signal="pressed" from="window/CenterContainer/VBoxContainer/Resume" to="." method="toggle_pause"]
+[connection signal="pressed" from="window/CenterContainer/VBoxContainer/BtnMainMenu" to="." method="_on_main_menu_pressed"]

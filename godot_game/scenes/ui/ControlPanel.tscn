@@ -30,10 +30,18 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 6
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2081738066]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1588014108]
 layout_mode = 2
-size_flags_horizontal = 4
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2081738066]
+layout_mode = 2
 text = "Create Wave"
+
+[node name="Pause" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=28316661]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "P"
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=414959743]
 layout_mode = 2
@@ -82,4 +90,5 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "START WAVE"
 
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/Pause" to="." method="_on_pause_button"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/BtnStartWave" to="." method="_on_start_wave_pressed"]

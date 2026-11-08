@@ -86,6 +86,9 @@ func _on_mod_button_pressed(enemy_name: String, amount: int):
 func _on_density_selected(density_key: String):
 	selected_density = density_speeds[density_key]
 
+func _on_pause_button():
+	get_tree().call_group("pause_menu", "toggle_pause")
+
 # START WAVE
 func _on_start_wave_pressed():
 	var final_wave_queue: Array[String] = []

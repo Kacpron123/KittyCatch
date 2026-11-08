@@ -1,6 +1,7 @@
 extends Control
 
-@onready var container = $VBoxContainer
+@onready var container = $MarginContainer/VBoxContainer/LevelContainer
+@onready var btn_back = $MarginContainer/VBoxContainer/Button
 const LEVELS_PATH = "res://scenes/levels/"
 
 func _ready():
@@ -16,6 +17,9 @@ func load_levels():
 	else:
 		push_error("Folder not Found: " + LEVELS_PATH)
 
+func _on_back_pressed():
+	get_tree().change_scene_to_file("res://scenes/core/MainMenu.tscn")
+	
 func create_level_button(file_name: String):
 	var button = Button.new()
 	button.text = file_name.replace(".tscn", "").capitalize()
