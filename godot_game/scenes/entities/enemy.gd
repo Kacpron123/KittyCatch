@@ -1,5 +1,6 @@
 extends PathFollow2D
 
+@export var path_spread: float = 8.0
 @export var unit_id: GameEnums.enemyID = GameEnums.enemyID.SCOUT
 var health: int = 20
 var speed: float = 1.0
@@ -9,6 +10,7 @@ var is_dead: bool = false
 func _ready() -> void:
 	loop = false
 	apply_balance()
+	v_offset = randf_range(-path_spread, path_spread)
 
 func apply_balance() -> void:
 	var data = ConfigManager.get_enemy_data(unit_id)
