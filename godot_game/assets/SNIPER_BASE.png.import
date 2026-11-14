@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6g6ng2kind7o"
-path="res://.godot/imported/Tower-basic-turret.png-51ae897838f2d3780dcec453e534d814.ctex"
+uid="uid://bdvm604qxyk46"
+path="res://.godot/imported/SNIPER_BASE.png-bf5e096f0a8849f87bfe105a75f137d2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Tower-basic-turret.png"
-dest_files=["res://.godot/imported/Tower-basic-turret.png-51ae897838f2d3780dcec453e534d814.ctex"]
+source_file="res://assets/SNIPER_BASE.png"
+dest_files=["res://.godot/imported/SNIPER_BASE.png-bf5e096f0a8849f87bfe105a75f137d2.ctex"]
 
 [params]
 

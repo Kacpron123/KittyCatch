@@ -21,7 +21,7 @@
   },
   "towers": {
 	"BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},
-	"SNIPER": {"cost": 80, "range": 4.5, "damage": 60, "attack_speed": 0.25, "rotation": 45}
+	"SNIPER": {"cost": 80, "range": 4.5, "damage": 12, "attack_speed": 0.25, "rotation": 45}
   },
   "map": {
 	"tile_size_px": 64,

@@ -2,16 +2,12 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwssuxt2uvhrk"
-path="res://.godot/imported/Strong.png-f9b95fce69eb0dccc13aa133d963d4ab.ctex"
-metadata={
-"vram_texture": false
-}
+uid="uid://bkodf24kyr6n"
+valid=false
 
 [deps]
 
-source_file="res://assets/Strong.png"
-dest_files=["res://.godot/imported/Strong.png-f9b95fce69eb0dccc13aa133d963d4ab.ctex"]
+source_file="res://assets/Tower-sniper.png"
 
 [params]
 

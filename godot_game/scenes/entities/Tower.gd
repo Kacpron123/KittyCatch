@@ -3,7 +3,10 @@ extends Node2D
 @export var tower_id: GameEnums.TowerID = GameEnums.TowerID.BASIC
 @export var projectile_scene: PackedScene
 
-@onready var turret_sprite: Node2D = $Turret
+@onready var turret_node: Node2D = $Turret
+@onready var base_sprite: Sprite2D = $Sprite2D
+@onready var turret_image: Sprite2D = $Turret/TurretSprite
+
 @onready var shoot_timer: Timer = $ShootTimer
 @onready var range_collision: CollisionShape2D = $RangeArea/CollisionShape2D
 
@@ -17,10 +20,27 @@ var targets: Array[Node2D] = []
 var current_target: Node2D = null
 
 func _ready() -> void:
+	load_textures()
 	apply_balance()
 	shoot_timer.wait_time = fire_rate
 	shoot_timer.timeout.connect(_on_shoot_timer_timeout)
 
+func load_textures() -> void:
+	var tower_name = GameEnums.TowerID.keys()[tower_id]
+	
+	var base_path = "res://assets/" + tower_name + "_BASE.png"
+	var turret_path = "res://assets/" + tower_name + "_TURRET.png"
+	
+	if ResourceLoader.exists(base_path):
+		base_sprite.texture = load(base_path)
+	else:
+		push_warning("base of tower not found: " + base_path)
+		
+	if ResourceLoader.exists(turret_path):
+		turret_image.texture = load(turret_path)
+	else:
+		push_warning("turret of tower not found: " + turret_path)
+		
 func apply_balance() -> void:
 	var data = ConfigManager.get_tower_data(tower_id)
 	if data.is_empty():
@@ -56,7 +76,7 @@ func _process(_delta: float) -> void:
 	update_target()
 
 	if current_target and is_instance_valid(current_target):
-		turret_sprite.look_at(current_target.global_position)
+		turret_node.look_at(current_target.global_position)
 		if shoot_timer.is_stopped():
 			shoot()
 			shoot_timer.start()
@@ -88,7 +108,7 @@ func shoot() -> void:
 	if projectile_scene:
 		var proj = projectile_scene.instantiate()
 		get_tree().current_scene.add_child(proj)
-		proj.global_position = turret_sprite.global_position
+		proj.global_position = turret_node.global_position
 		proj.setup(current_target, damage)
 	else:
 		current_target.take_damage(damage)

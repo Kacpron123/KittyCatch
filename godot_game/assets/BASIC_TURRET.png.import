@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwrc7j5615mxe"
-path="res://.godot/imported/Tower-basic-fixed.png-c02eec649bda0150e0a16ea20a1153c8.ctex"
+uid="uid://6g6ng2kind7o"
+path="res://.godot/imported/BASIC_TURRET.png-e15933578dca133f8a959109b53756f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Tower-basic-fixed.png"
-dest_files=["res://.godot/imported/Tower-basic-fixed.png-c02eec649bda0150e0a16ea20a1153c8.ctex"]
+source_file="res://assets/BASIC_TURRET.png"
+dest_files=["res://.godot/imported/BASIC_TURRET.png-e15933578dca133f8a959109b53756f7.ctex"]
 
 [params]
 

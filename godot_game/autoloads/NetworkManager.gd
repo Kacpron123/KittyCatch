@@ -87,13 +87,13 @@ func _handle_message(message: Dictionary) -> void:
 	elif typeof(tower_type_value) == TYPE_STRING:
 		tower_type = int(GameEnums.TowerID.get(String(tower_type_value).to_upper(), -1))
 
-	var grid_x = message.get("x")
-	var grid_y = message.get("y")
+	var grid_x: Variant = _parse_grid_coordinate(message.get("x"))
+	var grid_y: Variant = _parse_grid_coordinate(message.get("y"))
 	if (
 		tower_type < 0
 		or tower_type >= GameEnums.TowerID.size()
-		or typeof(grid_x) != TYPE_INT
-		or typeof(grid_y) != TYPE_INT
+		or grid_x == null
+		or grid_y == null
 	):
 		push_warning("AI wysłało nieprawidłową komendę budowy: " + str(message))
 		ai_command_rejected.emit(message, "invalid_build_command")
@@ -105,6 +105,22 @@ func _handle_message(message: Dictionary) -> void:
 		int(grid_y),
 		str(message.get("command_id", ""))
 	)
+
+func _parse_grid_coordinate(value: Variant) -> Variant:
+	if typeof(value) == TYPE_INT:
+		return value
+	if typeof(value) != TYPE_FLOAT:
+		return null
+
+	var coordinate := float(value)
+	if (
+		not is_finite(coordinate)
+		or coordinate != floor(coordinate)
+		or coordinate < -9223372036854775808.0
+		or coordinate >= 9223372036854775808.0
+	):
+		return null
+	return int(coordinate)
 
 func send_json(data: Dictionary) -> void:
 	if tcp.get_status() != StreamPeerTCP.STATUS_CONNECTED:
