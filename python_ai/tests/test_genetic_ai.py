@@ -9,8 +9,8 @@ from dataclasses import asdict
 from PIL import Image
 
 from src.data import load_game_data
-from src.experiment_report import build_report
-from src.genetic_ai import GeneticAgent, Strategy, attack_schedule, init_message, rollout, train
+from src.experiment_report import build_report, csv_file
+from src.genetic_ai import GeneticAgent, Strategy, attack_schedule, init_message, random_strategy, rollout, train
 from src.serwer import GameServer
 from src.simulation import Simulation
 
@@ -140,6 +140,50 @@ class TowerGeneticTests(unittest.TestCase):
             Strategy(("BASIC",), (0, 0, 0))
         with self.assertRaises(ValueError):
             train(self.config, self.map_data, slots=0)
+
+    def test_telemetry_preserves_search_and_explains_every_child_gene(self):
+        kwargs = dict(population_size=4, generations=3, slots=2, seeds=(10,), duration=1, mutation_rate=0.4)
+        expected = train(self.config, self.map_data, **kwargs)
+        records = []
+        self.assertEqual(expected, train(self.config, self.map_data, telemetry=records.append, **kwargs))
+        self.assertEqual(len(records), 3)
+        for epoch in range(1, len(records)):
+            parents = {p["id"]: p for p in records[epoch-1]["population"]}
+            for birth in records[epoch]["births"]:
+                for i, origin in enumerate(birth["source_mask"]):
+                    self.assertEqual(birth["before_mutation"][i], parents[birth["parent_ids"][origin]]["genes"][i])
+                reconstructed = birth["before_mutation"].copy()
+                for mutation in birth["mutations"]:
+                    self.assertEqual(mutation["after"], min(1, max(0, mutation["before"] + mutation["noise"])))
+                    reconstructed[mutation["gene"]] = mutation["after"]
+                self.assertEqual(reconstructed, birth["genes"])
+
+    def test_random_comparison_has_distinct_valid_cells_and_reproducible_seed(self):
+        policy = random_strategy(self.config, self.map_data, seed=5000)
+        self.assertEqual(policy, random_strategy(self.config, self.map_data, seed=5000))
+        plan = policy.decode(self.sim.width, self.sim.height)
+        self.assertEqual(len({(p["x"], p["y"]) for p in plan}), 10)
+        self.assertTrue(all(self.sim.grid[p["x"]][p["y"]] == 1 and p["earliest"] == 0 for p in plan))
+
+    def test_csv_preserves_extra_fields_from_random_benchmark(self):
+        import csv
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "comparison.csv"
+            csv_file(path, [{"damage": 0}, {"damage": 4, "layout_seed": 5000, "kill_fraction": 0.2}])
+            with path.open(encoding="utf-8-sig", newline="") as stream:
+                rows = list(csv.DictReader(stream))
+            self.assertEqual(rows[1]["layout_seed"], "5000")
+            self.assertEqual(rows[0]["layout_seed"], "")
+
+    def test_ablation_without_crossover_or_mutation_only_copies_parents(self):
+        records = []
+        train(self.config, self.map_data, population_size=4, generations=3, slots=2, seeds=(10,),
+              duration=1, mutation_rate=0, crossover=False, elite_count=0, telemetry=records.append)
+        originals = {tuple(p["genes"]) for p in records[0]["population"]}
+        for record in records[1:]:
+            self.assertEqual(len(record["births"]), 4)
+            self.assertTrue(all(tuple(p["genes"]) in originals for p in record["population"]))
+            self.assertTrue(all(not b["mutations"] and set(b["source_mask"]) == {0} for b in record["births"]))
 
 
 if __name__ == "__main__":

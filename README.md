@@ -1,5 +1,31 @@
 # KittyCatch
 
+Projekt 4: **Tower defense — optymalizacja rozmieszczenia obrony**,
+przedmiot „Sztuczna inteligencja w grach i rozszerzonej rzeczywistości”.
+Zajęcia: poniedziałek 8:00. Numer zespołu: **do uzupełnienia**.
+
+Autorzy i podział prac, potwierdzony przez zespół:
+
+- **Aleksander Kopyto** — algorytm genetyczny i AI.
+- **Kacper Mazurek** — gra.
+
+Metadane do sprawozdania: `project_metadata.json`. Wymagania przedmiotu
+przewidują sprawozdanie 5–10 stron; szczegółowy raport analityczny z pełną
+telemetrią stanowi osobny materiał. Wyniki obejmują porównanie GA z losowymi
+układami i heurystykami, stan bazy, zatrzymane jednostki i efektywność budżetu.
+Mapowanie materiałów na instrukcje oddania: [COURSE_REQUIREMENTS.md](COURSE_REQUIREMENTS.md).
+
+Przykład z gotowym modelem, bez treningu (z katalogu `python_ai/`):
+
+```powershell
+python -m pip install -r requirements-analysis.txt
+python -m src.serwer --strategy models/best_strategy.json
+```
+
+Następnie uruchom projekt w Godocie. `models/` zawiera również migawkę mapy,
+balansu i opis wytrenowanego modelu. Komendy odtworzenia pełnej analizy
+genetycznej są w [Python README](python_ai/README.md).
+
 Reverse tower defense game.
 
 AI defends the base by placing towers. The player sends pigeon waves.

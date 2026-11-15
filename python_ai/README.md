@@ -1,5 +1,63 @@
 # Python AI: obrona bazy i socket Godota
 
+## Prezentacja na zajęcia
+
+W `training_results/` znajdują się `prezentacja.pdf` i edytowalna
+`prezentacja.pptx`: 15 slajdów na około 10–12 minut z pokazem gry oraz
+3 slajdy zapasowe. W PowerPoint slajdy zapasowe są domyślnie ukryte.
+`prezentacja_notatki.md` zawiera podział między prelegentów i wskazówki;
+te same notatki są osadzone w PPTX. `prezentacja_demo.gif` jest zapasowym
+pokazem prawdziwych obserwacji Godota i jest również osadzony w PPTX.
+
+Ponowne zbudowanie obu formatów z tych samych danych:
+
+```powershell
+python -m pip install -r requirements-presentation.txt
+python build_presentation.py
+```
+
+PDF zawiera nieruchomy kadr demonstracji. Do pokazu na żywo uruchom serwer
+z `models/best_strategy.json` i projekt w Godocie. Prezentacja jest datowana
+na 16 listopada 2026; teksty, liczby, diagramy i notatki w PPTX są edytowalne.
+
+## Sprawozdanie i analiza genetyczna
+
+Metadane autorów i podział pracy zapisano w `../project_metadata.json`.
+`training_results/sprawozdanie.pdf` jest krótkim dokumentem zaliczeniowym
+(wymagane 5–10 stron), a `training_results/report.pdf` pełnym załącznikiem
+analitycznym z figurami, chromosomami i wynikami eksperymentów.
+
+Pełna telemetria, porównanie z 20 losowymi układami i 12 prób ablacyjnych:
+
+```powershell
+python analyze_genetics.py
+python -m src.genetic_report
+python -m src.experiment_report --input training_results/report.json --gif --replay-seed 103
+python -m src.pdf_report --input training_results/report.md
+python -m src.course_report
+```
+
+Analiza odtwarza zapisane przebiegi z `report.json`, sprawdza zgodność
+chromosomów końcowych i nie wybiera modelu ponownie według testów.
+Późniejsza krzywa testowa poszczególnych epok jest analizą post hoc.
+`--phase main`, `--phase random` i `--phase ablations` pozwalają wykonać
+wybraną część; ukończone próby mają checkpointy i są ponownie używane.
+
+W `training_results/genetic_analysis/` powstają populacje JSONL, genotypy CSV,
+rodowody potomków, maski krzyżowania, mutacje przed/po i figury PNG.
+`genetic_evolution.gif` pokazuje zmiany planu i chromosomu w kolejnych epokach.
+Wymagania do odtworzenia eksportu: `requirements-analysis.txt` (Python 3.14).
+
+Gotowy przykład bez treningu znajduje się w wersjonowanym `models/`:
+
+```powershell
+python -m src.serwer --strategy models/best_strategy.json
+python train.py --strategy models/best_strategy.json --duration 120 --output evaluation
+```
+
+Model ma horyzont 120 s; migawki konfiguracji i mapy oraz identyfikator
+eksperymentu są zapisane obok chromosomu. Zmiana balansu wymaga ponownej oceny.
+
 AI **stawia wieże**. Gracz/przeciwnik wysyła gołębie. Algorytm genetyczny
 optymalizuje plan obrony: typ wieży, współrzędne i najwcześniejszy czas budowy.
 Do Godota wysyła wyłącznie `build_tower`.

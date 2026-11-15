@@ -1,0 +1,4 @@
+# Reproducible environment used for figures and PDF reports (Python 3.14).
+Pillow==12.3.0
+reportlab==5.0.1
+PyMuPDF==1.28.2

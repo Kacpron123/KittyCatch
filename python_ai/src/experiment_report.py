@@ -25,7 +25,8 @@ def table(headers, rows):
 def csv_file(path, rows):
     if rows:
         with path.open("w", encoding="utf-8-sig", newline="") as stream:
-            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            fields = list(dict.fromkeys(key for row in rows for key in row))
+            writer = csv.DictWriter(stream, fieldnames=fields)
             writer.writeheader()
             writer.writerows(rows)
 
@@ -340,6 +341,9 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
             lines += ["Najlepszy wynik był osiągalny już w populacji początkowej. "
                 "Trening nie poprawił tego kryterium; zbadał alternatywne układy i ich odporność na zmianę scenariusza. "
                 "Różne chromosomy z takim samym fitness nie są dowodem przewagi nad heurystyką.", ""]
+    genetic_appendix = output / "genetic_analysis" / "analysis_report.md"
+    if source.get("genetic_analysis") and genetic_appendix.exists():
+        lines += genetic_appendix.read_text(encoding="utf-8").splitlines() + [""]
     lines += ["## Chromosom i jego interpretacja", "",
         f"Chromosom ma **{len(strategy.genes)} genów**, czyli **{len(strategy.genes) // 4} slotów budowy**. "
         "Każda czwórka to `[typ, x, y, najwcześniejszy_czas]`. Kolejność typów: "

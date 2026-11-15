@@ -5,6 +5,8 @@ import json
 import math
 import random
 import statistics
+import hashlib
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -230,6 +232,9 @@ def rollout(strategy: Strategy | None, config: dict, map_data: dict, seed: int, 
         "damage": damage, "base_hp": sim.base_health, "kills": kills, "sent": sent, "spawned": spawned,
         "tower_count": len(sim.towers), "money_spent": sim.metrics["ai_money_spent_total"],
         "money_left": sim.ai_money, "rejected": sim.metrics["ai_actions_rejected"], "elapsed": sim.sim_time}
+    result["kill_fraction"] = kills / max(spawned, 1)
+    result["kills_per_100_money"] = 100 * kills / max(sim.metrics["ai_money_spent_total"], 1)
+    result["base_health_fraction"] = sim.base_health / max(sim.base_max_health, 1)
     if trace:
         result.update(history=history, waves=waves, schedule=schedule, events=events, final_state=sim.to_dict())
     return result
@@ -260,44 +265,125 @@ def baseline_strategies(config: dict, map_data: dict, slots: int = 10, duration:
     return policies
 
 
+def random_strategy(config: dict, map_data: dict, *, seed: int, slots: int = 10, duration: float = 90) -> Strategy:
+    """Random types and distinct buildable cells; all slots available at t=0."""
+    sim = Simulation(config, map_data)
+    rng = random.Random(seed)
+    names = tuple(config["towers"])
+    cells = [(x, y) for x, column in enumerate(sim.grid) for y, value in enumerate(column) if value == 1]
+    if not names or not cells or slots < 1:
+        raise ValueError("Random baseline requires towers, buildable cells and positive slots")
+    rng.shuffle(cells)
+    genes = []
+    for i in range(slots):
+        x, y = cells[i % len(cells)]
+        genes.extend(((rng.randrange(len(names)) + 0.5) / len(names), x / max(sim.width - 1, 1),
+                      y / max(sim.height - 1, 1), 0))
+    return Strategy(names, tuple(genes), duration)
+
+
 def train(config: dict, map_data: dict, *, population_size: int = 32, generations: int = 30,
           seeds: tuple[int, ...] = (10, 11, 12, 13, 14), seed: int = 42, duration: float = 90,
           dt: float = 0.1, mutation_rate: float = 0.15, slots: int = 10,
-          progress: Callable[[dict], None] | None = None) -> tuple[Strategy, list[dict]]:
+          progress: Callable[[dict], None] | None = None,
+          telemetry: Callable[[dict], None] | None = None,
+          crossover: bool = True, elite_count: int | None = None) -> tuple[Strategy, list[dict]]:
     if population_size < 4 or generations < 1 or not seeds or not 0 <= mutation_rate <= 1 or slots < 1:
         raise ValueError("Need population >= 4, generations >= 1, seeds, slots >= 1 and mutation rate in [0,1]")
+    elites = max(1, population_size // 8) if elite_count is None else elite_count
+    if not 0 <= elites <= population_size:
+        raise ValueError("Elite count must be between zero and population size")
     rng = random.Random(seed)
+    geometry = Simulation(config, map_data)
+    width, height = geometry.width, geometry.height
     policies = baseline_strategies(config, map_data, slots, duration)
     population = list(policies.values())[:population_size]
     while len(population) < population_size:
         # Seed useful early builds while exploring locations, types and delays.
         genes = tuple(rng.random() * (0.2 if i % 4 == 3 else 1) for i in range(slots * 4))
         population.append(Strategy(tuple(config["towers"]), genes, duration))
-    cache, history = {}, []
+    cache, history, metrics = {}, [], {}
+    births = []
+    started = time.perf_counter()
+    evaluation_count = 0
+
+    def identity(policy):
+        return hashlib.sha256(json.dumps(policy.genes, separators=(",", ":")).encode()).hexdigest()[:16]
+
+    def quantile(values, fraction):
+        values = sorted(values)
+        position = fraction * (len(values) - 1)
+        lo, hi = math.floor(position), math.ceil(position)
+        return values[lo] + (values[hi] - values[lo]) * (position - lo)
+
     for generation in range(generations):
+        generation_started = time.perf_counter()
+        new_evaluations = 0
         for policy in population:
             if policy not in cache:
-                cache[policy] = statistics.mean(rollout(policy, config, map_data, s, duration=duration, dt=dt)["fitness"] for s in seeds)
+                episodes = [rollout(policy, config, map_data, s, duration=duration, dt=dt) for s in seeds]
+                cache[policy] = statistics.mean(episode["fitness"] for episode in episodes)
+                metrics[policy] = {key: statistics.mean(episode[key] for episode in episodes)
+                    for key in ("damage", "kills", "spawned", "money_spent", "tower_count")}
+                new_evaluations += 1
+        evaluation_count += new_evaluations * len(seeds)
         # Seeded tie breaking explores equally good layouts instead of always
         # returning the first heuristic when several candidates reach zero leaks.
         ranked = sorted(population, key=lambda p: (cache[p], rng.random()), reverse=True)
         scores = [cache[p] for p in population]
+        gene_std = [statistics.pstdev(p.genes[i] for p in population) for i in range(slots * 4)]
+        phenotypes = {tuple((p["tower_type"], p["x"], p["y"], round(p["earliest"] * 2) / 2)
+                             for p in policy.decode(width, height))
+                      for policy in population}
         row = {"generation": generation, "best": max(scores), "mean": statistics.mean(scores),
-            "worst": min(scores), "std": statistics.pstdev(scores), "diversity": len(set(population)) / population_size}
+            "median": statistics.median(scores), "q25": quantile(scores, 0.25), "q75": quantile(scores, 0.75),
+            "worst": min(scores), "std": statistics.pstdev(scores), "diversity": len(set(population)) / population_size,
+            "phenotype_diversity": len(phenotypes) / population_size, "mean_gene_std": statistics.mean(gene_std),
+            "best_damage": metrics[ranked[0]]["damage"], "population_damage": statistics.mean(metrics[p]["damage"] for p in population),
+            "best_kills": metrics[ranked[0]]["kills"], "best_money_spent": metrics[ranked[0]]["money_spent"],
+            "new_evaluations": new_evaluations, "cache_hits": population_size - new_evaluations,
+            "cumulative_rollouts": evaluation_count}
         history.append(row)
+        if telemetry:
+            by_id = {identity(p): p for p in population}
+            for birth in births:
+                policy = by_id[birth["child_id"]]
+                birth["fitness"] = cache[policy]
+                birth["fitness_delta_vs_parent"] = cache[policy] - birth["parent_best_fitness"]
+            telemetry({"generation": generation, "summary": row, "best_id": identity(ranked[0]),
+                "best_genes": list(ranked[0].genes), "gene_std": gene_std,
+                "gene_mean": [statistics.mean(p.genes[i] for p in population) for i in range(slots * 4)],
+                "population": [{"index": i, "id": identity(p), "genes": list(p.genes), "fitness": cache[p],
+                                **metrics[p]} for i, p in enumerate(population)],
+                "births": births, "elapsed_seconds": time.perf_counter() - started,
+                "generation_seconds": time.perf_counter() - generation_started})
         if progress:
             progress(row)
         if generation + 1 == generations:
             break
-        children = ranked[:max(1, population_size // 8)]
+        children = ranked[:elites]
+        births = []
         while len(children) < population_size:
             parents = [max(rng.sample(population, 3), key=lambda p: cache[p]) for _ in range(2)]
-            genes = []
-            for a, b in zip(parents[0].genes, parents[1].genes):
-                value = rng.choice((a, b))
+            genes, source_mask, before_mutation, mutations = [], [], [], []
+            for index, (a, b) in enumerate(zip(parents[0].genes, parents[1].genes)):
+                source_parent = rng.choice((0, 1))
+                source_parent = source_parent if crossover else 0
+                value = (a, b)[source_parent]
+                source_mask.append(source_parent)
+                before_mutation.append(value)
                 if rng.random() < mutation_rate:
-                    value = min(1, max(0, value + rng.gauss(0, 0.15)))
+                    delta = rng.gauss(0, 0.15)
+                    old = value
+                    value = min(1, max(0, value + delta))
+                    mutations.append({"gene": index, "before": old, "after": value, "noise": delta,
+                                      "clipped": not 0 <= old + delta <= 1, "changed": old != value})
                 genes.append(value)
-            children.append(Strategy(tuple(config["towers"]), tuple(genes), duration))
+            child = Strategy(tuple(config["towers"]), tuple(genes), duration)
+            children.append(child)
+            if telemetry:
+                births.append({"child_id": identity(child), "parent_ids": [identity(p) for p in parents],
+                    "parent_fitness": [cache[p] for p in parents], "parent_best_fitness": max(cache[p] for p in parents),
+                    "source_mask": source_mask, "before_mutation": before_mutation, "genes": genes, "mutations": mutations})
         population = children
     return ranked[0], history

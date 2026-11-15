@@ -38,7 +38,7 @@ class ReportDocument(SimpleDocTemplate):
         self._section_count = 0
 
 
-def export_pdf(source: Path, target: Path) -> None:
+def register_fonts() -> None:
     # Embedded TrueType fonts preserve Polish characters in every PDF viewer.
     font_dir = Path("C:/Windows/Fonts")
     if not (font_dir / "arial.ttf").exists():
@@ -48,6 +48,10 @@ def export_pdf(source: Path, target: Path) -> None:
     pdfmetrics.registerFont(TTFont("Report", str(font_dir / regular)))
     pdfmetrics.registerFont(TTFont("ReportBold", str(font_dir / bold)))
     pdfmetrics.registerFontFamily("Report", normal="Report", bold="ReportBold", italic="Report", boldItalic="ReportBold")
+
+
+def export_pdf(source: Path, target: Path) -> None:
+    register_fonts()
     styles = getSampleStyleSheet()
     for style in styles.byName.values():
         style.fontName = "Report"
@@ -95,9 +99,16 @@ def export_pdf(source: Path, target: Path) -> None:
         kicker = ParagraphStyle("Kicker", parent=styles["BodyText"], fontSize=11, leading=16,
                                 textColor=colors.HexColor("#2978aa"), spaceAfter=18)
         story += [Spacer(1, 20), Paragraph("KITTYCATCH / ANALIZA STRATEGII", kicker),
-            Paragraph("Nowe układy obrony<br/>po zmianie balansu", cover_title),
-            Paragraph("Sprawozdanie z ponownego treningu algorytmu genetycznego", styles["Heading2"]),
+            Paragraph("Algorytm genetyczny<br/>rozwój populacji i obrony" if experiment.get("genetic_analysis")
+                      else "Nowe układy obrony<br/>po zmianie balansu", cover_title),
+            Paragraph("Rozszerzony raport analityczny — materiał uzupełniający" if experiment.get("genetic_analysis")
+                      else "Sprawozdanie z ponownego treningu algorytmu genetycznego", styles["Heading2"]),
             Spacer(1, 14)]
+        metadata_path = Path(__file__).resolve().parents[2] / "project_metadata.json"
+        if metadata_path.exists():
+            metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            story.append(Paragraph(" · ".join(html.escape(a["name"])+" — "+html.escape(a["responsibility"])
+                for a in metadata["authors"]), styles["BodyText"]))
         settings, config = experiment["settings"], experiment["config"]
         winner = experiment["comparison"]["GENETIC"]
         profile_count = len(settings["test_seeds"])
@@ -110,6 +121,12 @@ def export_pdf(source: Path, target: Path) -> None:
                     Paragraph(str(profile_count), metric_style)],
                    [Paragraph("HP BRONIONEJ BAZY", label_style), Paragraph("NIEZALEŻNE TRENINGI", label_style),
                     Paragraph("SCENARIUSZE TESTOWE", label_style)]]
+        if experiment.get("genetic_analysis"):
+            metrics = [[Paragraph(str(len(experiment["strategy"]["genes"])), metric_style),
+                        Paragraph(str(settings["generations"]), metric_style),
+                        Paragraph(str(len(experiment["search_runs"])), metric_style)],
+                       [Paragraph("GENÓW W CHROMOSOMIE", label_style), Paragraph("EPOK OCENY", label_style),
+                        Paragraph("NIEZALEŻNE TRENINGI", label_style)]]
         cards = Table(metrics, colWidths=[width/3]*3)
         cards.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,-1),colors.HexColor("#152e4f")),
             ("LEFTPADDING",(0,0),(-1,-1),15), ("TOPPADDING",(0,0),(-1,0),14),
@@ -223,7 +240,8 @@ def export_pdf(source: Path, target: Path) -> None:
 
     target.parent.mkdir(parents=True, exist_ok=True)
     document = ReportDocument(str(target), pagesize=A4, rightMargin=40, leftMargin=40,
-        topMargin=38, bottomMargin=42, title=lines[0].lstrip("# ") if lines else "KittyCatch", author="KittyCatch")
+        topMargin=38, bottomMargin=42, title=lines[0].lstrip("# ") if lines else "KittyCatch",
+        author="Aleksander Kopyto, Kacper Mazurek")
     document.multiBuild(story, onFirstPage=footer, onLaterPages=footer)
 
 
