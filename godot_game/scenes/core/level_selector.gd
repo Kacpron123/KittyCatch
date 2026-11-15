@@ -2,10 +2,25 @@ extends Control
 
 @onready var container = $MarginContainer/VBoxContainer/LevelContainer
 @onready var btn_back = $MarginContainer/VBoxContainer/Button
+@onready var difficulty_selector: OptionButton = $MarginContainer/VBoxContainer/DifficultySelector
 const LEVELS_PATH = "res://scenes/levels/"
 
 func _ready():
+	var difficulties = ["hard", "medium", "easy"]
+	var labels = ["Trudny", "Średni", "Łatwy"]
+	for i in range(difficulties.size()):
+		var difficulty: String = difficulties[i]
+		difficulty_selector.add_item("%s — limit energii: %d" % [
+			labels[i], GameManager.get_player_energy_limit(difficulty)
+		])
+		difficulty_selector.set_item_metadata(i, difficulty)
+		if difficulty == GameManager.get_selected_difficulty():
+			difficulty_selector.select(i)
+	difficulty_selector.item_selected.connect(_on_difficulty_selected)
 	load_levels()
+
+func _on_difficulty_selected(index: int) -> void:
+	GameManager.selected_difficulty = str(difficulty_selector.get_item_metadata(index))
 
 func load_levels():
 	var dir = DirAccess.open(LEVELS_PATH)

@@ -522,7 +522,11 @@ class Simulation:
             )
 
     def _leak(self, enemy: Enemy) -> None:
+        if not enemy.alive:
+            return
         enemy.alive = False
+        refund = (enemy.energy_cost + 1) // 2
+        self.energy = min(self.max_energy, self.energy + refund)
         self.base_health = max(0, self.base_health - 1)
         self.metrics["leaks_total"] += 1
         self.metrics["base_damage_total"] += 1
@@ -541,6 +545,7 @@ class Simulation:
                 "grid_x": x,
                 "grid_y": y,
                 "base_damage": 1,
+                "player_energy_refunded": refund,
                 "enemy_speed_multiplier": self.enemy_speed_multiplier,
             }
         )

@@ -164,15 +164,24 @@ def main() -> None:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--build-once", action="store_true", help="Send one test tower action")
+    parser.add_argument("--strategy", help="Load a trained tower-defense chromosome")
     parser.add_argument("--tower-type", choices=("BASIC", "SNIPER"), default="BASIC")
     parser.add_argument("--x", type=int, default=3)
     parser.add_argument("--y", type=int, default=3)
     args = parser.parse_args()
+    if args.strategy and args.build_once:
+        parser.error("Choose --strategy or --build-once")
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     policy = (
         _build_once_policy(args.tower_type, args.x, args.y) if args.build_once else None
     )
+    if args.strategy:
+        from src.genetic_ai import GeneticAgent, Strategy
+        try:
+            policy = GeneticAgent(Strategy.load(args.strategy))
+        except (ValueError, OSError) as error:
+            parser.error(str(error))
     GameServer(args.host, args.port, policy).serve_forever()
 
 

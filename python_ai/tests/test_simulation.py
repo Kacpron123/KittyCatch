@@ -58,6 +58,31 @@ class SimulationTests(unittest.TestCase):
         self.assertAlmostEqual(self.simulation.enemy_speed_multiplier, 1.1)
         self.assertEqual(self.simulation.base_health, 969)
 
+    def test_reaching_goal_refunds_half_cost_rounded_up_once(self) -> None:
+        for unit_type, expected_refund in (("SCOUT", 3), ("TANK", 5), ("SPEED", 4)):
+            with self.subTest(unit_type=unit_type):
+                config = copy.deepcopy(self.config)
+                config["economy"]["player"]["energy_regen_per_second"] = 0
+                sim = Simulation(config, self.map_data)
+                sim.energy = 0
+                enemy = sim.spawn_enemy(unit_type)
+                enemy.distance = sim.route_length - 0.001
+                sim.step(0.1)
+                self.assertEqual(sim.energy, expected_refund)
+                self.assertEqual(sim.metrics["leaks_total"], 1)
+                self.assertEqual(sim.base_health, sim.base_max_health - 1)
+                event = next(e for e in sim.events if e["kind"] == "base_damaged")
+                self.assertEqual(event["player_energy_refunded"], expected_refund)
+                sim._leak(enemy)
+                self.assertEqual(sim.energy, expected_refund)
+                self.assertEqual(sim.metrics["leaks_total"], 1)
+
+    def test_goal_refund_respects_player_energy_limit(self) -> None:
+        sim = self.simulation
+        sim.energy = sim.max_energy - 1
+        sim._leak(sim.spawn_enemy("TANK"))
+        self.assertEqual(sim.energy, sim.max_energy)
+
     def test_snapshot_matches_godot_observation_shape(self) -> None:
         snapshot = self.simulation.to_dict()
         self.assertEqual(snapshot["protocol_version"], 2)

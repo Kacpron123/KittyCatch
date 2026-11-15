@@ -4,10 +4,18 @@
 	  "starting_energy": 40,
 	  "max_energy": 100,
 	  "energy_regen_per_second": 2.0,
-	  "kill_energy_refund_fraction": 0.6
+	  "kill_energy_refund_fraction": 1.0
 	},
 	"ai": {
 	  "starting_money": 150
+	}
+  },
+  "difficulty": {
+	"default": "hard",
+	"player_energy_limits": {
+	  "hard": 100,
+	  "medium": 300,
+	  "easy": 1000
 	}
   },
   "combat": {
@@ -16,8 +24,8 @@
   },
   "units": {
 	"SCOUT": {"hp": 10, "speed": 1.0, "energy_cost": 5, "ai_reward": 5},
-	"TANK": {"hp": 20, "speed": 0.8, "energy_cost": 10, "ai_reward": 12},
-	"SPEED": {"hp": 15, "speed": 1.2, "energy_cost": 7, "ai_reward": 8}
+	"TANK": {"hp": 30, "speed": 0.8, "energy_cost": 10, "ai_reward": 12},
+	"SPEED": {"hp": 15, "speed": 1.4, "energy_cost": 7, "ai_reward": 8}
   },
   "towers": {
 	"BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},

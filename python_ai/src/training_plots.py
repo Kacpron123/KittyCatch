@@ -13,19 +13,22 @@ def line_chart(path: Path, title: str, x_label: str, y_label: str,
     if not points:
         raise ValueError("Cannot plot empty series")
     xmax = max(1, max(x for x, _ in points))
-    ymax = max(1, max(y for _, y in points)) * 1.08
+    ymin = min(0, min(y for _, y in points))
+    ymax = max(1, max(y for _, y in points))
+    padding = (ymax - ymin) * 0.04
+    ymin, ymax = ymin - padding if ymin < 0 else 0, ymax + padding
     draw.text((80, 22), title, fill="white", font_size=24)
     for i in range(6):
         y = 550 - i * 90
         draw.line((80, y, 1040, y), fill="#34394b")
-        draw.text((10, y - 8), f"{ymax * i / 5:.1f}", fill="white", font_size=16)
+        draw.text((2, y - 8), f"{ymin + (ymax - ymin) * i / 5:.1f}", fill="white", font_size=16)
         x = 80 + i * 192
         draw.text((x, 560), f"{xmax * i / 5:.1f}", fill="white", font_size=16)
     draw.text((80, 75), y_label, fill="white", font_size=16)
     draw.text((960, 605), x_label, fill="white", font_size=16)
     for index, (name, values) in enumerate(series.items()):
         color = COLORS[index % len(COLORS)]
-        coords = [(80 + 960 * x / xmax, 550 - 450 * y / ymax) for x, y in values]
+        coords = [(80 + 960 * x / xmax, 550 - 450 * (y - ymin) / (ymax - ymin)) for x, y in values]
         if len(coords) > 1:
             draw.line(coords, fill=color, width=3)
         else:
@@ -35,10 +38,11 @@ def line_chart(path: Path, title: str, x_label: str, y_label: str,
     image.save(path)
 
 
-def comparison_chart(path: Path, comparisons: dict[str, dict]) -> None:
+def comparison_chart(path: Path, comparisons: dict[str, dict], *, defense: bool = False) -> None:
     image = Image.new("RGB", (1100, 650), "#171923")
     draw = ImageDraw.Draw(image)
-    draw.text((60, 25), "Holdout: mean base damage (min-max across seeds)", fill="white", font_size=24)
+    title = "Holdout: damage received, lower is better (min-max)" if defense else "Holdout: mean base damage (min-max across seeds)"
+    draw.text((60, 25), title, fill="white", font_size=24)
     maximum = max(1, max(max(r["damage"] for r in v["episodes"]) for v in comparisons.values()))
     for i, (name, stats) in enumerate(comparisons.items()):
         y = 120 + i * min(85, 450 / len(comparisons))

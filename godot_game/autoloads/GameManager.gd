@@ -2,6 +2,18 @@ extends Node
 
 var selected_level_path: String = "res://scenes/levels/level1.tscn"
 var tile_size: int = 64
+var selected_difficulty: String = ""
+
+func get_selected_difficulty() -> String:
+	if not selected_difficulty.is_empty():
+		return selected_difficulty
+	return str(ConfigManager.config_data.get("difficulty", {}).get("default", "hard"))
+
+func get_player_energy_limit(difficulty: String = "") -> int:
+	var key = get_selected_difficulty() if difficulty.is_empty() else difficulty
+	var settings: Dictionary = ConfigManager.config_data.get("difficulty", {})
+	var limits: Dictionary = settings.get("player_energy_limits", {})
+	return maxi(1, int(limits.get(key, 100)))
 
 signal health_changed(current_health: int, max_health: int)
 signal energy_changed(current_energy: int, max_energy: int)
@@ -9,7 +21,7 @@ signal ai_money_changed(new_money: int)
 signal game_over()
 
 var max_health: int = 1000
-var base_health: int = 1000
+var base_health: int = 200
 
 var max_energy: int = 40
 var energy: int = 40

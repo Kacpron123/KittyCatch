@@ -73,10 +73,12 @@ func reach_end() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	var energy_refund = ceili(energy_cost / 2.0)
+	GameManager.add_energy(energy_refund)
 	GameManager.take_damage(1)
 	var level_master = get_tree().current_scene
 	if level_master and level_master.has_method("record_enemy_leaked"):
-		level_master.record_enemy_leaked(self)
+		level_master.record_enemy_leaked(self, energy_refund)
 	queue_free()
 
 func die() -> void:

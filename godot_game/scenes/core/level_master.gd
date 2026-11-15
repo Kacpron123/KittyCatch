@@ -47,7 +47,7 @@ func _ready():
 		1000,
 		int(player_economy.get("starting_energy", 40)),
 		int(ai_economy.get("starting_money", 150)),
-		int(player_economy.get("max_energy", 100)),
+		GameManager.get_player_energy_limit(),
 		float(player_economy.get("energy_regen_per_second", 1.0)),
 		float(player_economy.get("kill_energy_refund_fraction", 0.6)),
 		float(combat.get("enemy_speed_bonus_per_base_hit", 0.005)),
@@ -340,7 +340,7 @@ func record_enemy_killed(enemy: Node2D, energy_refund: int) -> void:
 		"player_energy_refunded": energy_refund
 	})
 
-func record_enemy_leaked(enemy: Node2D) -> void:
+func record_enemy_leaked(enemy: Node2D, energy_refund: int) -> void:
 	var enemy_type = GameEnums.enemyID.keys()[enemy.unit_id]
 	var cell = map_manager.world_to_grid(enemy.global_position)
 	_increment_grid_cell(_leak_grid, cell)
@@ -355,6 +355,7 @@ func record_enemy_leaked(enemy: Node2D) -> void:
 		"world_x": roundi(enemy.global_position.x),
 		"world_y": roundi(enemy.global_position.y),
 		"base_damage": 1,
+		"player_energy_refunded": energy_refund,
 		"enemy_speed_multiplier": GameManager.enemy_speed_multiplier
 	})
 

@@ -2,6 +2,63 @@
 
 Reverse tower defense game.
 
+AI defends the base by placing towers. The player sends pigeon waves.
+The genetic algorithm trains tower type, placement and build timing; its
+output uses the existing Godot `build_tower` socket action.
+
+Choose difficulty on the level selection screen. It sets the player's energy
+capacity: **Hard 100**, **Medium 300**, **Easy 1000** (default: Hard).
+Starting energy remains 40; regeneration and refunds fill up to the selected
+limit. Values are configured in `difficulty` in `godot_game/config/balance.json`.
+When a pigeon reaches the base, the player regains half its energy cost,
+rounded up, capped by the selected energy limit (SCOUT: 3, TANK: 5, SPEED: 4).
+
+## Run the AI and Godot
+
+From the repository root:
+
+```powershell
+cd python_ai
+uv sync
+uv run python train.py --population 32 --generations 30 --slots 10 --duration 90 --gif
+uv run python -m src.serwer --strategy training_results/best_strategy.json --host 127.0.0.1 --port 8080
+```
+
+Keep the Python server running. Open `godot_game/project.godot` in Godot and
+run the project with F5. Godot connects as the TCP client; Python receives
+observations and sends tower build actions over that same connection.
+Send pigeon waves in the game to challenge the AI. Ctrl+C stops the server.
+If Python and Pillow are already installed, `python ...` also works without uv.
+
+For a connection test without training, start either the passive receiver
+or the one-action policy, then run Godot:
+
+```powershell
+python -m src.serwer
+python -m src.serwer --build-once --tower-type BASIC --x 3 --y 3
+```
+
+Choose one server command at a time. The manual action needs a free buildable
+cell and sufficient AI money. Do not combine `--build-once` and `--strategy`.
+Godot's host/port settings are in `godot_game/autoloads/NetworkManager.gd`;
+they must match the server. Godot retries a disconnected connection every 2 s.
+
+The server logs observations and outgoing actions. Godot pushes `init` and
+`update` messages automatically; there is no separate request-state command.
+An outgoing action is a JSON object followed by a newline:
+
+```json
+{"action":"build_tower","command_id":"example-1","tower_type":"BASIC","x":3,"y":3}
+```
+
+The matching `action_result` event reports whether Godot accepted the build.
+Details, custom policies, training parameters and report/PDF commands:
+[Python README](python_ai/README.md).
+
+`python_ai/training_results/report.md`, `report.pdf` (when exported) and
+`replay.gif` (with `--gif`) describe the tower-defense experiment. The prior
+wave-optimization experiment is archived in `training_results/wave_experiment/`.
+
 ## Godot ↔ AI protocol
 
 Godot is the TCP client (default `127.0.0.1:8080`). Each message is one

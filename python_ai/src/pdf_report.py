@@ -124,7 +124,7 @@ def export_pdf(source: Path, target: Path) -> None:
 
     target.parent.mkdir(parents=True, exist_ok=True)
     document = SimpleDocTemplate(str(target), pagesize=A4, rightMargin=40, leftMargin=40,
-        topMargin=38, bottomMargin=42, title="KittyCatch — strategia wysyłania gołębi", author="KittyCatch")
+        topMargin=38, bottomMargin=42, title=lines[0].lstrip("# ") if lines else "KittyCatch", author="KittyCatch")
     document.build(story, onFirstPage=footer, onLaterPages=footer)
 
 

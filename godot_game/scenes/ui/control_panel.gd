@@ -140,7 +140,7 @@ func _get_wave_energy_cost() -> int:
 func _on_energy_changed(current_energy: int, max_energy: int) -> void:
 	_refresh_wave_cost(current_energy, max_energy)
 
-func _refresh_wave_cost(current_energy: int, _max_energy: int) -> void:
+func _refresh_wave_cost(current_energy: int, max_energy: int) -> void:
 	var energy_cost = _get_wave_energy_cost()
-	wave_cost_label.text = "Wave cost: %d | Energy: %d" % [energy_cost, current_energy]
+	wave_cost_label.text = "Wave cost: %d | Energy: %d / %d" % [energy_cost, current_energy, max_energy]
 	btn_start.disabled = energy_cost <= 0 or energy_cost > current_energy

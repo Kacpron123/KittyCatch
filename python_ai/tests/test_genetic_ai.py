@@ -1,114 +1,139 @@
 import copy
+import json
+import socket
 import tempfile
 import unittest
-from collections import Counter
 from pathlib import Path
 
-from src.data import load_game_data
-from src.genetic_ai import GeneticAgent, Strategy, baseline_strategies, rollout, train
-from src.simulation import Simulation
-from src.experiment_report import build_report, decode
 from PIL import Image
 
+from src.data import load_game_data
+from src.experiment_report import build_report
+from src.genetic_ai import GeneticAgent, Strategy, attack_schedule, init_message, rollout, train
+from src.serwer import GameServer
+from src.simulation import Simulation
 
-class GeneticTests(unittest.TestCase):
+
+class TowerGeneticTests(unittest.TestCase):
     def setUp(self):
         self.config, self.map_data = load_game_data()
-        self.types = tuple(self.config["units"])
-        self.policy = baseline_strategies(self.types)["SCOUT"]
+        self.sim = Simulation(self.config, self.map_data)
+        # Two overlapping requested locations; second must use a new free cell.
+        self.strategy = Strategy(tuple(self.config["towers"]), (0, 10/19, 6/14, 0) * 2, 40)
 
-    def test_launch_respects_energy_queue_and_cooldown(self):
-        genes = (1, 0, 0, 0, 1, 1) * 2
-        agent = GeneticAgent(Strategy(self.types, genes), self.config["units"])
-        sim = Simulation(self.config, self.map_data)
-        action = agent.launch(sim)
-        self.assertEqual(action["unit_types"], ["SCOUT"] * 8)
-        self.assertEqual(sim.energy, 0)
-        self.assertIsNone(agent.launch(sim))
-        sim.wave_active = False
-        sim.queued_units.clear()
-        sim.energy = 100
-        sim.sim_time = 11
-        self.assertIsNone(agent.launch(sim))
-        sim.sim_time = 12
-        self.assertIsNotNone(agent.launch(sim))
+    def state(self):
+        return self.sim.to_dict()
 
-    def test_rollout_is_reproducible_and_accounts_for_every_unit(self):
-        first = rollout(self.policy, self.config, self.map_data, 17, duration=35, trace=True)
-        self.assertEqual(first, rollout(self.policy, self.config, self.map_data, 17, duration=35, trace=True))
-        state = first["final_state"]
-        self.assertEqual(first["sent"], first["kills"] + first["damage"] +
-                         len(state["units"]) + state["wave"]["queued_count"])
-        self.assertEqual(first["energy_spent"], sum(w["cost"] for w in first["waves"]))
-        self.assertGreater(first["sent"], 0)
-        self.assertTrue(all(0 <= row["energy"] <= 100 for row in first["history"]))
+    def test_predict_only_builds_affordable_free_cells_and_waits_for_ack(self):
+        agent = GeneticAgent(self.strategy)
+        self.assertIsNone(agent(init_message(self.sim)))
+        action = agent(self.state())
+        self.assertEqual(action["action"], "build_tower")
+        self.assertEqual((action["x"], action["y"]), (10, 6))
+        self.assertNotIn("unit_types", action)
+        self.assertIsNone(agent(self.state()))
+        self.sim.step(0.5, return_state=False)
+        self.assertIsNone(agent(self.state()))  # New state without acknowledgement.
+        self.assertTrue(self.sim.apply_action(action)["accepted"])
+        self.sim.step(0.1, return_state=False)
+        second = agent(self.state())
+        self.assertIsNotNone(second)
+        self.assertNotEqual((action["x"], action["y"]), (second["x"], second["y"]))
+        self.assertIn(0, agent.completed)
+        self.assertTrue(self.sim.apply_action(second)["accepted"])
 
-    def test_no_defense_causes_real_damage(self):
-        config = copy.deepcopy(self.config)
-        config["towers"] = {}
-        result = rollout(self.policy, config, self.map_data, 1, duration=40)
-        self.assertGreater(result["damage"], 0)
-        self.assertEqual(result["fitness"], result["damage"])
+    def test_budget_time_and_episode_reset(self):
+        strategy = Strategy(self.strategy.tower_types, (0, 0, 0, 0.5), 40)
+        agent = GeneticAgent(strategy)
+        agent(init_message(self.sim))
+        self.assertIsNone(agent(self.state()))
+        self.sim.sim_time, self.sim.step_number = 20, 20
+        self.sim.ai_money = 49
+        self.assertIsNone(agent(self.state()))
+        self.sim.ai_money = 50
+        self.sim.step_number += 1
+        action = agent(self.state())
+        self.assertIsNotNone(action)
+        rejected = self.sim.apply_action({**action, "x": -1})
+        self.assertFalse(rejected["accepted"])
+        self.sim.step_number += 1
+        self.sim.sim_time += 0.5
+        self.assertIsNotNone(agent(self.state()))  # A rejection does not consume a slot.
+        new_episode = Simulation(self.config, self.map_data, seed=23)
+        agent(init_message(new_episode))
+        self.assertIsNone(agent.pending)
+        self.assertEqual(agent.completed, set())
+        self.assertIsNone(agent(new_episode.to_dict()))
 
-    def test_training_is_reproducible_and_elitist(self):
-        kwargs = dict(population_size=4, generations=3, seeds=(3,), duration=30)
-        best, history = train(self.config, self.map_data, **kwargs)
-        self.assertEqual((best, history), train(self.config, self.map_data, **kwargs))
-        self.assertEqual([r["best"] for r in history], sorted(r["best"] for r in history))
+    def test_saved_strategy_rejects_old_wave_role(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "strategy.json"
-            best.save(path)
-            self.assertEqual(best, Strategy.load(path))
-
-    def test_fast_steps_match_normal_simulation(self):
-        a, b = (Simulation(self.config, self.map_data) for _ in range(2))
-        for sim in (a, b):
-            sim.launch_wave(["SCOUT", "TANK"])
-            sim.build_tower(10, 6)
-        for _ in range(100):
-            a.step()
-            self.assertIsNone(b.step(return_state=False))
-        self.assertEqual(a.to_dict(), b.to_dict())
-
-    def test_invalid_parameters(self):
-        for dt in (0, -1, 0.4, float("nan")):
+            self.strategy.save(path)
+            self.assertEqual(Strategy.load(path), self.strategy)
+            path.write_text('{"unit_types":["SCOUT"],"genes":[0]}', encoding="utf-8")
             with self.assertRaises(ValueError):
-                rollout(self.policy, self.config, self.map_data, 1, dt=dt)
-        with self.assertRaises(ValueError):
-            train(self.config, self.map_data, population_size=1)
-        with self.assertRaises(ValueError):
-            Strategy(self.types, (float("nan"),) * 12)
+                Strategy.load(path)
 
-    def test_complete_trace_survives_event_history_limit(self):
-        config = copy.deepcopy(self.config)
-        config["towers"] = {}
-        result = rollout(self.policy, config, self.map_data, 1, duration=200, trace=True)
-        self.assertGreater(len(result["events"]), Simulation.max_event_history)
-        kinds = Counter(e["kind"] for e in result["events"])
-        self.assertEqual(kinds["base_damaged"], result["damage"])
-        self.assertEqual(kinds["wave_started"], len(result["waves"]))
-        self.assertEqual(kinds["unit_spawned"], result["sent"] - len(result["final_state"]["wave"]["queued_units"]))
+    def test_schedule_and_training_are_reproducible(self):
+        for seed, profile in zip(range(10, 15), ("SCOUT", "TANK", "SPEED", "MIXED", "BURST")):
+            self.assertEqual(attack_schedule(self.config, seed, 40)[0], profile)
+        result = rollout(self.strategy, self.config, self.map_data, 10, duration=40, trace=True)
+        self.assertEqual(result, rollout(self.strategy, self.config, self.map_data, 10, duration=40, trace=True))
+        self.assertEqual(result["rejected"], 0)
+        state = result["final_state"]
+        self.assertEqual(result["spawned"], result["kills"] + result["damage"] + len(state["units"]))
+        kwargs = dict(population_size=4, generations=2, slots=2, seeds=(10,), duration=10)
+        best, history = train(self.config, self.map_data, **kwargs)
+        self.assertEqual((best, history), train(self.config, self.map_data, **kwargs))
+        self.assertGreaterEqual(history[-1]["best"], history[0]["best"])
 
-    def test_decoded_genes_and_report_gif(self):
-        phases = decode(self.policy, self.config, 2)
-        self.assertEqual(phases[0]["energy_threshold"], 5)
-        self.assertEqual(phases[0]["spend_fraction"], 1)
-        self.assertEqual(phases[1]["start"], 1)
-        episode = rollout(self.policy, self.config, self.map_data, 1, duration=2)
-        source = {"settings": {"duration": 2, "dt": 0.2, "test_seeds": [1]},
-            "config": self.config, "map": self.map_data,
+    def test_actual_policy_json_round_trip_through_server(self):
+        agent = GeneticAgent(self.strategy)
+        server = GameServer(policy=agent)
+        endpoint, client = socket.socketpair()
+        client.settimeout(1)
+        try:
+            server._handle_line(endpoint, json.dumps(init_message(self.sim)).encode())
+            server._handle_line(endpoint, json.dumps(self.state()).encode())
+            payload = client.recv(4096)
+            self.assertTrue(payload.endswith(b"\n"))
+            action = json.loads(payload)
+            self.assertTrue(self.sim.apply_action(action)["accepted"])
+            self.sim.step(0.5, return_state=False)
+            server._handle_line(endpoint, json.dumps(self.state()).encode())
+            second = json.loads(client.recv(4096))
+            self.assertEqual(second["action"], "build_tower")
+            self.assertNotEqual(action["command_id"], second["command_id"])
+            self.assertTrue(self.sim.apply_action(second)["accepted"])
+        finally:
+            endpoint.close()
+            client.close()
+
+    def test_tower_report_and_gif(self):
+        episode = rollout(self.strategy, self.config, self.map_data, 10, duration=2)
+        source = {"role": "tower_defense", "settings": {"duration": 2, "dt": 0.1, "test_seeds": [10]},
+            "config": self.config, "map": self.map_data, "history": [],
             "comparison": {"GENETIC": {"mean_damage": 0, "std_damage": 0, "episodes": [episode]}}}
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder)
-            report = build_report(source, self.policy, output, make_gif=True)
+            report = build_report(source, self.strategy, output, make_gif=True)
             with Image.open(output / "replay.gif") as gif:
-                self.assertGreater(gif.n_frames, 1)
                 self.assertEqual(gif.n_frames, report["gif"]["frames"])
-                gif.seek(gif.n_frames - 1)
-                self.assertEqual(gif.info["duration"], 1500)
-            for filename in ("report.md", "detailed_report.json", "waves.csv", "spawns.csv",
-                             "defense_builds.csv", "spawn_timeline.png", "unit_types.png"):
-                self.assertTrue((output / filename).is_file(), filename)
+                self.assertGreater(gif.n_frames, 1)
+            text = (output / "report.md").read_text(encoding="utf-8")
+            self.assertIn("AI broni bazy", text)
+            self.assertIn("build_tower", text)
+            self.assertTrue((output / "builds.csv").is_file())
+            self.assertTrue((output / "timeline.png").is_file())
+
+    def test_validation(self):
+        for dt in (0, -1, float("nan"), 0.4):
+            with self.assertRaises(ValueError):
+                rollout(self.strategy, self.config, self.map_data, 1, dt=dt)
+        with self.assertRaises(ValueError):
+            Strategy(("BASIC",), (0, 0, 0))
+        with self.assertRaises(ValueError):
+            train(self.config, self.map_data, slots=0)
 
 
 if __name__ == "__main__":

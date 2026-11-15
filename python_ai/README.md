@@ -1,150 +1,178 @@
-# Python AI integration
+# Python AI: obrona bazy i socket Godota
 
-## Algorytm genetyczny: strategie wysyłania gołębi
+AI **stawia wieże**. Gracz/przeciwnik wysyła gołębie. Algorytm genetyczny
+optymalizuje plan obrony: typ wieży, współrzędne i najwcześniejszy czas budowy.
+Do Godota wysyła wyłącznie `build_tower`.
 
-Z katalogu `python_ai/` uruchom trening i generowanie raportu:
+## Uruchomienie od początku
 
-```bash
-python train.py --population 24 --generations 20 --duration 90 --output training_results
+Wszystkie poniższe polecenia wykonuj z katalogu `python_ai/`.
+Potrzebny jest Python 3.14 i Pillow. Zależności projektu można przygotować
+przez `uv sync`, a polecenia poprzedzać `uv run`.
+
+1. Wytrenuj strategię lokalnie:
+
+   ```powershell
+   python train.py --population 32 --generations 30 --slots 10 --duration 90 --gif
+   ```
+
+2. Uruchom serwer z zapisanym chromosomem:
+
+   ```powershell
+   python -m src.serwer --strategy training_results/best_strategy.json --host 127.0.0.1 --port 8080
+   ```
+
+3. Otwórz `godot_game/project.godot` w Godocie i uruchom projekt (F5).
+   Godot łączy się do Pythona jako klient TCP. W grze wysyłaj fale gołębi;
+   model będzie wybierał wieże i odsyłał komendy ich budowy.
+
+Serwer loguje odebrane stany i wysłane akcje. Ctrl+C kończy jego działanie.
+Host i port Godota są ustawione w `godot_game/autoloads/NetworkManager.gd`;
+muszą odpowiadać argumentom serwera. Godot ponawia połączenie co 2 s.
+
+## Test socketu i przykład akcji
+
+Bez treningu można odebrać same obserwacje:
+
+```powershell
+python -m src.serwer
 ```
 
-Pełny raport zawiera opis wszystkich genów, parametry obu faz, ustawienia
-jednostek i obrony, wyniki każdego scenariusza, bilans jednostek, wszystkie
-fale oraz czasy i pozycje budowy wież. Opcja `--gif` zapisuje animację jednej
-pełnej rozgrywki w `replay.gif` (odtwarzanie 3×). Raport pokazuje także
-`spawn_timeline.png` i `unit_types.png`. Dodatkowe dane: `waves.csv`,
-`spawns.csv`, `defense_builds.csv`, `detailed_report.json`.
+Albo wysłać jedną ręcznie określoną akcję po pierwszym `update`:
 
-Istniejący eksperyment można rozbudować bez ponownego treningu, zachowując
-konfigurację i historię z `report.json`:
-
-```bash
-python -m src.experiment_report --input training_results/report.json --gif --replay-seed 101
+```powershell
+python -m src.serwer --build-once --tower-type BASIC --x 3 --y 3
 ```
 
-Potrzebny jest Python 3.14 i Pillow (zależności z `pyproject.toml`, można też
-uruchamiać polecenia przez `uv run`). Szybka próba:
-`python train.py --population 8 --generations 3 --duration 45`.
+Wybierz jedno polecenie serwera, następnie uruchom grę. Współrzędne wybierz
+z wolnych pól budowy (`map_grid[x][y] == 1`), przy wystarczających środkach AI.
+Nie łącz `--strategy` z `--build-once`.
 
-Chromosom opisuje dwie fazy rozgrywki (zmiana w połowie czasu): proporcje
-SCOUT/TANK/SPEED, próg energii rozpoczynający falę, część energii wydawaną
-na falę i odstęp 0–12 sekund między startami fal. Reguły uwzględniają koszty,
-regenerację, zwroty za zabite jednostki i trwającą kolejkę. Odstęp między
-pojedynczymi gołębiami wynosi 0,3 s; kolejność tasuje symulator.
+Wiadomości to obiekty JSON UTF-8, każdy zakończony `\n`. Godot wysyła
+`init` i automatyczne `update`; protokół nie wymaga zapytania o stan.
+Python odsyła na tym samym połączeniu:
 
-Selekcja turniejowa, krzyżowanie genów, mutacja i elitaryzm optymalizują
-średnie obrażenia bazy w zadanym czasie. Wcześniejsze zniszczenie bazy
-rozstrzyga remisy. Gołębie pozostające na trasie po upływie czasu nie dają
-punktów. Populacja początkowa zawiera strategie porównawcze. Przeciwnik
-stawia wieże w pobliżu trasy i reinwestuje nagrody za zabicia. Ziarno scenariusza
-zmienia rozmieszczenie i kolejność typów wież oraz tasowanie fal.
+```json
+{"action":"build_tower","command_id":"example-1","tower_type":"BASIC","x":3,"y":3}
+```
 
-Domyślnie trening używa ziaren 11, 22, 33, a test 101, 202, 303, 404, 505.
-Opcje `--train-seeds`, `--test-seeds`, `--seed`, `--mutation-rate` i `--dt`
-pozwalają zmienić eksperyment. Zbiory treningowe i testowe muszą być rozłączne.
-Porównanie obejmuje strategie jednego typu i strategię mieszaną na tych samych
-scenariuszach testowych. Test nie wpływa na wybór zwycięzcy treningu.
+Godot sprawdza koszt, typ i pole, a wynik zwraca w zdarzeniu `action_result`
+z `accepted`, `reason` i tym samym `command_id`. `None` z polityki oznacza
+oczekiwanie i brak wiadomości. Nazwy wież: BASIC, SNIPER. Siatka jest
+x-major, indeksowana od zera. Dokładny schemat: [README repozytorium](../README.md).
 
-W katalogu wyników powstają:
+## Własna polityka
 
-- `best_strategy.json` — strategia do ponownego wykorzystania.
-- `report.md`, `report.json` — porównanie, parametry, konfiguracja gry i przebieg.
-- `generations.csv`, `comparison.csv`, `replay.csv` — dane do dalszej analizy.
-- `evolution.png`, `diversity.png` — postęp uczenia i różnorodność populacji.
-- `comparison.png` — średnie obrażenia na testach z zakresem minimum–maksimum.
-- `combat.png`, `resources.png` — przebieg walki, energia i zdrowie bazy.
-- `final_state.png` — mapa końcowa pierwszego scenariusza testowego.
+`GameServer` obsługuje fragmenty wiadomości, kilka JSON-ów w jednym odczycie
+i ponowne połączenia. Przechowuje `latest_init` i `latest_observation`.
+Bez polityki jest pasywny. Gotowy agent jest callbackiem serwera:
 
-Ocena zapisanej strategii bez ponownego treningu:
+```python
+from src.genetic_ai import GeneticAgent, Strategy
+from src.serwer import GameServer
 
-```bash
-python train.py --strategy training_results/best_strategy.json --output evaluation
+policy = GeneticAgent(Strategy.load("training_results/best_strategy.json"))
+GameServer(policy=policy).serve_forever()
+```
+
+Agent otrzymuje `init` ze specyfikacją wież, a potem wybiera akcje z obserwacji.
+Kontroluje fundusze, zajętość pól i potwierdzenia. Deduplikuje obserwacje,
+resetuje plan po zmianie epizodu i nie wysyła więcej niż jednej komendy na
+0,5 s. Po 2 s bez potwierdzenia sprawdza zajętość pola; wolny cel pozwala
+ponowić slot, zajęty oznacza jego zakończenie. Godot ostatecznie zatwierdza akcję.
+
+## Chromosom i trening
+
+Każdy slot budowy to cztery geny w [0,1]: typ wieży, x, y, czas.
+Domyślnie 10 slotów daje 40 genów. Typ wybierany jest z `tower_types`,
+współrzędne skalowane do wymiarów mapy, czas do długości epizodu.
+Zajęte lub niedostępne pole zastępowane jest najbliższym wolnym polem budowy.
+Model czeka na pieniądze, ale może wykonać tańszy gotowy slot wcześniej.
+
+Fitness = `-leaks + 0.1 * kills / max(spawned, 1)`: ochrona bazy jest celem,
+a udział zabitych gołębi rozstrzyga remisy. Selekcja turniejowa, krzyżowanie
+jednostajne, mutacja Gaussa i elitaryzm wybierają najlepszy sprawdzony plan.
+Nie ma gwarancji globalnego optimum.
+
+Trening: ziarna 10–14. Test: ziarna 100–109, rozłączne z treningiem.
+Profile przeciwnika: SCOUT, TANK, SPEED, MIXED i BURST (seed modulo 5).
+Harmonogram żądanych fal jest ustalany niezależnie od chromosomu. Koszty,
+regeneracja i zwroty energii są aktywne, więc faktyczne starty fal mogą się
+różnić w zależności od przebiegu obrony. AI nie optymalizuje tych fal.
+
+Szybka próba i testy:
+
+```powershell
+python train.py --population 8 --generations 3 --duration 45 --slots 6
+python train.py --help
 python -m unittest discover -s tests -v
 ```
 
-`GeneticAgent(strategy, config["units"], duration).launch(simulation)` podejmuje
-decyzję i wysyła falę w lokalnym symulatorze. Utwórz nowego agenta dla każdego
-epizodu. Ten kontroler kieruje gołębiami lokalnie; protokół TCP Godota obsługuje
-obecnie akcje budowy wież, więc nie podłączaj go jako polityki `GameServer`.
+## Raport, GIF i PDF
 
-Algorytm znajduje najlepszą strategię spośród sprawdzonych kandydatów, bez
-gwarancji globalnego optimum. Wyniki dotyczą przybliżonego symulatora,
-wybranego czasu i modelu obrony; poprawę należy potwierdzić w Godocie.
-Wykresy działają bez okna graficznego, z użyciem Pillow.
+W `training_results/` powstają:
 
-The Python project can receive live observations from Godot or run a local
-training simulation. Both use newline-delimited UTF-8 JSON and the Godot
-protocol version 2 state shape.
+- `best_strategy.json` — chromosom obrony do socketu.
+- `report.md`, `report.json`, `detailed_report.json` — opis, konfiguracja i zdarzenia.
+- `builds.csv`, `waves.csv`, `spawns.csv` — budowy AI i działania przeciwnika.
+- `generations.csv`, `comparison.csv`, `replay.csv` — wyniki i przebieg.
+- `evolution.png`, `diversity.png`, `comparison.png` — trening i porównanie.
+- `timeline.png`, `combat.png`, `resources.png`, `base_health.png`, `final_state.png`.
 
-## Live TCP receiver
+Opcja `--gif` dodaje `replay.gif`: jedną lokalną rozgrywkę, odtwarzaną 3×.
+PDF wymaga dodatkowo ReportLab:
 
-Start the passive receiver from `python_ai/`:
-
-```bash
-uv run python -m src.serwer
+```powershell
+python -m pip install reportlab
+python train.py --gif --pdf
 ```
 
-Godot connects to `127.0.0.1:8080`. The receiver logs episode updates and keeps
-the latest `init` and `update` dictionaries in `GameServer`. A model can be
-attached with the `policy` callback; it receives each decoded message and may
-return an action dictionary or `None`:
+Ponowne wygenerowanie raportu i PDF bez treningu:
 
-```python
-from src.serwer import GameServer
-
-
-def choose_action(observation):
-    if observation["type"] != "update":
-        return None
-    return {
-        "action": "build_tower",
-        "command_id": f"{observation['episode_id']}-{observation['step']}",
-        "tower_type": "BASIC",
-        "x": 3,
-        "y": 3,
-    }
-
-
-GameServer(policy=choose_action).serve_forever()
+```powershell
+python -m src.experiment_report --input training_results/report.json --gif --replay-seed 100
+python -m src.pdf_report --input training_results/report.md
 ```
 
-`GameServer` parses multiple newline-delimited messages per TCP read, tolerates
-split messages, validates JSON objects, and supports reconnects. A quick
-one-shot connection test is available with
-`uv run python -m src.serwer --build-once --tower-type BASIC --x 3 --y 3`.
-Without a policy the receiver is passive and does not send actions.
+Ponowna ocena chromosomu (czas musi odpowiadać zapisanemu planowi):
 
-## Local training simulation
-
-Run a short simulation and save rendered frames plus JSON observations:
-
-```bash
-uv run python main.py --steps 600 --output frames
+```powershell
+python train.py --strategy training_results/best_strategy.json --duration 90 --output evaluation --gif
 ```
 
-`src/simulation.py` consumes the checked-in balance and map configuration.
-Its `Simulation` uses Godot's x-major `grid[x][y]` convention internally,
-while `src/data.py` continues to read the map JSON's row-major layout.
-`launch_wave()` charges the same unit energy costs; energy regenerates and
-killed enemies refund the configured fraction. AI tower placements spend the
-configured funds, kills pay each unit's configured reward, leaks damage the
-base and increment the global enemy-speed multiplier, and towers use the
-configured range, damage, and attack speed. Projectiles have a simple travel
-time to keep combat closer to the live game.
+Poprzedni eksperyment z optymalizacją wysyłania gołębi miał odwrócone role.
+Jego wyniki zachowano w `training_results/wave_experiment/`. Moduły
+`wave_ai.py` i `wave_report.py` zachowują możliwość analizy starego modelu;
+nie są polityką socketu ani domyślnym treningiem.
 
-The simulation exposes `to_dict()` snapshots with matching `map`, `resources`,
-`units`, `towers`, `metrics`, `events`, `features`, and `feature_vector`
-fields. The live Godot observation should remain authoritative; the local
-simulation is an approximation for faster rollouts, not a pixel-perfect
-replacement for Godot's physics and scene timing.
+## Lokalny symulator
 
-The Godot `init` message includes ordered `map.route_points` in x/y grid
-coordinates. Use these points to preserve enemy direction; the route mask alone
-does not identify the start and exit. It also provides `map.cell_size_px`,
-`map.game_tile_size_px`, and `map.grid_origin_world`; the simulator uses the
-pixel-size ratio to reproduce Godot's movement, range, and projectile speeds.
+```powershell
+python main.py --steps 600 --output frames
+```
 
-`src/simulator.py` remains as a compatibility import for older code.
-`src/visualization.py` can render either a `Simulation` or a received Godot
-snapshot, including tower ranges, kill/leak heatmaps, health and resource
-summaries.
+`src/simulation.py` korzysta z `godot_game/config/balance.json` i `map_data.json`.
+Wewnątrz używa `grid[x][y]`; plik mapy jest konwertowany z układu wierszowego.
+`Simulation.from_init(message)` odtwarza konfigurację z wiadomości Godota.
+Trasa powinna zawierać uporządkowane `map.route_points`; sama maska nie
+rozstrzyga, który koniec jest początkiem.
+
+`launch_wave()` pobiera energię, regeneracja i zwroty za zabicia działają
+według balansu. Budowanie zużywa środki AI; zabicia dają nagrody, przecieki
+uszkadzają bazę i zwiększają prędkość gołębi. Zasięg i ruch uwzględniają
+przelicznik `game_tile_size_px / cell_size_px`; prędkość pocisków jest
+przeliczana z pikseli na komórki mapy.
+
+Dotarcie gołębia do celu zwraca graczowi `ceil(koszt energii / 2)`:
+SCOUT 3, TANK 5, SPEED 4 energii, do wybranego limitu energii.
+Zdarzenie `base_damaged` zawiera `player_energy_refunded` z naliczonym zwrotem.
+
+`to_dict()` zwraca stan w kształcie protokołu v2: `map`, `resources`, `units`,
+`towers`, `metrics`, `events`, `features`, `feature_vector`. `step(return_state=False)`
+pozwala trenować bez serializacji na każdym kroku. `src/simulator.py` pozostaje
+zgodnym importem klasy. `src/visualization.py` renderuje obiekt symulacji lub
+słownik obserwacji, zasięgi wież i mapy zabójstw/przecieków.
+
+Symulator przybliża fizykę i czas scen Godota. GIF i wynik treningu pochodzą
+z symulacji lokalnej; działanie strategii w rzeczywistym meczu wymaga testu
+w uruchomionym Godocie. Zapisane wyniki dotyczą badanej mapy i profili fal.
