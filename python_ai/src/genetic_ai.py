@@ -116,32 +116,56 @@ class Defense:
 
 
 def rollout(strategy: Strategy, config: dict, map_data: dict, seed: int, *,
-            duration: float = 90, dt: float = 0.2, trace: bool = False) -> dict[str, Any]:
+            duration: float = 90, dt: float = 0.2, trace: bool = False,
+            on_frame: Callable[[dict], None] | None = None,
+            frame_interval: float = 0.5) -> dict[str, Any]:
     if not math.isfinite(duration) or not math.isfinite(dt) or duration <= 0 or not 0 < dt <= 0.3:
         raise ValueError("Duration must be positive and dt in (0, 0.3]")
+    if not math.isfinite(frame_interval) or frame_interval <= 0:
+        raise ValueError("Frame interval must be positive")
     sim = Simulation(config, map_data, seed=seed)
     agent = GeneticAgent(strategy, config["units"], duration)
     defense = Defense(sim, seed)
     defense.build(sim)
     history, waves = [], []
+    events = list(sim.events) if trace else []
+    last_event = sim._event_sequence
+    if on_frame:
+        on_frame(sim.to_dict())
+    next_frame = frame_interval
+    last_frame_step = 0
     spent = sent = 0
     for step in range(math.ceil(duration / dt)):
         if sim.episode_done:
             break
         if step % max(1, round(1 / dt)) == 0:
             defense.build(sim)
+        energy_before = sim.energy
         action = agent.launch(sim)
         if action:
             cost = sum(config["units"][name]["energy_cost"] for name in action["unit_types"])
             spent += cost
             sent += len(action["unit_types"])
             if trace:
-                waves.append({"time": sim.sim_time, "cost": cost, **action})
+                waves.append({"time": sim.sim_time, "cost": cost,
+                    "phase": 1 if sim.sim_time < duration / 2 else 2,
+                    "energy_before": energy_before, "energy_after": sim.energy,
+                    "spawn_order": list(sim.queued_units), **action})
         sim.step(min(dt, duration - sim.sim_time), return_state=False)
         if trace:
+            new_events = [event for event in sim.events
+                          if int(event["event_id"].rsplit(":", 1)[1]) > last_event]
+            events.extend(new_events)
+            last_event = sim._event_sequence
             history.append({"time": sim.sim_time, "base_hp": sim.base_health,
                 "energy": sim.energy, "kills": sim.metrics["kills_total"],
                 "leaks": sim.metrics["leaks_total"], "alive": len(sim.enemies), "towers": len(sim.towers)})
+        if on_frame and sim.sim_time + 1e-9 >= next_frame:
+            on_frame(sim.to_dict())
+            last_frame_step = sim.step_number
+            next_frame += frame_interval
+    if on_frame and last_frame_step != sim.step_number:
+        on_frame(sim.to_dict())
     damage = sim.metrics["base_damage_total"]
     # Actual damage only; earlier destruction breaks ties. No credit for units
     # still travelling at the end of the evaluation window.
@@ -150,7 +174,8 @@ def rollout(strategy: Strategy, config: dict, map_data: dict, seed: int, *,
         "kills": sim.metrics["kills_total"], "sent": sent, "energy_spent": spent,
         "damage_per_energy": damage / max(spent, 1), "elapsed": sim.sim_time}
     if trace:
-        result.update(history=history, waves=waves, final_state=sim.to_dict())
+        result.update(history=history, waves=waves, events=events,
+                      defense_type_order=defense.types, final_state=sim.to_dict())
     return result
 
 

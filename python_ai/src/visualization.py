@@ -40,10 +40,9 @@ def _draw_heat_grid(
             )
 
 
-def render_state(
+def render_state_image(
     state: Simulation | dict[str, Any],
-    filename: str | Path = "state.png",
-) -> None:
+) -> Image.Image:
     snapshot, tile_size = _snapshot(state)
     map_data = snapshot.get("map", {})
     grid = snapshot.get("map_grid", [])
@@ -179,8 +178,12 @@ def render_state(
         draw.text((panel_x, y), text, fill=color)
         y += 24
 
+    return image
+
+
+def render_state(state: Simulation | dict[str, Any], filename: str | Path = "state.png") -> None:
     Path(filename).parent.mkdir(parents=True, exist_ok=True)
-    image.save(filename)
+    render_state_image(state).save(filename)
 
 
 def write_state_to_file(

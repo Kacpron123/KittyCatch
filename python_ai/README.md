@@ -8,6 +8,20 @@ Z katalogu `python_ai/` uruchom trening i generowanie raportu:
 python train.py --population 24 --generations 20 --duration 90 --output training_results
 ```
 
+Pełny raport zawiera opis wszystkich genów, parametry obu faz, ustawienia
+jednostek i obrony, wyniki każdego scenariusza, bilans jednostek, wszystkie
+fale oraz czasy i pozycje budowy wież. Opcja `--gif` zapisuje animację jednej
+pełnej rozgrywki w `replay.gif` (odtwarzanie 3×). Raport pokazuje także
+`spawn_timeline.png` i `unit_types.png`. Dodatkowe dane: `waves.csv`,
+`spawns.csv`, `defense_builds.csv`, `detailed_report.json`.
+
+Istniejący eksperyment można rozbudować bez ponownego treningu, zachowując
+konfigurację i historię z `report.json`:
+
+```bash
+python -m src.experiment_report --input training_results/report.json --gif --replay-seed 101
+```
+
 Potrzebny jest Python 3.14 i Pillow (zależności z `pyproject.toml`, można też
 uruchamiać polecenia przez `uv run`). Szybka próba:
 `python train.py --population 8 --generations 3 --duration 45`.

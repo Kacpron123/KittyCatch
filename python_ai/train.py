@@ -3,12 +3,14 @@ import argparse
 import csv
 import json
 import statistics
+from dataclasses import asdict
 from pathlib import Path
 
 from src.data import load_game_data
 from src.genetic_ai import Strategy, baseline_strategies, rollout, train
 from src.training_plots import comparison_chart, line_chart
 from src.visualization import render_state
+from src.experiment_report import build_report
 
 
 def write_csv(path: Path, rows: list[dict]) -> None:
@@ -31,6 +33,7 @@ def main() -> None:
     parser.add_argument("--mutation-rate", type=float, default=0.15)
     parser.add_argument("--output", type=Path, default=Path("training_results"))
     parser.add_argument("--strategy", type=Path, help="Evaluate saved strategy instead of training")
+    parser.add_argument("--gif", action="store_true", help="Render one full episode as an animated GIF")
     args = parser.parse_args()
     if set(args.train_seeds) & set(args.test_seeds):
         parser.error("Training and test seeds must be disjoint")
@@ -56,7 +59,7 @@ def main() -> None:
     except ValueError as error:
         parser.error(str(error))
     report = {"settings": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-        "config": config, "map": map_data, "history": history, "comparison": comparisons,
+        "config": config, "map": map_data, "strategy": asdict(best), "history": history, "comparison": comparisons,
         "replay": replay,
         "objective": "Mean base damage; early destruction breaks ties. No global optimum guarantee."}
     (args.output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -78,19 +81,9 @@ def main() -> None:
         line_chart(args.output / filename, title, "Seconds", "Value",
             {key: [(r["time"], r[key]) for r in replay["history"]] for key in keys})
     render_state(replay["final_state"], args.output / "final_state.png")
-    lines = ["# Wyniki optymalizacji fal golebi", "",
-        "Cel: maksymalizacja srednich obrazen bazy w zadanym czasie.",
-        "Wynik dotyczy lokalnego modelu i testowanego przeciwnika; nie gwarantuje globalnego optimum.", "",
-        "| Strategia | Srednie obrazenia na testach | Odchylenie standardowe |",
-        "|---|---:|---:|"]
     for name, stats in comparisons.items():
-        lines.append(f"| {name} | {stats['mean_damage']:.2f} | {stats['std_damage']:.2f} |")
         print(f"{name}: holdout damage = {stats['mean_damage']:.2f} +/- {stats['std_damage']:.2f}")
-    lines += ["", "![Porownanie](comparison.png)", "![Walka](combat.png)",
-        "![Zasoby](resources.png)"]
-    if history:
-        lines += ["![Ewolucja](evolution.png)", "![Roznorodnosc](diversity.png)"]
-    (args.output / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    build_report(report, best, args.output, make_gif=args.gif)
     print(f"Saved strategy, reports, CSV and charts to {args.output.resolve()}")
 
 

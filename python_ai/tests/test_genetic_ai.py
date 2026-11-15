@@ -1,11 +1,14 @@
 import copy
 import tempfile
 import unittest
+from collections import Counter
 from pathlib import Path
 
 from src.data import load_game_data
 from src.genetic_ai import GeneticAgent, Strategy, baseline_strategies, rollout, train
 from src.simulation import Simulation
+from src.experiment_report import build_report, decode
+from PIL import Image
 
 
 class GeneticTests(unittest.TestCase):
@@ -75,6 +78,37 @@ class GeneticTests(unittest.TestCase):
             train(self.config, self.map_data, population_size=1)
         with self.assertRaises(ValueError):
             Strategy(self.types, (float("nan"),) * 12)
+
+    def test_complete_trace_survives_event_history_limit(self):
+        config = copy.deepcopy(self.config)
+        config["towers"] = {}
+        result = rollout(self.policy, config, self.map_data, 1, duration=200, trace=True)
+        self.assertGreater(len(result["events"]), Simulation.max_event_history)
+        kinds = Counter(e["kind"] for e in result["events"])
+        self.assertEqual(kinds["base_damaged"], result["damage"])
+        self.assertEqual(kinds["wave_started"], len(result["waves"]))
+        self.assertEqual(kinds["unit_spawned"], result["sent"] - len(result["final_state"]["wave"]["queued_units"]))
+
+    def test_decoded_genes_and_report_gif(self):
+        phases = decode(self.policy, self.config, 2)
+        self.assertEqual(phases[0]["energy_threshold"], 5)
+        self.assertEqual(phases[0]["spend_fraction"], 1)
+        self.assertEqual(phases[1]["start"], 1)
+        episode = rollout(self.policy, self.config, self.map_data, 1, duration=2)
+        source = {"settings": {"duration": 2, "dt": 0.2, "test_seeds": [1]},
+            "config": self.config, "map": self.map_data,
+            "comparison": {"GENETIC": {"mean_damage": 0, "std_damage": 0, "episodes": [episode]}}}
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder)
+            report = build_report(source, self.policy, output, make_gif=True)
+            with Image.open(output / "replay.gif") as gif:
+                self.assertGreater(gif.n_frames, 1)
+                self.assertEqual(gif.n_frames, report["gif"]["frames"])
+                gif.seek(gif.n_frames - 1)
+                self.assertEqual(gif.info["duration"], 1500)
+            for filename in ("report.md", "detailed_report.json", "waves.csv", "spawns.csv",
+                             "defense_builds.csv", "spawn_timeline.png", "unit_types.png"):
+                self.assertTrue((output / filename).is_file(), filename)
 
 
 if __name__ == "__main__":
