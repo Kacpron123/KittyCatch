@@ -108,6 +108,54 @@ python train.py --help
 python -m unittest discover -s tests -v
 ```
 
+Niezależne przebiegi pozwalają znaleźć i porównać kilka układów. Zwycięzca
+jest wybierany według treningu, przed oceną testową:
+
+```powershell
+python train.py --search-seeds 42 137 2026 --population 24 --generations 24 --duration 120 --gif --pdf
+```
+
+Każdy przebieg zapisuje `strategy_seed_N.json`; raport zawiera numerowane mapy
+`layout_seed_N.png` oraz wykres `search_runs.png`. Opcja
+`--previous-report ścieżka/report.json` dodaje różnice balansu i ponownie
+ocenia poprzedni chromosom według aktualnych reguł. HP bazy jest wspólne dla
+Godota i symulatora: `base.health` w `godot_game/config/balance.json`.
+
+## Kalibracja i testy w Godocie
+
+Fizyczny zasięg uwzględnia skalę wieży: `combat.tower_range_scale=0.4`.
+Nominalne 2 kafle BASIC dają zatem 51,2 px, a 4,5 kafla SNIPER 115,2 px.
+Model uwzględnia też promień gołębia 8 px, boczny rozrzut ±8 px oraz
+kolejność wchodzenia celów w strefę wieży. Parametry są w sekcji `combat`.
+
+Scena `res://tools/ExportTrainingState.tscn` eksportuje rzeczywistą geometrię
+i pomiar zasięgu z silnika; domyślny plik to `godot_game/.godot/training_init.json`.
+Nie wysyła wiadomości do serwera gracza. Argument `--output` przyjmuje pełną
+ścieżkę wyjściowego JSON-a.
+
+Rzeczywiste mecze bez okna graficznego, na prywatnym porcie TCP:
+
+```powershell
+python validate_godot.py --godot C:/sciezka/do/Godot.exe --seeds 300 301 302 303 304 --speed 1
+```
+
+`--speed 4` skraca test przy 240 krokach fizyki/s. Pliki wynikowe mają hash
+konfiguracji i strategii; raport dołącza tylko pasujące pomiary. Różnicę
+model–silnik pokazuje jawnie. Mecze nie wpływają na wybór chromosomu.
+
+Próba dużych zgromadzonych fal, poza treningiem:
+
+```powershell
+python stress_test.py
+python -m src.experiment_report --input training_results/report.json --gif --replay-seed 103
+python -m src.pdf_report --input training_results/report.md
+```
+
+Test przeciążeniowy ładuje energię gracza do wybranego maksimum 100/300/1000,
+wysyła gołębie co 0,1 s i skraca odstępy między żądanymi falami o połowę.
+To jawnie inny stan początkowy od standardowych 40 energii. Wyniki są
+zapisywane w `stress_test.json`, `stress_test.csv`, `stress_test.png`.
+
 ## Raport, GIF i PDF
 
 W `training_results/` powstają:

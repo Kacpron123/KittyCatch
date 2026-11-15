@@ -21,6 +21,11 @@ func _ready() -> void:
 	loop = false
 	apply_balance()
 	load_spritesheet()
+	path_spread = float(ConfigManager.config_data.get("combat", {}).get("enemy_path_spread_px", path_spread))
+	var hit_shape = $Area2D/CollisionShape2D
+	if hit_shape.shape is CircleShape2D:
+		hit_shape.shape = hit_shape.shape.duplicate()
+		hit_shape.shape.radius = float(ConfigManager.config_data.get("combat", {}).get("enemy_hit_radius_px", 8.0))
 	v_offset = randf_range(-path_spread, path_spread)
 
 func load_spritesheet() -> void:

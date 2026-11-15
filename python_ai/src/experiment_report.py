@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import hashlib
 from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
@@ -50,6 +51,107 @@ def event_timeline(path, builds, events, duration):
     image.save(path)
 
 
+def layout_image(state, path, title):
+    """Number actual placements in construction order; retain type colors."""
+    image = render_state_image(state)
+    draw = ImageDraw.Draw(image)
+    tile = max(24, min(int(state["map"]["cell_size_px"]), 96))
+    for i, tower in enumerate(state["towers"], 1):
+        x, y = (tower["x"] + 0.5) * tile, (tower["y"] + 0.5) * tile
+        color = "#2563eb" if tower["type"] == "BASIC" else "#7c3aed"
+        draw.ellipse((x-10, y-10, x+10, y+10), fill=color, outline="white", width=1)
+        draw.text((x, y), str(i), anchor="mm", fill="white", font_size=13)
+    canvas = Image.new("RGB", (image.width, image.height + 60), "#171923")
+    canvas.paste(image, (0, 60))
+    draw = ImageDraw.Draw(canvas)
+    draw.text((18, 10), title, fill="white", font_size=21)
+    draw.text((18, 36), "Numbers = construction order | Blue = BASIC | Purple = SNIPER", fill="#c5cad6", font_size=15)
+    canvas.save(path)
+
+
+def additional_sections(source, output):
+    lines, extra = [], {}
+    probe_path = output / "godot_init.json"
+    if probe_path.exists():
+        init = json.loads(probe_path.read_text(encoding="utf-8"))
+        probe = init.get("physics_probe", {})
+        lines += ["## Zgodność modelu z fizyką i mapą Godota", "",
+            "Wyeksportowano stan początkowy z rzeczywistej sceny level1 w osobnym procesie bez grafiki. "
+            "Proces nie sterował meczem gracza. Rozmiar mapy, pola budowy, kierunek trasy i reguły porównano z modelem.", ""]
+        lines += table(["Parametr rzeczywistego silnika", "Wartość"], [
+            ["Rozmiar mapy", f"{init['map_size']['width']} × {init['map_size']['height']}"],
+            ["HP startowe bazy", init["base"]["health"]],
+            ["Skala sceny wieży", probe.get("tower_scene_scale", "brak")],
+            ["Fizyczny zasięg BASIC [px]", probe.get("basic_range_world_px", "brak")],
+            ["Długość trasy [px]", probe.get("route_length_world_px", "brak")]])
+        lines += ["Kluczowa korekta: w scenie Tower skala 0,4 obejmowała również strefę ataku, "
+            "podczas gdy poprzedni model zakładał pełny zasięg. Teraz efektywny zasięg = "
+            "zasięg z balansu × 64 px × 0,4. BASIC ma więc 51,2 px (1,6 komórki), "
+            "a SNIPER 115,2 px (3,6 komórki). Uwzględniono dodatkowo promień kolizji gołębia "
+            "8 px, rozrzut względem trasy ±8 px i kolejność wejścia jednostek w zasięg wieży. "
+            "Zachowano dotychczasowy fizyczny zasięg wież w Godocie — korekta dotyczy odtworzenia go w modelu.", ""]
+        extra["godot_geometry"] = init
+    current_hash = source.get("config_sha256")
+    strategy_hash = hashlib.sha256(json.dumps(source.get("strategy", {}), sort_keys=True).encode()).hexdigest()
+    validations = []
+    for path in sorted(output.glob("godot_validation*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if data.get("config_sha256") == current_hash and data.get("strategy_sha256") == strategy_hash:
+            validations.append(data)
+    if validations:
+        lines += ["## Walidacja obrony w prawdziwym silniku Godota", "",
+            "Po treningu uruchomiono niezależne mecze headless. Godot połączył się z prawdziwym "
+            "GameServer na prywatnym porcie TCP; model odsyłał build_tower i otrzymywał action_result. "
+            "Fale miały ten sam plan i skład co w porównaniu lokalnym. Rzeczywiste momenty wysyłek "
+            "i budowy pozostawały zależne od ekonomii i przebiegu walki. Wyniki te nie wybierały chromosomu.", ""]
+        rows = []
+        for run in validations:
+            for case in run["scenarios"]:
+                rows.append([f"{run['time_scale']:g}×", case["seed"], case["profile"], case["local_damage"],
+                    case["godot_damage"], case["godot_kills"], case["godot_base_hp"], f"{case['accepted']} / {case['rejected']}"])
+        lines += table(["Tempo", "Seed", "Profil", "Model: obrażenia", "Godot: obrażenia", "Godot: zabicia", "HP", "Budowy OK / odrz."], rows)
+        errors = [abs(case["godot_damage"] - case["local_damage"]) for run in validations for case in run["scenarios"]]
+        lines += [f"Średni błąd bezwzględny liczby obrażeń model–silnik: **{sum(errors)/len(errors):.2f} HP** "
+            f"na {len(errors)} przebiegach. Zmienność pozostaje możliwa przez rozrzut pozycji, "
+            "kolizje, czas pocisków, krok silnika i opóźnienia komunikacji. "
+            "Test 4× używał 240 kroków fizyki/s i limitu 240 klatek/s. "
+            "Nie jest to gwarancja takiego samego wyniku na dowolnym komputerze i dowolnej fali gracza.", ""]
+        first = validations[0]["scenarios"][0]
+        layout_image(first["actual"]["final_state"], output / "godot_layout.png", "Actual Godot match: final tower layout")
+        lines += ["![Wieże z rzeczywistego meczu Godota](godot_layout.png)", ""]
+        for run in validations:
+            for case in run["scenarios"]:
+                if case.get("animation"):
+                    lines += [f"[Animacja obserwacji rzeczywistego meczu Godota, seed {case['seed']}]({case['animation']}). "
+                        "Rysunek odtwarza pozycje i statystyki odebrane z silnika, a nie prognozę symulatora; "
+                        "odtwarzanie 3×.", ""]
+        extra["godot_validation"] = validations
+    stress_path = output / "stress_test.json"
+    if stress_path.exists():
+        stress = json.loads(stress_path.read_text(encoding="utf-8"))
+        if stress.get("config_sha256") == current_hash:
+            lines += ["## Próby przeciążeniowe: limity energii 100 / 300 / 1000", "",
+                "Osobna seria poza treningiem i wyborem modelu. Każdy profil SCOUT/TANK/SPEED/MIXED/BURST "
+                "zbadano dla limitów hard=100, medium=300, easy=1000. "
+                "W tym teście gracz zaczynał z pełnym zbiornikiem energii, zamiast standardowych 40. "
+                "Budżet żądanej fali był równy limitowi; gołębie wysyłano co 0,1 s, "
+                "a planowane odstępy między falami skrócono o połowę. To test dużej zgromadzonej fali, "
+                "a nie bezpośrednie porównanie normalnego początku gry.", ""]
+            groups = {}
+            for row in stress["rows"]:
+                groups.setdefault((row["strategy"], row["difficulty"], row["capacity"]), []).append(row)
+            lines += table(["Układ", "Poziom", "Limit", "Śr. obrażenia", "Min–maks", "Zniszczenia bazy / próby"], [
+                [name, difficulty, capacity, f"{sum(r['damage'] for r in rows)/len(rows):.1f}",
+                 f"{min(r['damage'] for r in rows)}–{max(r['damage'] for r in rows)}",
+                 f"{sum(r['base_hp'] == 0 for r in rows)} / {len(rows)}"]
+                for (name, difficulty, capacity), rows in groups.items()])
+            lines += ["![Odporność na duże fale](stress_test.png)", "",
+                "Większy limit daje graczowi możliwość zgromadzenia silniejszej fali. "
+                "Wynik dotyczy automatycznych profili i nie dowodzi, że gracz nie znajdzie skuteczniejszego ataku.", ""]
+            extra["stress_test"] = stress
+    return lines, extra
+
+
 def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=False, replay_seed=None):
     if source.get("role") != "tower_defense":
         raise ValueError("Expected a tower-defense report; old wave experiments are archived separately")
@@ -82,6 +184,32 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
         frames[0].save(output / "replay.gif", save_all=True, append_images=frames[1:], duration=delays,
                        loop=0, disposal=2, optimize=False)
     state = replay["final_state"]
+    layouts = []
+    for run in source.get("search_runs", []):
+        data = run["strategy"]
+        candidate = Strategy(tuple(data["tower_types"]), tuple(data["genes"]), data["duration"])
+        episode = rollout(candidate, config, map_data, seeds[0], duration=duration, dt=dt, trace=True)
+        filename = f"layout_seed_{run['seed']}.png"
+        layout_image(episode["final_state"], output / filename, f"Run {run['seed']} | scenario {seeds[0]} | base {episode['base_hp']} HP")
+        builds_for_layout = [e for e in episode["events"] if e["kind"] == "action_result" and e["accepted"]]
+        layouts.append({"seed": run["seed"], "image": filename, "training_fitness": run["training_fitness"],
+                        "strategy": data, "episode": episode, "builds": builds_for_layout})
+    if layouts:
+        tiles = []
+        for layout in layouts:
+            with Image.open(output / layout["image"]) as tile:
+                tile = tile.crop((0, 0, state["map"]["width"] * max(24, min(int(state["map"]["cell_size_px"]), 96)), tile.height))
+                tile.thumbnail((650, 400), Image.Resampling.LANCZOS)
+                tiles.append(tile.copy())
+        atlas = Image.new("RGB", (sum(t.width for t in tiles), max(t.height for t in tiles)), "#171923")
+        offset = 0
+        for tile in tiles:
+            atlas.paste(tile, (offset, 0))
+            offset += tile.width
+        atlas.save(output / "layouts_overview.png")
+        line_chart(output / "search_runs.png", "Independent genetic runs: best fitness", "Generation", "Fitness", {
+            f"Seed {run['seed']}": [(r["generation"], r["best"]) for r in run["history"]]
+            for run in source["search_runs"]})
     plans = strategy.decode(state["map"]["width"], state["map"]["height"])
     tower_rows = []
     for episode in episodes + ([] if replay_seed in seeds else [replay]):
@@ -125,18 +253,37 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
             {"Diversity": [(r["generation"], r["diversity"]) for r in source["history"]]})
     detail = {"role": "tower_defense", "strategy": asdict(strategy), "decoded_build_plan": plans,
         "config": config, "map": map_data, "settings": settings, "test_episodes": episodes,
-        "replay": replay, "gif": {"file": "replay.gif", "frames": len(frames), "playback_speed": 3} if frames else None}
+        "replay": replay, "layouts": layouts, "config_sha256": source.get("config_sha256"),
+        "gif": {"file": "replay.gif", "frames": len(frames), "playback_speed": 3} if frames else None}
     (output / "detailed_report.json").write_text(json.dumps(detail, indent=2), encoding="utf-8")
 
-    lines = ["# Raport AI: optymalizacja stawiania wież", "", "## Role i cel eksperymentu", "",
+    lines = ["# Sprawozdanie: nowe układy obrony KittyCatch", "", "## Role i cel eksperymentu", "",
         "**AI broni bazy: wybiera typ, miejsce i czas budowy wież. Gołębie wysyła przeciwnik.** "
         "Jedyną akcją modelu jest `build_tower`, zgodna z istniejącym socketem Godota. "
-        "Wcześniejszy eksperyment optymalizujący fale miał odwrócone role i nie stanowi wyniku tego treningu.", "",
+        f"Badanie dotyczy limitu energii {config['economy']['player']['max_energy']}, "
+        f"bazy {config.get('base', {}).get('health', 1000)} HP i epizodów długości {duration:g} s.", "",
         "Cel: minimalizacja obrażeń otrzymanych przez bazę. Fitness = −liczba przecieków + "
         "0,1 × zabite / max(faktycznie wysłane gołębie, 1). Wyższy fitness jest lepszy; "
         "na wykresie porównawczym niższe obrażenia są lepsze. Premia za zabicia rozstrzyga remisy. "
         "Podstawowym kryterium selekcji jest średnia fitness po ziarnach treningowych.", "",
-        "## Wyniki na oddzielnych scenariuszach testowych", ""]
+    ]
+    if source.get("previous_config"):
+        old = source["previous_config"]
+        lines += ["## Zmiany zasad uwzględnione w eksperymencie", ""]
+        changes = [["HP bazy", old.get("base", {}).get("health", 1000), config.get("base", {}).get("health", 1000)],
+            ["Zwrot energii za zabicie", f"{old['economy']['player']['kill_energy_refund_fraction'] * 100:g}%",
+             f"{config['economy']['player']['kill_energy_refund_fraction'] * 100:g}%"]]
+        for name, unit in config["units"].items():
+            for key, label in (("hp", "HP"), ("speed", "prędkość"), ("energy_cost", "koszt")):
+                changes.append([f"{name}: {label}", old["units"].get(name, {}).get(key, "brak"), unit[key]])
+        lines += table(["Parametr", "Poprzednia konfiguracja", "Aktualna konfiguracja"], changes)
+        lines += ["Mniejsze HP bazy zapisano w balance.json i podłączono do startu poziomu. "
+            "Wcześniej zmienna base_health=200 była nadpisywana przez start_new_game(1000). "
+            "Teraz Godot i symulator zaczynają z 200 HP. Przyspieszonym typem zapisanym w pliku jest SPEED; "
+            "SCOUT ma nadal prędkość 1,0 kafla/s.", "",
+            "Dotarcie do celu zwraca ceil(koszt/2): SCOUT 3, TANK 5, SPEED 4. "
+            "Zwrot za zabicie wynosi obecnie pełny koszt jednostki; oba zwroty respektują limit energii.", ""]
+    lines += ["## Wyniki na oddzielnych scenariuszach testowych", ""]
     lines += table(["Strategia obrony", "Śr. obrażenia ↓", "Odchylenie", "Min–maks", "Śr. zabicia", "Śr. wieże"], [
         [name, f"{stats['mean_damage']:.2f}", f"{stats['std_damage']:.2f}",
          f"{min(e['damage'] for e in stats['episodes'])}–{max(e['damage'] for e in stats['episodes'])}",
@@ -146,18 +293,53 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
     lines += ["GENETIC: zwycięzca treningu. BASIC / SNIPER / MIXED: heurystyki pokrycia trasy, "
         "odpowiednio jeden typ lub typy naprzemienne; wszystkie mają tyle samo slotów budowy. "
         "NO_DEFENSE: kontrola bez wież. Chromosom nie jest wybierany na podstawie testu.", "",
-        "![Porównanie obrażeń otrzymanych](comparison.png)", "", "## Parametry treningu", ""]
+        "GA_z: zwycięzca niezależnego przebiegu o ziarnie z. PREVIOUS: poprzedni chromosom ponownie "
+        "oceniony na aktualnym balansie i tych samych scenariuszach, z zachowaniem jego zapisanych czasów budowy. "
+        "Nie mieszamy historycznych wyników uzyskanych przy innych zasadach z aktualnym testem.", "",
+        "![Porównanie obrażeń otrzymanych](comparison.png)", ""]
+    alternatives = {name: stats["mean_damage"] for name, stats in source["comparison"].items()
+                    if name not in ("GENETIC", "NO_DEFENSE")}
+    if alternatives and source["comparison"]["GENETIC"]["mean_damage"] > min(alternatives.values()):
+        best_alternative = min(alternatives, key=alternatives.get)
+        lines += [f"Na tym zbiorze testowym {best_alternative} ma niższą średnią liczbę obrażeń "
+            f"({alternatives[best_alternative]:.2f}) niż wybrany GENETIC "
+            f"({source['comparison']['GENETIC']['mean_damage']:.2f}). "
+            "Nie zmieniamy po teście wyboru modelu. Różnice na skończonej liczbie ziaren "
+            "należy odróżniać od gwarantowanej przewagi strategii.", ""]
+    if layouts:
+        lines += ["## Nowe warianty rozmieszczenia wież", "",
+            "Każdy wariant pochodzi z osobnego treningu. Główny zwycięzca został wybrany według fitness treningowego, "
+            "przed testem. Przy równych wynikach pomiędzy przebiegami wygrywa pierwszy. "
+            "Poniższe mapy pokazują faktycznie zbudowane wieże na tym samym pierwszym scenariuszu testowym; "
+            "niewykonane sloty pozostają tylko w chromosomie. Numery oznaczają kolejność budowy.", ""]
+        lines += table(["Ziarno treningu", "Fitness treningowy", "Wybrany model", "Plik strategii"], [
+            [r["seed"], f"{r['training_fitness']:.6f}", "TAK" if r["seed"] == settings.get("seed") else "—",
+             f"strategy_seed_{r['seed']}.json"] for r in layouts])
+        for layout in layouts:
+            lines += [f"### Układ z przebiegu {layout['seed']}", "", f"![Układ wież {layout['seed']}]({layout['image']})", ""]
+            lines += table(["Nr", "Start [s]", "Slot", "Typ", "x", "y"], [
+                [i, f"{e['elapsed_seconds']:.1f}", int(e["command_id"].rsplit("-s", 1)[1]),
+                 e["tower_type"], e["grid_x"], e["grid_y"]] for i, e in enumerate(layout["builds"], 1)])
+        lines += ["![Przebiegi niezależnego treningu](search_runs.png)", ""]
+    lines += ["## Parametry treningu", ""]
     lines += table(["Parametr", "Wartość"], [[key, settings.get(key, "brak danych")]
-        for key in ("population", "generations", "slots", "duration", "dt", "seed", "mutation_rate", "train_seeds", "test_seeds")])
+        for key in ("population", "generations", "slots", "duration", "dt", "seed", "search_seeds", "mutation_rate", "train_seeds", "test_seeds")])
     lines += ["Selekcja turniejowa: 3 osobniki. Krzyżowanie: niezależnie każdy gen od jednego z rodziców (50/50). "
         "Mutacja: szum Gaussa σ=0,15 i obcięcie do [0,1]. Elitaryzm: max(1, populacja // 8). "
-        "Populacja początkowa zawiera heurystyki pokrycia trasy. Losowe plany zaczynają od czasów w pierwszych 20% epizodu.", ""]
+        "Populacja początkowa zawiera heurystyki pokrycia trasy. Losowe plany zaczynają od czasów w pierwszych 20% epizodu. "
+        "Remisy fitness wewnątrz populacji rozstrzyga losowanie kontrolowane ziarnem przebiegu, "
+        "co pozwala zachować różne równie skuteczne układy.", "",
+        f"Identyfikator konfiguracji SHA-256: {source.get('config_sha256', 'brak')}.", ""]
     if not source["history"]:
         lines += ["Ten raport jest ponowną oceną zapisanej strategii; nie uruchomiono nowego treningu. "
                   "Parametry populacji i pokoleń w argumentach nie opisują pochodzenia zapisanego chromosomu.", ""]
     else:
         lines += [f"Fitness najlepszego osobnika: {source['history'][0]['best']:.4f} → {source['history'][-1]['best']:.4f}.", "",
                   "![Ewolucja](evolution.png)", "", "![Różnorodność](diversity.png)", ""]
+        if abs(source["history"][0]["best"] - source["history"][-1]["best"]) < 1e-12:
+            lines += ["Najlepszy wynik był osiągalny już w populacji początkowej. "
+                "Trening nie poprawił tego kryterium; zbadał alternatywne układy i ich odporność na zmianę scenariusza. "
+                "Różne chromosomy z takim samym fitness nie są dowodem przewagi nad heurystyką.", ""]
     lines += ["## Chromosom i jego interpretacja", "",
         f"Chromosom ma **{len(strategy.genes)} genów**, czyli **{len(strategy.genes) // 4} slotów budowy**. "
         "Każda czwórka to `[typ, x, y, najwcześniejszy_czas]`. Kolejność typów: "
@@ -187,14 +369,15 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
         [e["seed"], e["profile"], e["damage"], e["base_hp"], e["kills"], e["spawned"],
          e["tower_count"], e["money_spent"], e["rejected"]] for e in episodes])
     lines += ["## Balans gry i ekonomia", ""]
-    lines += table(["Wieża", "Koszt", "Zasięg [kafle]", "Obrażenia", "Ataki/s"], [
-        [name, t["cost"], t["range"], t["damage"], t["attack_speed"]] for name, t in config["towers"].items()])
+    lines += table(["Wieża", "Koszt", "Zasięg w JSON", "Zasięg fizyczny [kafle]", "Obrażenia", "Ataki/s"], [
+        [name, t["cost"], t["range"], f"{t['range'] * config.get('combat', {}).get('tower_range_scale', 1):.2f}",
+         t["damage"], t["attack_speed"]] for name, t in config["towers"].items()])
     lines += table(["Gołąb", "HP", "Szybkość [kafle/s]", "Koszt energii", "Nagroda dla AI"], [
         [name, u["hp"], u["speed"], u["energy_cost"], u["ai_reward"]] for name, u in config["units"].items()])
     lines += ["```json", json.dumps({k: config[k] for k in ("economy", "combat", "base", "map") if k in config}, indent=2),
         "```", "", f"Zdrowie startowe bazy: {config.get('base', {}).get('health', 1000)}. "
         "Każdy przeciek zadaje 1 obrażenie. Wieże finansowane są z funduszy AI oraz nagród za zabicia. "
-        "Energia służy wyłącznie przeciwnikowi do wysyłania gołębi.", "",
+        "Energia służy wyłącznie przeciwnikowi do wysyłania gołębi. Zwrot przy dotarciu do celu: ceil(koszt/2).", "",
         "## Jedna rozgrywka zwycięskiej obrony", "",
         f"Seed **{replay_seed}**, profil **{replay['profile']}**. Wybrany jawnie lub jako pierwszy z listy testowej; "
         f"nie wybieramy najlepszego testu do animacji. Czas: {replay['elapsed']:.1f} s. "
@@ -221,7 +404,12 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
         [n, spawned[n], state["metrics"]["kills_by_type"][n], state["metrics"]["leaks_by_type"][n], alive[n], queued[n]] for n in names])
     lines += ["![Budowy AI i wysyłki przeciwnika](timeline.png)", "", "![Walka](combat.png)", "",
         "![Środki obu stron](resources.png)", "", "![Zdrowie chronionej bazy](base_health.png)", "",
-        "![Końcowe rozmieszczenie wież](final_state.png)", "", "## Uruchomienie AI przez socket Godota", "",
+        "![Końcowe rozmieszczenie wież](final_state.png)", ""]
+    extra_lines, extra_data = additional_sections(source, output)
+    lines += extra_lines
+    detail.update(extra_data)
+    (output / "detailed_report.json").write_text(json.dumps(detail, indent=2), encoding="utf-8")
+    lines += ["## Uruchomienie AI przez socket Godota", "",
         "Z katalogu python_ai uruchom serwer, następnie otwórz godot_game/project.godot i uruchom grę (F6/F5 zgodnie z projektem):", "",
         "```powershell", f"python -m src.serwer --strategy {output.as_posix()}/best_strategy.json --host 127.0.0.1 --port 8080", "```", "",
         "Godot jest klientem TCP. Python odbiera init i update, odsyła JSON UTF-8 zakończony znakiem nowej linii. "

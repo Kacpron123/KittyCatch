@@ -2,6 +2,7 @@
 import argparse
 import json
 import statistics
+import hashlib
 from dataclasses import asdict
 from pathlib import Path
 
@@ -18,6 +19,8 @@ def main():
     parser.add_argument("--duration", type=float, default=90)
     parser.add_argument("--dt", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--search-seeds", type=int, nargs="+", help="Independent genetic runs; choose the winner using training fitness")
+    parser.add_argument("--previous-report", type=Path, help="Compare saved balance and reevaluate its strategy under current rules")
     parser.add_argument("--train-seeds", type=int, nargs="+", default=[10, 11, 12, 13, 14])
     parser.add_argument("--test-seeds", type=int, nargs="+", default=list(range(100, 110)))
     parser.add_argument("--mutation-rate", type=float, default=0.15)
@@ -35,20 +38,41 @@ def main():
             parser.error("PDF export requires reportlab: python -m pip install reportlab")
     config, map_data = load_game_data()
     settings = {"duration": args.duration, "dt": args.dt}
+    search_runs = []
+    previous = json.loads(args.previous_report.read_text(encoding="utf-8")) if args.previous_report else None
     try:
         if args.strategy:
             best, history = Strategy.load(args.strategy), []
             if best.duration != args.duration:
                 parser.error("--duration must match the saved strategy duration")
         else:
-            best, history = train(config, map_data, population_size=args.population,
-                generations=args.generations, seeds=tuple(args.train_seeds), seed=args.seed,
-                slots=args.slots, mutation_rate=args.mutation_rate, **settings,
-                progress=lambda row: print(f"Generation {row['generation'] + 1}/{args.generations}: "
-                    f"best={row['best']:.4f}, mean={row['mean']:.4f}", flush=True))
+            for search_seed in dict.fromkeys(args.search_seeds or [args.seed]):
+                candidate, candidate_history = train(config, map_data, population_size=args.population,
+                    generations=args.generations, seeds=tuple(args.train_seeds), seed=search_seed,
+                    slots=args.slots, mutation_rate=args.mutation_rate, **settings,
+                    progress=lambda row, run_seed=search_seed: print(f"Run {run_seed} | generation {row['generation'] + 1}/{args.generations}: "
+                        f"best={row['best']:.4f}, mean={row['mean']:.4f}", flush=True))
+                search_runs.append({"seed": search_seed, "strategy": asdict(candidate),
+                    "history": candidate_history, "training_fitness": candidate_history[-1]["best"]})
+                # Save every completed run so a long experiment remains reviewable.
+                args.output.mkdir(parents=True, exist_ok=True)
+                candidate.save(args.output / f"strategy_seed_{search_seed}.json")
+                (args.output / "search_runs.json").write_text(json.dumps(search_runs, indent=2), encoding="utf-8")
+            winner = max(search_runs, key=lambda run: run["training_fitness"])
+            data = winner["strategy"]
+            best = Strategy(tuple(data["tower_types"]), tuple(data["genes"]), data["duration"])
+            history = winner["history"]
+            args.seed = winner["seed"]
         comparisons = {}
         policies = {"GENETIC": best, **baseline_strategies(config, map_data, len(best.genes) // 4, args.duration),
                     "NO_DEFENSE": None}
+        for run in search_runs:
+            data = run["strategy"]
+            if run["seed"] != args.seed:
+                policies[f"GA_{run['seed']}"] = Strategy(tuple(data["tower_types"]), tuple(data["genes"]), data["duration"])
+        if previous and previous.get("role") == "tower_defense":
+            data = previous["strategy"]
+            policies["PREVIOUS"] = Strategy(tuple(data["tower_types"]), tuple(data["genes"]), data["duration"])
         for name, policy in policies.items():
             episodes = [rollout(policy, config, map_data, seed, **settings) for seed in args.test_seeds]
             comparisons[name] = {"mean_damage": statistics.mean(e["damage"] for e in episodes),
@@ -63,6 +87,8 @@ def main():
         "settings": {**{k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
                      "slots": len(best.genes) // 4},
         "history": history, "comparison": comparisons, "training_scores": training_scores,
+        "search_runs": search_runs, "previous_config": previous.get("config") if previous else None,
+        "config_sha256": hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest(),
         "objective": "Minimize base damage received; kill fraction breaks ties. AI only builds towers."}
     (args.output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     build_report(report, best, args.output, make_gif=args.gif)

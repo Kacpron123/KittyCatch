@@ -4,6 +4,7 @@ import socket
 import tempfile
 import unittest
 from pathlib import Path
+from dataclasses import asdict
 
 from PIL import Image
 
@@ -113,6 +114,8 @@ class TowerGeneticTests(unittest.TestCase):
         episode = rollout(self.strategy, self.config, self.map_data, 10, duration=2)
         source = {"role": "tower_defense", "settings": {"duration": 2, "dt": 0.1, "test_seeds": [10]},
             "config": self.config, "map": self.map_data, "history": [],
+            "search_runs": [{"seed": 42, "strategy": asdict(self.strategy), "training_fitness": episode["fitness"],
+                "history": [{"generation": 0, "best": episode["fitness"]}]}],
             "comparison": {"GENETIC": {"mean_damage": 0, "std_damage": 0, "episodes": [episode]}}}
         with tempfile.TemporaryDirectory() as folder:
             output = Path(folder)
@@ -125,6 +128,9 @@ class TowerGeneticTests(unittest.TestCase):
             self.assertIn("build_tower", text)
             self.assertTrue((output / "builds.csv").is_file())
             self.assertTrue((output / "timeline.png").is_file())
+            self.assertTrue((output / "layout_seed_42.png").is_file())
+            self.assertTrue((output / "layouts_overview.png").is_file())
+            self.assertEqual(report["layouts"][0]["episode"]["damage"], episode["damage"])
 
     def test_validation(self):
         for dt in (0, -1, float("nan"), 0.4):

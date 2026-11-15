@@ -141,7 +141,8 @@ def init_message(sim: Simulation) -> dict:
             "unit_types": sim.unit_types}
 
 
-def attack_schedule(config: dict, seed: int, duration: float) -> tuple[str, list[dict]]:
+def attack_schedule(config: dict, seed: int, duration: float, *, wave_budget: int | None = None,
+                    interval_scale: float = 1.0) -> tuple[str, list[dict]]:
     """Fixed requested waves independent of the chromosome; same energy rules."""
     names = list(config["units"])
     if not names or any(int(config["units"][n]["energy_cost"]) <= 0 for n in names):
@@ -149,10 +150,12 @@ def attack_schedule(config: dict, seed: int, duration: float) -> tuple[str, list
     profiles = names + ["MIXED", "BURST"]
     profile = profiles[seed % len(profiles)]
     rng = random.Random(seed)
+    if not math.isfinite(interval_scale) or interval_scale <= 0 or (wave_budget is not None and wave_budget <= 0):
+        raise ValueError("Attack budget and interval scale must be positive")
     waves, now = [], 0.0
     maximum = int(config["economy"]["player"].get("max_energy", 100))
     while now < duration:
-        units, budget = [], min(maximum, 35 if profile != "BURST" else 65)
+        units, budget = [], min(maximum, wave_budget if wave_budget is not None else (35 if profile != "BURST" else 65))
         while True:
             choices = [n for n in names if (profile in ("MIXED", "BURST") or n == profile)
                        and config["units"][n]["energy_cost"] <= budget]
@@ -164,22 +167,25 @@ def attack_schedule(config: dict, seed: int, duration: float) -> tuple[str, list
         if units:
             waves.append({"scheduled_time": now, "unit_types": units,
                           "cost": sum(config["units"][n]["energy_cost"] for n in units)})
-        now += rng.uniform(11, 16) if profile != "BURST" else rng.uniform(20, 26)
+        now += (rng.uniform(11, 16) if profile != "BURST" else rng.uniform(20, 26)) * interval_scale
     return profile, waves
 
 
 def rollout(strategy: Strategy | None, config: dict, map_data: dict, seed: int, *,
             duration: float = 90, dt: float = 0.1, trace: bool = False,
-            on_frame: Callable[[dict], None] | None = None, frame_interval: float = 0.5) -> dict:
+            on_frame: Callable[[dict], None] | None = None, frame_interval: float = 0.5,
+            attack_options: dict | None = None, spawn_interval: float = 0.3) -> dict:
     if not math.isfinite(duration) or duration <= 0 or not math.isfinite(dt) or not 0 < dt <= 0.3:
         raise ValueError("Need positive duration and dt in (0, 0.3]")
     if not math.isfinite(frame_interval) or frame_interval <= 0:
         raise ValueError("Frame interval must be positive")
+    if not math.isfinite(spawn_interval) or spawn_interval <= 0:
+        raise ValueError("Spawn interval must be positive")
     sim = Simulation(config, map_data, seed=seed)
     agent = GeneticAgent(strategy) if strategy else None
     if agent:
         agent(init_message(sim))
-    profile, schedule = attack_schedule(config, seed, duration)
+    profile, schedule = attack_schedule(config, seed, duration, **(attack_options or {}))
     index = sent = spawned = 0
     next_decision = next_frame = 0.0
     events, waves, history = [], [], []
@@ -193,7 +199,7 @@ def rollout(strategy: Strategy | None, config: dict, map_data: dict, seed: int, 
             break
         if index < len(schedule) and sim.sim_time + 1e-9 >= schedule[index]["scheduled_time"] and not sim.wave_active:
             wave = schedule[index]
-            if sim.launch_wave(wave["unit_types"]):
+            if sim.launch_wave(wave["unit_types"], spawn_interval=spawn_interval):
                 sent += len(wave["unit_types"])
                 if trace:
                     waves.append({**wave, "time": sim.sim_time, "spawn_order": list(sim.queued_units)})
@@ -241,7 +247,7 @@ def baseline_strategies(config: dict, map_data: dict, slots: int = 10, duration:
         genes, used, coverage = [], set(), [0] * len(samples)
         for i in range(slots):
             name = names[i % len(names)] if label == "MIXED" else label
-            radius = config["towers"][name]["range"] * sim.cells_per_game_tile
+            radius = config["towers"][name]["range"] * sim.cells_per_game_tile * sim.tower_range_scale + sim.enemy_hit_radius_cells
             available = [c for c in cells if c not in used] or cells
             cell = max(available, key=lambda c: sum(1 / (1 + coverage[j]) for j, p in enumerate(samples)
                                                    if math.dist(c, p) <= radius))
@@ -272,7 +278,9 @@ def train(config: dict, map_data: dict, *, population_size: int = 32, generation
         for policy in population:
             if policy not in cache:
                 cache[policy] = statistics.mean(rollout(policy, config, map_data, s, duration=duration, dt=dt)["fitness"] for s in seeds)
-        ranked = sorted(population, key=lambda p: cache[p], reverse=True)
+        # Seeded tie breaking explores equally good layouts instead of always
+        # returning the first heuristic when several candidates reach zero leaks.
+        ranked = sorted(population, key=lambda p: (cache[p], rng.random()), reverse=True)
         scores = [cache[p] for p in population]
         row = {"generation": generation, "best": max(scores), "mean": statistics.mean(scores),
             "worst": min(scores), "std": statistics.pstdev(scores), "diversity": len(set(population)) / population_size}

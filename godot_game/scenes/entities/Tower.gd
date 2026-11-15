@@ -54,7 +54,10 @@ func apply_balance() -> void:
 	var tile_size = GameManager.tile_size
 	var range_tiles = float(data.get("range", 3.0))
 	
-	range_radius_px = range_tiles * tile_size
+	# Keep the current physical reach (the tower scene is scaled to 0.4),
+	# while exposing that reach explicitly in the shared training balance.
+	var range_scale = float(ConfigManager.config_data.get("combat", {}).get("tower_range_scale", 0.4))
+	range_radius_px = range_tiles * tile_size * range_scale / maxf(absf(global_scale.x), 0.0001)
 
 	if range_collision and range_collision.shape is CircleShape2D:
 		range_collision.shape = range_collision.shape.duplicate()

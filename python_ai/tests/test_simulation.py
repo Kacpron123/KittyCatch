@@ -24,7 +24,7 @@ class SimulationTests(unittest.TestCase):
         self.assertEqual(self.simulation.energy, 25)
         enemy = self.simulation.spawn_enemy("SCOUT")
         self.simulation._damage_enemy(enemy, 100)
-        self.assertEqual(self.simulation.energy, 28)
+        self.assertEqual(self.simulation.energy, 30)
         self.assertEqual(self.simulation.ai_money, 155)
         self.assertEqual(self.simulation.metrics["kills_total"], 1)
 
@@ -56,7 +56,45 @@ class SimulationTests(unittest.TestCase):
         for _ in range(30):
             self.simulation._leak(self.simulation.spawn_enemy("SCOUT"))
         self.assertAlmostEqual(self.simulation.enemy_speed_multiplier, 1.1)
-        self.assertEqual(self.simulation.base_health, 969)
+        self.assertEqual(self.simulation.base_health, 169)
+
+    def test_rebalanced_base_and_units_are_loaded_for_training(self) -> None:
+        self.assertEqual(self.simulation.base_health, 200)
+        self.assertEqual(self.simulation.base_max_health, 200)
+        self.assertEqual(self.simulation.spawn_enemy("TANK").hp, 30)
+        self.assertEqual(self.simulation.spawn_enemy("SPEED").base_speed, 1.4)
+
+    def test_scaled_tower_reach_includes_enemy_collision_radius(self) -> None:
+        sim = self.simulation
+        self.assertTrue(sim.build_tower(10, 6, "BASIC"))
+        self.assertAlmostEqual(sim.towers[0].range_cells, 1.6)
+        enemy = sim.spawn_enemy("SCOUT")
+        enemy.x, enemy.y = 12, 6
+        sim._fire_towers(0.1)
+        self.assertFalse(sim.projectiles)
+        enemy.x = 11.8  # Center is outside 1.6; the 0.25-cell hit area overlaps.
+        sim._fire_towers(0.1)
+        self.assertEqual(len(sim.projectiles), 1)
+
+    def test_tower_preserves_order_of_entering_its_range(self) -> None:
+        sim = self.simulation
+        sim.build_tower(10, 6)
+        first_spawned = sim.spawn_enemy("TANK")
+        first_spawned.x, first_spawned.y = 15, 6
+        first_inside = sim.spawn_enemy("SCOUT")
+        first_inside.x, first_inside.y = 10.5, 6
+        sim._fire_towers(0.1)
+        first_spawned.x = 10.4
+        sim._fire_towers(1)
+        self.assertIs(sim.projectiles[-1].target, first_inside)
+
+    def test_enemy_spread_is_perpendicular_to_route_and_bounded(self) -> None:
+        sim = self.simulation
+        enemy = sim.spawn_enemy("SCOUT")
+        self.assertLessEqual(abs(enemy.path_offset), 0.25)
+        enemy.path_offset = 0.25
+        sim._move_enemies(0.1)
+        self.assertAlmostEqual(enemy.y, 7.25)
 
     def test_reaching_goal_refunds_half_cost_rounded_up_once(self) -> None:
         for unit_type, expected_refund in (("SCOUT", 3), ("TANK", 5), ("SPEED", 4)):

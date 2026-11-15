@@ -20,7 +20,7 @@ signal energy_changed(current_energy: int, max_energy: int)
 signal ai_money_changed(new_money: int)
 signal game_over()
 
-var max_health: int = 1000
+var max_health: int = 200
 var base_health: int = 200
 
 var max_energy: int = 40
@@ -45,7 +45,7 @@ func _process(delta: float) -> void:
 		add_energy(1)
 
 func start_new_game(
-	starting_health: int = 1000,
+	starting_health: int = 200,
 	starting_energy: int = 40,
 	starting_ai_money: int = 150,
 	energy_capacity: int = 100,

@@ -1,4 +1,7 @@
 {
+  "base": {
+	"health": 200
+  },
   "economy": {
 	"player": {
 	  "starting_energy": 40,
@@ -19,6 +22,9 @@
 	}
   },
   "combat": {
+	"tower_range_scale": 0.4,
+	"enemy_hit_radius_px": 8.0,
+	"enemy_path_spread_px": 8.0,
 	"enemy_speed_bonus_per_base_hit": 0.005,
 	"max_enemy_speed_bonus": 0.1
   },

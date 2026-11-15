@@ -44,7 +44,7 @@ func _ready():
 	var ai_economy: Dictionary = economy.get("ai", {})
 	var combat: Dictionary = ConfigManager.config_data.get("combat", {})
 	GameManager.start_new_game(
-		1000,
+		int(ConfigManager.config_data.get("base", {}).get("health", 200)),
 		int(player_economy.get("starting_energy", 40)),
 		int(ai_economy.get("starting_money", 150)),
 		GameManager.get_player_energy_limit(),
@@ -200,6 +200,7 @@ func _build_game_state() -> Dictionary:
 			"y": grid_position.y,
 			"damage": tower.damage,
 			"range": float(tower_data.get("range", 0.0)),
+			"range_cells": tower.range_radius_px * absf(tower.global_scale.x) / map_manager.get_cell_size_px(),
 			"attack_speed": float(tower_data.get("attack_speed", 0.0)),
 			"target_progress": target_progress
 		})

@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 from collections import deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 
@@ -102,6 +102,7 @@ class Enemy:
     progress: float = 0.0
     distance: float = 0.0
     alive: bool = True
+    path_offset: float = 0.0
 
 
 @dataclass
@@ -114,6 +115,7 @@ class Tower:
     range_tiles: float
     attack_speed: float
     cooldown: float = 0.0
+    targets: list[Enemy] = field(default_factory=list)
 
 
 @dataclass
@@ -196,6 +198,9 @@ class Simulation:
         player_economy = economy.get("player", {})
         ai_economy = economy.get("ai", {})
         combat = config_data.get("combat", {})
+        self.tower_range_scale = float(combat.get("tower_range_scale", 1.0))
+        self.enemy_hit_radius_cells = float(combat.get("enemy_hit_radius_px", 0)) / self.cell_size_px
+        self.enemy_path_spread_cells = float(combat.get("enemy_path_spread_px", 0)) / self.cell_size_px
         self.initial_ai_money = int(ai_economy.get("starting_money", 150))
         self.ai_money = self.initial_ai_money
         self.energy = int(player_economy.get("starting_energy", 40))
@@ -231,6 +236,7 @@ class Simulation:
         self.episode_id = f"simulation-{seed}"
         self.episode_done = False
         self._rng = random.Random(seed)
+        self._spread_rng = random.Random(seed + 104729)
         self._event_sequence = 0
         self.events: deque[dict[str, Any]] = deque(maxlen=self.max_event_history)
         self.kill_grid = self._empty_grid()
@@ -363,6 +369,7 @@ class Simulation:
             base_speed=float(stats["speed"]),
             energy_cost=int(stats.get("energy_cost", 0)),
             ai_reward=int(stats.get("ai_reward", 0)),
+            path_offset=self._spread_rng.uniform(-self.enemy_path_spread_cells, self.enemy_path_spread_cells),
         )
         self.enemies.append(enemy)
         self._record_event(
@@ -417,7 +424,7 @@ class Simulation:
                         y=y,
                         tower_type=tower_type,
                         damage=int(stats["damage"]),
-                        range_cells=float(stats["range"]) * self.cells_per_game_tile,
+                        range_cells=float(stats["range"]) * self.cells_per_game_tile * self.tower_range_scale,
                         range_tiles=float(stats["range"]),
                         attack_speed=max(float(stats.get("attack_speed", 1.0)), 0.01),
                     )
@@ -456,24 +463,32 @@ class Simulation:
                 self.enemies.remove(enemy)
             else:
                 enemy.x, enemy.y = self._point_at(enemy.distance)
+                before = self._point_at(max(0, enemy.distance - 0.001))
+                after = self._point_at(min(self.route_length, enemy.distance + 0.001))
+                dx, dy = after[0] - before[0], after[1] - before[1]
+                length = math.hypot(dx, dy)
+                if length:
+                    enemy.x -= dy / length * enemy.path_offset
+                    enemy.y += dx / length * enemy.path_offset
                 enemy.progress = enemy.distance / self.route_length
 
     def _fire_towers(self, dt: float) -> None:
         for tower in self.towers:
+            inside = [enemy for enemy in self.enemies if enemy.alive and
+                      math.hypot(tower.x - enemy.x, tower.y - enemy.y) <= tower.range_cells + self.enemy_hit_radius_cells]
+            inside_ids = {id(enemy) for enemy in inside}
+            tower.targets = [enemy for enemy in tower.targets if id(enemy) in inside_ids]
+            queued_ids = {id(enemy) for enemy in tower.targets}
+            tower.targets.extend(enemy for enemy in inside if id(enemy) not in queued_ids)
+            if not tower.targets:
+                # Godot stops the timer when no target is present and fires
+                # immediately when a new target enters the area.
+                tower.cooldown = 0.0
+                continue
             tower.cooldown = max(0.0, tower.cooldown - dt)
             if tower.cooldown > 0.0:
                 continue
-            target = next(
-                (
-                    enemy
-                    for enemy in self.enemies
-                    if enemy.alive
-                    and math.hypot(tower.x - enemy.x, tower.y - enemy.y) <= tower.range_cells
-                ),
-                None,
-            )
-            if target is None:
-                continue
+            target = tower.targets[0]
             tower.cooldown = 1.0 / tower.attack_speed
             self.projectiles.append(Projectile(float(tower.x), float(tower.y), target, tower.damage))
 

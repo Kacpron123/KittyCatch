@@ -12,6 +12,10 @@ Starting energy remains 40; regeneration and refunds fill up to the selected
 limit. Values are configured in `difficulty` in `godot_game/config/balance.json`.
 When a pigeon reaches the base, the player regains half its energy cost,
 rounded up, capped by the selected energy limit (SCOUT: 3, TANK: 5, SPEED: 4).
+Base health is read from `base.health` in the same balance file. Physical tower
+reach includes `combat.tower_range_scale`; this keeps Python's training model
+consistent with the scaled Godot tower scene. See the Python README for
+independent training runs, headless engine validation and stress tests.
 
 ## Run the AI and Godot
 
