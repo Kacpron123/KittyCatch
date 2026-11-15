@@ -549,11 +549,11 @@ class Simulation:
         if 0 <= x < self.width and 0 <= y < self.height:
             grid[x][y] += 1
 
-    def step(self, dt: float = 0.1, ai_action: dict[str, Any] | None = None) -> dict[str, Any]:
+    def step(self, dt: float = 0.1, ai_action: dict[str, Any] | None = None, *, return_state: bool = True) -> dict[str, Any] | None:
         if dt <= 0:
             raise ValueError("dt must be positive")
         if self.episode_done:
-            return self.to_dict()
+            return self.to_dict() if return_state else None
 
         if ai_action is not None:
             self.apply_action(ai_action)
@@ -580,7 +580,7 @@ class Simulation:
         self._move_enemies(dt)
         self._fire_towers(dt)
         self._move_projectiles(dt)
-        return self.to_dict()
+        return self.to_dict() if return_state else None
 
     def _tower_counts(self) -> dict[str, int]:
         counts = {name: 0 for name in self.tower_types}

@@ -32,3 +32,4 @@ Thumbs.db
 
 frame_*.png
 state_*.json
+training_results/

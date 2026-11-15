@@ -1,5 +1,63 @@
 # Python AI integration
 
+## Algorytm genetyczny: strategie wysyłania gołębi
+
+Z katalogu `python_ai/` uruchom trening i generowanie raportu:
+
+```bash
+python train.py --population 24 --generations 20 --duration 90 --output training_results
+```
+
+Potrzebny jest Python 3.14 i Pillow (zależności z `pyproject.toml`, można też
+uruchamiać polecenia przez `uv run`). Szybka próba:
+`python train.py --population 8 --generations 3 --duration 45`.
+
+Chromosom opisuje dwie fazy rozgrywki (zmiana w połowie czasu): proporcje
+SCOUT/TANK/SPEED, próg energii rozpoczynający falę, część energii wydawaną
+na falę i odstęp 0–12 sekund między startami fal. Reguły uwzględniają koszty,
+regenerację, zwroty za zabite jednostki i trwającą kolejkę. Odstęp między
+pojedynczymi gołębiami wynosi 0,3 s; kolejność tasuje symulator.
+
+Selekcja turniejowa, krzyżowanie genów, mutacja i elitaryzm optymalizują
+średnie obrażenia bazy w zadanym czasie. Wcześniejsze zniszczenie bazy
+rozstrzyga remisy. Gołębie pozostające na trasie po upływie czasu nie dają
+punktów. Populacja początkowa zawiera strategie porównawcze. Przeciwnik
+stawia wieże w pobliżu trasy i reinwestuje nagrody za zabicia. Ziarno scenariusza
+zmienia rozmieszczenie i kolejność typów wież oraz tasowanie fal.
+
+Domyślnie trening używa ziaren 11, 22, 33, a test 101, 202, 303, 404, 505.
+Opcje `--train-seeds`, `--test-seeds`, `--seed`, `--mutation-rate` i `--dt`
+pozwalają zmienić eksperyment. Zbiory treningowe i testowe muszą być rozłączne.
+Porównanie obejmuje strategie jednego typu i strategię mieszaną na tych samych
+scenariuszach testowych. Test nie wpływa na wybór zwycięzcy treningu.
+
+W katalogu wyników powstają:
+
+- `best_strategy.json` — strategia do ponownego wykorzystania.
+- `report.md`, `report.json` — porównanie, parametry, konfiguracja gry i przebieg.
+- `generations.csv`, `comparison.csv`, `replay.csv` — dane do dalszej analizy.
+- `evolution.png`, `diversity.png` — postęp uczenia i różnorodność populacji.
+- `comparison.png` — średnie obrażenia na testach z zakresem minimum–maksimum.
+- `combat.png`, `resources.png` — przebieg walki, energia i zdrowie bazy.
+- `final_state.png` — mapa końcowa pierwszego scenariusza testowego.
+
+Ocena zapisanej strategii bez ponownego treningu:
+
+```bash
+python train.py --strategy training_results/best_strategy.json --output evaluation
+python -m unittest discover -s tests -v
+```
+
+`GeneticAgent(strategy, config["units"], duration).launch(simulation)` podejmuje
+decyzję i wysyła falę w lokalnym symulatorze. Utwórz nowego agenta dla każdego
+epizodu. Ten kontroler kieruje gołębiami lokalnie; protokół TCP Godota obsługuje
+obecnie akcje budowy wież, więc nie podłączaj go jako polityki `GameServer`.
+
+Algorytm znajduje najlepszą strategię spośród sprawdzonych kandydatów, bez
+gwarancji globalnego optimum. Wyniki dotyczą przybliżonego symulatora,
+wybranego czasu i modelu obrony; poprawę należy potwierdzić w Godocie.
+Wykresy działają bez okna graficznego, z użyciem Pillow.
+
 The Python project can receive live observations from Godot or run a local
 training simulation. Both use newline-delimited UTF-8 JSON and the Godot
 protocol version 2 state shape.
