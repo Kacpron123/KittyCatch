@@ -21,22 +21,22 @@ class SimulationTests(unittest.TestCase):
 
     def test_wave_cost_and_energy_refund_follow_balance_config(self) -> None:
         self.assertTrue(self.simulation.launch_wave(["SCOUT", "TANK"], 0.3))
-        self.assertEqual(self.simulation.energy, 25)
+        self.assertEqual(self.simulation.energy, 31)
         enemy = self.simulation.spawn_enemy("SCOUT")
         self.simulation._damage_enemy(enemy, 100)
-        self.assertEqual(self.simulation.energy, 30)
-        self.assertEqual(self.simulation.ai_money, 155)
+        self.assertEqual(self.simulation.energy, 35)
+        self.assertEqual(self.simulation.ai_money, 154)
         self.assertEqual(self.simulation.metrics["kills_total"], 1)
 
     def test_tower_action_spends_funds_and_rejects_repeated_cell(self) -> None:
         self.assertTrue(self.simulation.build_tower(10, 6, "BASIC"))
-        self.assertEqual(self.simulation.ai_money, 100)
+        self.assertEqual(self.simulation.ai_money, 80)
         rejected = self.simulation.apply_action(
             {"action": "build_tower", "tower_type": "BASIC", "x": 10, "y": 6}
         )
         self.assertFalse(rejected["accepted"])
         self.assertEqual(rejected["reason"], "cell_not_buildable")
-        self.assertEqual(self.simulation.ai_money, 100)
+        self.assertEqual(self.simulation.ai_money, 80)
 
     def test_tower_combat_kills_units_and_awards_configured_money(self) -> None:
         self.assertTrue(self.simulation.build_tower(10, 6, "BASIC"))
@@ -46,8 +46,8 @@ class SimulationTests(unittest.TestCase):
             if self.simulation.metrics["kills_total"]:
                 break
         self.assertEqual(self.simulation.metrics["kills_total"], 1)
-        self.assertEqual(self.simulation.ai_money, 105)
-        self.assertGreaterEqual(self.simulation.energy, 43)
+        self.assertEqual(self.simulation.ai_money, 84)
+        self.assertGreaterEqual(self.simulation.energy, 44)
 
     def test_base_leak_accelerates_enemies_with_configured_cap(self) -> None:
         enemy = self.simulation.spawn_enemy("SCOUT")
@@ -61,7 +61,7 @@ class SimulationTests(unittest.TestCase):
     def test_rebalanced_base_and_units_are_loaded_for_training(self) -> None:
         self.assertEqual(self.simulation.base_health, 200)
         self.assertEqual(self.simulation.base_max_health, 200)
-        self.assertEqual(self.simulation.spawn_enemy("TANK").hp, 30)
+        self.assertEqual(self.simulation.spawn_enemy("TANK").hp, 60)
         self.assertEqual(self.simulation.spawn_enemy("SPEED").base_speed, 1.4)
 
     def test_scaled_tower_reach_includes_enemy_collision_radius(self) -> None:
@@ -97,7 +97,7 @@ class SimulationTests(unittest.TestCase):
         self.assertAlmostEqual(enemy.y, 7.25)
 
     def test_reaching_goal_refunds_half_cost_rounded_up_once(self) -> None:
-        for unit_type, expected_refund in (("SCOUT", 3), ("TANK", 5), ("SPEED", 4)):
+        for unit_type, expected_refund in (("SCOUT", 2), ("TANK", 3), ("SPEED", 4)):
             with self.subTest(unit_type=unit_type):
                 config = copy.deepcopy(self.config)
                 config["economy"]["player"]["energy_regen_per_second"] = 0

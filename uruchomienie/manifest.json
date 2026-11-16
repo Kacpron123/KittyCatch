@@ -1,0 +1,11 @@
+{
+  "config_sha256": "0f863932a7a358c6dd450f3e5370c1a970d6cbfa7f7a3b2f7c0c44fb49379775",
+  "source_experiment": "python_ai\\training_results\\rebalance_2026-11-16_0f863932",
+  "sha256": {
+    "sprawozdanie.pdf": "79cf1b9e9d2f690867c6f2b60160d21b03a636c437dc120c1fe5b7c0d6487be6",
+    "prezentacja.pdf": "6b23e8066fadb01b94d6fd4047cbe941e2fc77fa69926ca332b68278adb0ea9e",
+    "modele\\best_strategy.json": "c0819f3e3326670c5b75bc681f719ac0381f934846160555fb1e581ca2634621",
+    "dane\\config\\balance.json": "d30c85e2a9564b17d6446dcfec8ff7f0562979188ca0cf1aa755c8530d699827"
+  },
+  "team_number": 4
+}

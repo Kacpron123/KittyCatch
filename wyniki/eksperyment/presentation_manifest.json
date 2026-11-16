@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-16",
+  "slides": [
+    {
+      "slide": 1,
+      "title": "KittyCatch",
+      "section": "Algorytm genetyczny w tower defense",
+      "speaker": "Kacper",
+      "notes": "Około 20 s. Przedstaw projekt 4: AI broni bazy, człowiek wysyła gołębie. Powiedz, że Aleksander odpowiadał za genetykę i AI, a Kacper za grę. Zapowiedz pokaz działającej komunikacji z Godotem i porównanie z losową oraz regułową obroną."
+    },
+    {
+      "slide": 2,
+      "title": "Problem: obrona przy ograniczonym budżecie",
+      "section": "01 / Gra",
+      "speaker": "Kacper",
+      "notes": "Około 35 s. Wyjaśnij odwrócone role tower defense: gracz komponuje fale, AI kupuje wieże. Wieże kosztują, zabicia przynoszą środki na kolejne zakupy. Podkreśl, że maksymalnie 10 slotów nie oznacza 10 wież od początku ani stałego całkowitego wydatku 150."
+    },
+    {
+      "slide": 3,
+      "title": "Jedna polityka: w symulatorze i w Godocie",
+      "section": "02 / Architektura",
+      "speaker": "Kacper",
+      "notes": "Około 40 s. Pokaż granicę między silnikiem a Pythonem. Godot jest klientem TCP, Python serwerem. Godot wysyła init/update, AI odsyła build_tower, a silnik odpowiada action_result. Symulator przyspiesza trening; osobno sprawdziliśmy wybraną politykę w rzeczywistym silniku. Przekaż głos Aleksandrowi."
+    },
+    {
+      "slide": 4,
+      "title": "Chromosom to plan 10 zakupów",
+      "section": "03 / Reprezentacja",
+      "speaker": "Aleksander",
+      "notes": "Około 40 s. Wyjaśnij 40 genów: dla każdego slotu typ, x, y i najwcześniejszy czas. Geny mają wartości 0–1, potem są dyskretyzowane. Pole nielegalne lub zajęte naprawiamy do najbliższego wolnego. Faktyczny zakup czeka na środki i potwierdzenie poprzedniej akcji."
+    },
+    {
+      "slide": 5,
+      "title": "Jak oceniamy jakość obrony?",
+      "section": "04 / Funkcja celu",
+      "speaker": "Aleksander",
+      "notes": "Około 35 s. L oznacza przecieki, K zabicia, N faktycznie wysłane jednostki. Ocena jest średnią po pięciu scenariuszach. Premia jest mała: ochrona bazy ma pierwszeństwo. Wartość 0,1 jest górną granicą tego fitness w danym eksperymencie, nie dowodem globalnego optimum."
+    },
+    {
+      "slide": 6,
+      "title": "Cykl algorytmu genetycznego",
+      "section": "05 / Metoda",
+      "speaker": "Aleksander",
+      "notes": "Około 45 s. Przejdź przez cykl od lewej. Populacja początkowa zawiera też trzy heurystyki. Turniej wybiera rodziców, każdy gen pochodzi z A lub B, mutacja dodaje szum Gaussa. 4 elity są kopiowane bez zmian. Epoka 1 ocenia inicjalizację, więc 30 epok oznacza 29 reprodukcji."
+    },
+    {
+      "slide": 7,
+      "title": "Skąd biorą się geny potomka?",
+      "section": "06 / Krzyżowanie i mutacja",
+      "speaker": "Aleksander",
+      "notes": "Około 40 s. To wycinek rzeczywistego zapisu: osiem z czterdziestu genów. Pasek kolorów wskazuje rodzica, a czerwone pole mutację. Nie przypisuj całej poprawy pojedynczej mutacji — krzyżowanie i mutacja zadziałały razem. O osobnym wpływie operatorów opowiedz przy ablacji."
+    },
+    {
+      "slide": 8,
+      "title": "Jak przeprowadziliśmy eksperyment?",
+      "section": "07 / Protokół",
+      "speaker": "Aleksander",
+      "notes": "Około 40 s. Wymień pięć profili: SCOUT, TANK, SPEED, MIXED, BURST. Trening i test mają rozłączne ziarna. Losowy baseline to 20 planów razy 20 tych samych scenariuszy. Późniejsze krzywe testowe służą analizie, nie selekcji. Wspólne harmonogramy nie gwarantują identycznych rzeczywistych fal, bo zabicia zwracają graczowi energię."
+    },
+    {
+      "slide": 9,
+      "title": "Rozwój jakości całej populacji",
+      "section": "08 / Rozwój uczenia",
+      "speaker": "Aleksander",
+      "notes": "Około 45 s. Wykres obejmuje wszystkie osobniki wybranego treningu. Wyższy fitness jest lepszy. Najlepszy pokazuje elitę, średnia i mediana typową jakość, najgorszy słabych potomków. Pasmo kwartylowe obejmuje środkowe 50% populacji, a nie przedział ufności. Średnia może spadać po mutacjach mimo zachowania najlepszego osobnika. Heurystyki były w inicjalizacji, więc nie przypisujemy całego wyniku losowemu startowi."
+    },
+    {
+      "slide": 10,
+      "title": "Plateau fitness nie zatrzymuje ewolucji",
+      "section": "09 / Chromosomy",
+      "speaker": "Aleksander",
+      "notes": "Około 35 s. Każdy wiersz to epoka, każda kolumna to gen najlepszego osobnika. Zmiany po plateau są możliwe, bo różne plany mają tę samą ocenę. Genotyp ciągły nie jest tym samym co odkodowane zachowanie. Pełne wartości i wszystkie populacje są zapisane w JSONL i CSV."
+    },
+    {
+      "slide": 11,
+      "title": "GA wygrywa z losowaniem, reguły są mocne",
+      "section": "10 / Wyniki porównawcze",
+      "speaker": "Aleksander",
+      "notes": "Około 50 s. To średnie obrażenia na testach — mniej znaczy lepiej. GENETIC: 8.60; BASIC: 11.80; RANDOM: 46.1225; poprzedni model: 12.10. Nie twierdź, że GA przewyższa każdą heurystykę. W kontroli RANDOM odchylenie zawiera zmienność planów i scenariuszy. GA zatrzymuje średnio 83.5% jednostek."
+    },
+    {
+      "slide": 12,
+      "title": "Ablacje: osobno wyłączamy operatory",
+      "section": "11 / Co wnosi metoda?",
+      "speaker": "Aleksander",
+      "notes": "Około 45 s. Każda grupa ma trzy ziarna, populację 12 i 12 epok. FULL jest kontrolą z tym samym mniejszym budżetem niż główny trening. Porównuj zmierzone krzywe; mała próba nie dowodzi uniwersalnej zbędności operatora. Bez elitaryzmu najlepszy wynik ostatniej populacji bywa gorszy od wcześniej osiągniętego."
+    },
+    {
+      "slide": 13,
+      "title": "Sprawdziliśmy obronę w prawdziwym Godocie",
+      "section": "12 / Silnik i fizyka",
+      "speaker": "Kacper",
+      "notes": "Około 45 s. Wyjaśnij, dlaczego osobna walidacja ma znaczenie. Scena wieży ma skalę 0,4, która obejmuje też zasięg — dawny model zawyżał go. Skalibrowano zasięg, promień kolizji, rozrzut i kolejność wejścia celów. Wykonano 6 przebiegów; łączne obrażenia: 64. To skończony zestaw ataków. TANK pozostaje trudnym przeciwnikiem; wszystkie komendy budowy były legalne."
+    },
+    {
+      "slide": 14,
+      "title": "Demonstracja: gracz atakuje, AI buduje",
+      "section": "13 / Pokaz działania",
+      "speaker": "Kacper",
+      "notes": "Około 90 s. W paczce oddania przygotuj terminal w kod/python_ai i uruchom: python -m src.serwer --strategy ../../modele/best_strategy.json. W Godocie F5, wybierz mapę i poziom trudności, wyślij falę mieszaną. Pokaż automatyczne budowanie, spadek środków i nagrody. Jeśli pokaz na żywo zawiedzie, odtwórz prezentacja_demo.gif. GIF pochodzi z obserwacji realnego meczu Godota; obraz mapy jest renderowany z odebranych stanów. W PPTX animacja jest osadzona, a w PDF widoczny jest nieruchomy kadr."
+    },
+    {
+      "slide": 15,
+      "title": "Wnioski i dalszy rozwój",
+      "section": "14 / Podsumowanie",
+      "speaker": "Aleksander i Kacper",
+      "notes": "Około 40 s. Aleksander: reprezentacja planu i jakość oceny są równie ważne jak same operatory. Kacper: integracja działa w rzeczywistym silniku. Uczciwie podaj ograniczenia — jedna mapa, skończone profile, przybliżona fizyka. Kolejne kroki to więcej map, inteligentniejszy atakujący i ocena większej liczby przypadków w Godocie. Zakończ prezentację; slajdy 16–18 są do pytań."
+    },
+    {
+      "slide": 16,
+      "title": "Zapas: duże fale i limity energii",
+      "section": "Pytania / materiał dodatkowy",
+      "speaker": "Aleksander",
+      "notes": "Pokaż tylko w razie pytania o poziomy trudności. Hard/medium/easy to limity 100/300/1000. W próbach przeciążeniowych energia startowała na maksimum, a nie na normalnych 40; jednostki wysyłano co 0,1 s, a odstępy żądań fal skrócono o połowę. To model zgromadzonej dużej fali, a nie zwykłego początku gry. Nie twierdź, że te testy dowodzą idealnego balansu."
+    },
+    {
+      "slide": 17,
+      "title": "Zapas: najważniejsze pytania o GA",
+      "section": "Pytania / odpowiedzi",
+      "speaker": "Aleksander",
+      "notes": "Możliwe pytania: dlaczego GA, a nie losowanie? Bo zachowuje i rekombinuje ocenione rozwiązania. Dlaczego BASIC czasem lepszy? Heurystyka jest dostosowana do jednej mapy, różnice na małej próbie są małe; nie obiecujemy globalnego optimum. Jak legalność? Najbliższe wolne pole i weryfikacja funduszy w aktualnym stanie. Dlaczego nie zmieniono modelu po teście? Wybór odbył się na treningu, a test nie powinien służyć ponownemu strojeniu."
+    },
+    {
+      "slide": 18,
+      "title": "Zapas: jak odtworzyć rozwiązanie",
+      "section": "Materiały i uruchomienie",
+      "speaker": "Kacper i Aleksander",
+      "notes": "Powiedz, że gotowy model pozwala uruchomić przykład bez treningu. W repo jest instrukcja, konfiguracja, migawki danych i kod. Sprawozdanie ma 9 stron; obszerny raport jest osobnym załącznikiem. Wyniki i wykresy dołączono do paczki zaliczeniowej w katalogu wyniki. Nie wysyłaj samego linku do repo bez wymaganych PDF-ów i modelu."
+    }
+  ],
+  "text_overflow": []
+}

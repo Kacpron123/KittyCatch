@@ -1,0 +1,41 @@
+{
+  "config_sha256": "0f863932a7a358c6dd450f3e5370c1a970d6cbfa7f7a3b2f7c0c44fb49379775",
+  "training_seeds": [
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "test_seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "profiles_by_seed_modulo_5": [
+    "SCOUT",
+    "TANK",
+    "SPEED",
+    "MIXED",
+    "BURST"
+  ],
+  "duration_seconds": 120.0,
+  "dt_seconds": 0.1
+}

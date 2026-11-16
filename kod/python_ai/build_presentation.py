@@ -128,7 +128,7 @@ class Deck:
         note_lines=["# KittyCatch — notatki do prezentacji", "", "Termin: poniedziałek 16 listopada 2026, godz. 8:00.",
             "Plan: około 10–12 minut z demonstracją; slajdy 16–18 są zapasowe i ukryte w domyślnym pokazie PowerPoint.",
             "Kacper: gra, architektura i demonstracja. Aleksander: genetyka, eksperymenty i wyniki.",
-            "Przed wystąpieniem uzupełnić numer zespołu w project_metadata.json, jeśli prowadzący go wymaga.", ""]
+        "Przed oddaniem uzupełnić wymagany numer zespołu w project_metadata.json.", ""]
         for n in self.notes:
             note_lines += [f"## {n['slide']}. {n['title']}","",f"**Mówi: {n['speaker']}**", "",n["notes"],""]
         (self.folder/"prezentacja_notatki.md").write_text("\n".join(note_lines),encoding="utf-8")
@@ -221,8 +221,9 @@ def build(source_path):
     deck.new("Cykl algorytmu genetycznego", "05 / Metoda", "Aleksander",
         "Około 45 s. Przejdź przez cykl od lewej. Populacja początkowa zawiera też trzy heurystyki. "
         "Turniej wybiera rodziców, każdy gen pochodzi z A lub B, mutacja dodaje szum Gaussa. "
-        "Trzy elity są kopiowane bez zmian. Epoka 1 ocenia inicjalizację, więc 24 epoki oznaczają 23 reprodukcje.")
-    stages=[("24","osobniki"),("5","scenariuszy"),("3","w turnieju"),("50:50","krzyżowanie"),("15%","mutacja genu"),("3","elity")]
+        f"{max(1,source['settings']['population']//8)} elity są kopiowane bez zmian. Epoka 1 ocenia inicjalizację, "
+        f"więc {source['settings']['generations']} epok oznacza {source['settings']['generations']-1} reprodukcji.")
+    stages=[(str(source['settings']['population']),"osobniki"),("5","scenariuszy"),("3","w turnieju"),("50:50","krzyżowanie"),("15%","mutacja genu"),(str(max(1,source['settings']['population']//8)),"elity")]
     for i,(value,label) in enumerate(stages):
         x=.65+i*2.04
         deck.rect(x,2.35,1.76,1.85)
@@ -230,7 +231,7 @@ def build(source_path):
         deck.text(label,x+.14,3.55,1.48,.5,size=14,bold=True)
         if i<5:deck.text("→",x+1.78,3.02,.25,.5,size=21,color=MUTED)
     deck.rect(.75,4.85,11.85,1.05,fill=NAVY)
-    deck.text("24 epoki oceny · 3 niezależne przebiegi: 42, 137, 2026",1.0,5.12,11.3,.55,size=24,color=WHITE,bold=True)
+    deck.text(f"{source['settings']['generations']} epok oceny · 3 niezależne przebiegi: 42, 137, 2026",1.0,5.12,11.3,.55,size=24,color=WHITE,bold=True)
     deck.text("Mutacja: N(0; 0,15²), obcięcie do [0,1]. Cache oszczędza ponowne oceny tych samych genotypów.",.85,6.3,11.7,.6,size=17,color=MUTED)
 
     deck.new("Skąd biorą się geny potomka?", "06 / Krzyżowanie i mutacja", "Aleksander",
@@ -263,36 +264,37 @@ def build(source_path):
         "Trening i test mają rozłączne ziarna. Losowy baseline to 20 planów razy 20 tych samych scenariuszy. "
         "Późniejsze krzywe testowe służą analizie, nie selekcji. Wspólne harmonogramy nie gwarantują "
         "identycznych rzeczywistych fal, bo zabicia zwracają graczowi energię.")
-    deck.card(.75,1.95,3.7,"3 × 24 × 24","przebiegi × epoki × populacja")
+    deck.card(.75,1.95,3.7,f"3 × {source['settings']['generations']} × {source['settings']['population']}","przebiegi × epoki × populacja")
     deck.card(4.82,1.95,3.7,"5 / 20","scenariusze treningowe / testowe")
     deck.card(8.9,1.95,3.7,"400","prób losowych rozmieszczeń")
     deck.bullets(["Jedna mapa, baza 200 HP, epizod 120 s.","Te same zasady budżetu i reinwestowania nagród.",
         "Porównanie: RANDOM, BASIC, SNIPER, MIXED i poprzedni model.","Testy i ablacje nie zmieniały wybranego modelu."],.9,3.65,11.6,size=21,gap=.65)
 
-    deck.new("Najlepsze plany poprawiają się wcześnie", "08 / Rozwój uczenia", "Aleksander",
-        "Około 40 s. Pokaż trzy linie, a nie tylko wynik końcowy. Dla ziaren 42, 137 i 2026 "
-        "najlepszy zaobserwowany wynik osiągnięto odpowiednio w epokach 5, 3 i 4. "
-        "Populacja dalej eksplorowała neutralne plany. Heurystyki były w inicjalizacji, więc nie mów, "
-        "że cały efekt uzyskano od zupełnie losowego startu.")
-    deck.picture(folder/"best_runs.png",.5,1.85,9.15,4.95)
+    deck.new("Rozwój jakości całej populacji", "08 / Rozwój uczenia", "Aleksander",
+        "Około 45 s. Wykres obejmuje wszystkie osobniki wybranego treningu. Wyższy fitness jest lepszy. "
+        "Najlepszy pokazuje elitę, średnia i mediana typową jakość, najgorszy słabych potomków. "
+        "Pasmo kwartylowe obejmuje środkowe 50% populacji, a nie przedział ufności. "
+        "Średnia może spadać po mutacjach mimo zachowania najlepszego osobnika. "
+        "Heurystyki były w inicjalizacji, więc nie przypisujemy całego wyniku losowemu startowi.")
+    deck.picture(folder/"fitness_distribution.png",.5,1.85,9.15,4.95)
     deck.rect(9.85,2.1,2.8,3.95)
-    deck.text("Pierwsza epoka\nnajlepszego wyniku",10.05,2.35,2.4,1.05,size=20,bold=True)
-    deck.text("42 → 5\n137 → 3\n2026 → 4",10.1,3.5,2.3,1.7,size=28,color=TEAL,bold=True)
-    deck.text("To maksimum obserwowane\nw tym eksperymencie.",10.05,5.25,2.35,.8,size=15,color=MUTED)
+    deck.text("Cała populacja",10.05,2.35,2.4,1.05,size=20,bold=True)
+    deck.text("Najlepszy\nŚrednia\nMediana\nNajgorszy",10.1,3.3,2.3,1.7,size=22,color=TEAL,bold=True)
+    deck.text("Pasmo: środkowe 50%\nosobników (Q1–Q3).",10.05,5.25,2.35,.8,size=15,color=MUTED)
 
     deck.new("Plateau fitness nie zatrzymuje ewolucji", "09 / Chromosomy", "Aleksander",
         "Około 35 s. Każdy wiersz to epoka, każda kolumna to gen najlepszego osobnika. "
         "Zmiany po plateau są możliwe, bo różne plany mają tę samą ocenę. Genotyp ciągły nie jest "
         "tym samym co odkodowane zachowanie. Pełne wartości i wszystkie populacje są zapisane w JSONL i CSV.")
     deck.picture(folder/"chromosome_evolution.png",.55,1.75,9.8,5.15)
-    deck.text("40 genów\n×\n24 epoki",10.55,2.3,2.2,1.85,size=28,color=TEAL,bold=True)
+    deck.text(f"40 genów\n×\n{source['settings']['generations']} epok",10.55,2.3,2.2,1.85,size=28,color=TEAL,bold=True)
     deck.text("T: typ wieży\nx, y: pole\nt: czas budowy",10.55,4.65,2.2,1.25,size=20)
 
     deck.new("GA wygrywa z losowaniem, reguły są mocne", "10 / Wyniki porównawcze", "Aleksander",
-        "Około 50 s. To średnie obrażenia na testach — mniej znaczy lepiej. GENETIC: 0,10; "
-        "BASIC: 0,05; RANDOM: 31,9575; poprzedni model ponownie oceniony przy aktualnych zasadach: 20,30. "
+        f"Około 50 s. To średnie obrażenia na testach — mniej znaczy lepiej. GENETIC: {metrics['GENETIC']['damage']:.2f}; "
+        f"BASIC: {metrics['BASIC']['damage']:.2f}; RANDOM: {metrics['RANDOM']['damage']:.4f}; poprzedni model: {metrics['PREVIOUS']['damage']:.2f}. "
         "Nie twierdź, że GA przewyższa każdą heurystykę. W kontroli RANDOM odchylenie zawiera zmienność "
-        "planów i scenariuszy. Możesz dodać, że GA zatrzymuje średnio 96,6% jednostek.")
+        f"planów i scenariuszy. GA zatrzymuje średnio {metrics['GENETIC']['kill_fraction']*100:.1f}% jednostek.")
     rows=[("BASIC",BLUE),("GENETIC",TEAL),("PREVIOUS",MUTED),("RANDOM",ORANGE),("NO_DEFENSE","#bf4b62")]
     maximum=max(metrics[name]["damage"] for name,color in rows)
     for i,(name,color) in enumerate(rows):
@@ -308,8 +310,8 @@ def build(source_path):
 
     deck.new("Ablacje: osobno wyłączamy operatory", "11 / Co wnosi metoda?", "Aleksander",
         "Około 45 s. Każda grupa ma trzy ziarna, populację 12 i 12 epok. FULL jest kontrolą z tym samym "
-        "mniejszym budżetem, a nie głównym treningiem 24×24. Mutacja wyłączona dała podobny wynik testowy "
-        "w małej próbie; nie jest to dowód jej uniwersalnej zbędności. Bez elitaryzmu najlepszy wynik "
+        "mniejszym budżetem niż główny trening. Porównuj zmierzone krzywe; mała próba "
+        "nie dowodzi uniwersalnej zbędności operatora. Bez elitaryzmu najlepszy wynik "
         "ostatniej populacji bywa gorszy od wcześniej osiągniętego.")
     deck.picture(folder/"ablations.png",.55,1.85,8.7,4.95)
     deck.rect(9.5,2.05,3.15,4.25)
@@ -320,8 +322,9 @@ def build(source_path):
     deck.new("Sprawdziliśmy obronę w prawdziwym Godocie", "12 / Silnik i fizyka", "Kacper",
         "Około 45 s. Wyjaśnij, dlaczego osobna walidacja ma znaczenie. Scena wieży ma skalę 0,4, "
         "która obejmuje też zasięg — dawny model zawyżał go. Skalibrowano zasięg, promień kolizji, "
-        "rozrzut i kolejność wejścia celów. Siedem przebiegów obejmuje pięć profili i dwa testy kontrolne 1×; "
-        "nie są to wszystkie możliwe ataki. Wszystkie miały zero przecieków i zero odrzuconych budów.")
+        f"rozrzut i kolejność wejścia celów. Wykonano {len(validations)} przebiegów; "
+        f"łączne obrażenia: {sum(c['godot_damage'] for c in validations)}. "
+        "To skończony zestaw ataków. TANK pozostaje trudnym przeciwnikiem; wszystkie komendy budowy były legalne.")
     deck.card(.65,1.85,3.8,str(len(validations)),"przebiegów przez prawdziwy socket")
     deck.card(4.77,1.85,3.8,str(sum(c["godot_damage"] for c in validations)),"łączne obrażenia bazy")
     deck.card(8.9,1.85,3.8,str(sum(c["rejected"] for c in validations)),"odrzuconych komend budowy")
@@ -330,8 +333,8 @@ def build(source_path):
         "Pociski samosterujące: 400 px/s; atak zależy od czasu lotu."],.85,4.45,11.8,size=22,gap=.68)
 
     deck.new("Demonstracja: gracz atakuje, AI buduje", "13 / Pokaz działania", "Kacper",
-        "Około 90 s. Przed zajęciami przygotuj terminal w python_ai i uruchom: "
-        "python -m src.serwer --strategy models/best_strategy.json. W Godocie F5, wybierz mapę i poziom "
+        "Około 90 s. W paczce oddania przygotuj terminal w kod/python_ai i uruchom: "
+        "python -m src.serwer --strategy ../../modele/best_strategy.json. W Godocie F5, wybierz mapę i poziom "
         "trudności, wyślij falę mieszaną. Pokaż automatyczne budowanie, spadek środków i nagrody. "
         "Jeśli pokaz na żywo zawiedzie, odtwórz prezentacja_demo.gif. GIF pochodzi z obserwacji realnego "
         "meczu Godota; obraz mapy jest renderowany z odebranych stanów. W PPTX animacja jest osadzona, "
@@ -363,7 +366,7 @@ def build(source_path):
         "Możliwe pytania: dlaczego GA, a nie losowanie? Bo zachowuje i rekombinuje ocenione rozwiązania. "
         "Dlaczego BASIC czasem lepszy? Heurystyka jest dostosowana do jednej mapy, różnice na małej próbie "
         "są małe; nie obiecujemy globalnego optimum. Jak legalność? Najbliższe wolne pole i weryfikacja "
-        "funduszy w aktualnym stanie. Dlaczego nie wybrano GA_137 po teście? Wybór odbył się na treningu, "
+        "funduszy w aktualnym stanie. Dlaczego nie zmieniono modelu po teście? Wybór odbył się na treningu, "
         "a test nie powinien służyć ponownemu strojeniu.")
     deck.bullets(["Dlaczego GA? Selekcja i rekombinacja ocenionych planów.","Czy to optimum globalne? Nie — najlepszy sprawdzony plan.",
         "Dlaczego test nie wybiera modelu? Żeby ograniczyć dopasowanie do testu.",
@@ -371,12 +374,12 @@ def build(source_path):
 
     deck.new("Zapas: jak odtworzyć rozwiązanie", "Materiały i uruchomienie", "Kacper i Aleksander",
         "Powiedz, że gotowy model pozwala uruchomić przykład bez treningu. W repo jest instrukcja, "
-        "konfiguracja, migawki danych i kod. Sprawozdanie ma 9 stron, a analityczny załącznik 32 strony. "
-        "Wyniki training_results są ignorowane przez Git, dlatego należy dołączyć je do paczki zaliczeniowej. "
+        "konfiguracja, migawki danych i kod. Sprawozdanie ma 9 stron; obszerny raport jest osobnym załącznikiem. "
+        "Wyniki i wykresy dołączono do paczki zaliczeniowej w katalogu wyniki. "
         "Nie wysyłaj samego linku do repo bez wymaganych PDF-ów i modelu.")
     deck.rect(.8,1.95,11.7,1.15,fill=NAVY)
-    deck.text("python -m src.serwer --strategy models/best_strategy.json",1.05,2.28,11.2,.55,size=21,color=WHITE,bold=True)
-    deck.bullets(["Godot 4.7.2 · Python 3.14 · JSON/TCP.","Gotowy model oraz migawki mapy i balansu w models/.",
+    deck.text("python -m src.serwer --strategy ../../modele/best_strategy.json",1.05,2.28,11.2,.55,size=20,color=WHITE,bold=True)
+    deck.bullets(["Godot 4.7.2 · Python 3.14 · JSON/TCP.","Gotowy model oraz migawki mapy i balansu w modele/.",
         "Sprawozdanie 9 stron + rozszerzony raport analityczny.","Surowe populacje, rodzice, mutacje, wykresy i animacje."],.9,3.65,11.7,size=22,gap=.65)
     deck.text("github.com/Kacpron123/KittyCatch",.9,6.5,11.7,.35,size=19,color=TEAL,bold=True)
     deck.finish()

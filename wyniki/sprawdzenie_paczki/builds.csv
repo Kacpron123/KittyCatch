@@ -1,0 +1,6 @@
+﻿seed,time,slot,type,x,y,cost,command_id
+103,0.0,0,BASIC,5,6,70,ga-simulation-103-0-1-s0
+103,0.5,1,BASIC,7,6,70,ga-simulation-103-5-2-s1
+103,31.5,3,BASIC,7,5,70,ga-simulation-103-315-3-s3
+103,65.5,4,BASIC,0,6,70,ga-simulation-103-655-4-s4
+103,93.5,6,BASIC,2,8,70,ga-simulation-103-935-5-s6

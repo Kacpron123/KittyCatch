@@ -1,0 +1,641 @@
+{
+  "role": "tower_defense",
+  "strategy": {
+    "tower_types": [
+      "BASIC",
+      "SNIPER"
+    ],
+    "genes": [
+      0.1508147420518636,
+      0.2631578947368421,
+      0.5045155088648683,
+      0,
+      0.36362168798435346,
+      0.36926471997872423,
+      0.42857142857142855,
+      0,
+      0.46725195683378495,
+      0.3684210526315789,
+      0.7857142857142857,
+      0.20018840516293976,
+      0.47998399441696404,
+      0.3684210526315789,
+      0.3612975114837898,
+      0,
+      0.30748981831541816,
+      0.02275253711075638,
+      0.42857142857142855,
+      0,
+      0.15694841075070454,
+      0.7653436136691596,
+      0.2857142857142857,
+      0.4619769418090586,
+      0.2576942677196105,
+      0.10526315789473684,
+      0.5520606095579297,
+      0,
+      0,
+      0.3684210526315789,
+      0.7425794788074074,
+      0,
+      0.5492669292601929,
+      0.7319512789753937,
+      0.5420142912277314,
+      0.1916726251043829,
+      0.49437111087225516,
+      0.8180419749904531,
+      0.6130023735094929,
+      0
+    ],
+    "duration": 120.0,
+    "role": "tower_defense"
+  },
+  "config": {
+    "base": {
+      "health": 200
+    },
+    "economy": {
+      "player": {
+        "starting_energy": 40,
+        "max_energy": 100,
+        "energy_regen_per_second": 2.0,
+        "kill_energy_refund_fraction": 1.0
+      },
+      "ai": {
+        "starting_money": 150
+      }
+    },
+    "difficulty": {
+      "default": "hard",
+      "player_energy_limits": {
+        "hard": 100,
+        "medium": 300,
+        "easy": 1000
+      }
+    },
+    "combat": {
+      "tower_range_scale": 0.4,
+      "enemy_hit_radius_px": 8.0,
+      "enemy_path_spread_px": 8.0,
+      "enemy_speed_bonus_per_base_hit": 0.005,
+      "max_enemy_speed_bonus": 0.1
+    },
+    "units": {
+      "SCOUT": {
+        "hp": 20,
+        "speed": 1.0,
+        "energy_cost": 4,
+        "ai_reward": 4
+      },
+      "TANK": {
+        "hp": 60,
+        "speed": 0.8,
+        "energy_cost": 5,
+        "ai_reward": 5
+      },
+      "SPEED": {
+        "hp": 30,
+        "speed": 1.4,
+        "energy_cost": 7,
+        "ai_reward": 5
+      }
+    },
+    "towers": {
+      "BASIC": {
+        "cost": 70,
+        "range": 2.0,
+        "damage": 19,
+        "attack_speed": 1.25,
+        "rotation": 90
+      },
+      "SNIPER": {
+        "cost": 100,
+        "range": 4.5,
+        "damage": 30,
+        "attack_speed": 0.25,
+        "rotation": 45
+      }
+    },
+    "map": {
+      "tile_size_px": 64,
+      "cell_size_px": 32,
+      "width_tiles": 20,
+      "height_tiles": 15
+    }
+  },
+  "map": {
+    "grid": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "path": [
+      [
+        1,
+        7
+      ],
+      [
+        12,
+        7
+      ],
+      [
+        12,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        14,
+        12
+      ]
+    ]
+  },
+  "settings": {
+    "population": 32,
+    "generations": 30,
+    "slots": 10,
+    "duration": 120.0,
+    "dt": 0.1,
+    "seed": 42,
+    "search_seeds": null,
+    "previous_report": null,
+    "train_seeds": [
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "test_seeds": [
+      103
+    ],
+    "mutation_rate": 0.15,
+    "output": "..\\..\\wyniki\\sprawdzenie_paczki",
+    "strategy": "..\\..\\modele\\best_strategy.json",
+    "gif": false,
+    "pdf": false,
+    "workers": 1,
+    "record_populations": false
+  },
+  "history": [],
+  "comparison": {
+    "GENETIC": {
+      "mean_damage": 0,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 103,
+          "profile": "MIXED",
+          "fitness": 0.1,
+          "damage": 0,
+          "base_hp": 200,
+          "kills": 56,
+          "sent": 56,
+          "spawned": 56,
+          "tower_count": 5,
+          "money_spent": 350,
+          "money_left": 60,
+          "rejected": 0,
+          "elapsed": 119.99999999999746,
+          "kill_fraction": 1.0,
+          "kills_per_100_money": 16.0,
+          "base_health_fraction": 1.0
+        }
+      ]
+    },
+    "BASIC": {
+      "mean_damage": 1,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 103,
+          "profile": "MIXED",
+          "fitness": -0.9035714285714286,
+          "damage": 1,
+          "base_hp": 199,
+          "kills": 54,
+          "sent": 56,
+          "spawned": 56,
+          "tower_count": 5,
+          "money_spent": 350,
+          "money_left": 50,
+          "rejected": 0,
+          "elapsed": 119.99999999999746,
+          "kill_fraction": 0.9642857142857143,
+          "kills_per_100_money": 15.428571428571429,
+          "base_health_fraction": 0.995
+        }
+      ]
+    },
+    "SNIPER": {
+      "mean_damage": 9,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 103,
+          "profile": "MIXED",
+          "fitness": -8.917857142857143,
+          "damage": 9,
+          "base_hp": 191,
+          "kills": 46,
+          "sent": 56,
+          "spawned": 56,
+          "tower_count": 3,
+          "money_spent": 300,
+          "money_left": 63,
+          "rejected": 0,
+          "elapsed": 119.99999999999746,
+          "kill_fraction": 0.8214285714285714,
+          "kills_per_100_money": 15.333333333333334,
+          "base_health_fraction": 0.955
+        }
+      ]
+    },
+    "MIXED": {
+      "mean_damage": 1,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 103,
+          "profile": "MIXED",
+          "fitness": -0.9035714285714286,
+          "damage": 1,
+          "base_hp": 199,
+          "kills": 54,
+          "sent": 56,
+          "spawned": 56,
+          "tower_count": 5,
+          "money_spent": 350,
+          "money_left": 50,
+          "rejected": 0,
+          "elapsed": 119.99999999999746,
+          "kill_fraction": 0.9642857142857143,
+          "kills_per_100_money": 15.428571428571429,
+          "base_health_fraction": 0.995
+        }
+      ]
+    },
+    "NO_DEFENSE": {
+      "mean_damage": 49,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 103,
+          "profile": "MIXED",
+          "fitness": -49.0,
+          "damage": 49,
+          "base_hp": 151,
+          "kills": 0,
+          "sent": 56,
+          "spawned": 56,
+          "tower_count": 0,
+          "money_spent": 0,
+          "money_left": 150,
+          "rejected": 0,
+          "elapsed": 119.99999999999746,
+          "kill_fraction": 0.0,
+          "kills_per_100_money": 0.0,
+          "base_health_fraction": 0.755
+        }
+      ]
+    }
+  },
+  "training_scores": [],
+  "search_runs": [],
+  "previous_config": null,
+  "config_sha256": "0f863932a7a358c6dd450f3e5370c1a970d6cbfa7f7a3b2f7c0c44fb49379775",
+  "objective": "Minimize base damage received; kill fraction breaks ties. AI only builds towers."
+}

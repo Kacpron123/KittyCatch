@@ -2,12 +2,18 @@
   "project_number": 4,
   "title": "Tower defense — optymalizacja rozmieszczenia obrony",
   "course": "Sztuczna inteligencja w grach i rozszerzonej rzeczywistości",
-  "team_number": null,
+  "team_number": 4,
   "schedule": "poniedziałek, 8:00",
   "authors": [
-    {"name": "Aleksander Kopyto", "responsibility": "algorytm genetyczny i AI"},
-    {"name": "Kacper Mazurek", "responsibility": "gra"}
+    {
+      "name": "Aleksander Kopyto",
+      "responsibility": "algorytm genetyczny i AI"
+    },
+    {
+      "name": "Kacper Mazurek",
+      "responsibility": "gra"
+    }
   ],
   "repository": "https://github.com/Kacpron123/KittyCatch",
-  "submission_note": "Numer zespołu nie został podany; uzupełnić przed oddaniem."
+  "submission_note": "Numer zespolu podany podczas pakowania."
 }

@@ -22,7 +22,7 @@ class GeneticTests(unittest.TestCase):
         agent = GeneticAgent(Strategy(self.types, genes), self.config["units"])
         sim = Simulation(self.config, self.map_data)
         action = agent.launch(sim)
-        self.assertEqual(action["unit_types"], ["SCOUT"] * 8)
+        self.assertEqual(action["unit_types"], ["SCOUT"] * 10)
         self.assertEqual(sim.energy, 0)
         self.assertIsNone(agent.launch(sim))
         sim.wave_active = False
@@ -91,7 +91,7 @@ class GeneticTests(unittest.TestCase):
 
     def test_decoded_genes_and_report_gif(self):
         phases = decode(self.policy, self.config, 2)
-        self.assertEqual(phases[0]["energy_threshold"], 5)
+        self.assertEqual(phases[0]["energy_threshold"], 4)
         self.assertEqual(phases[0]["spend_fraction"], 1)
         self.assertEqual(phases[1]["start"], 1)
         episode = rollout(self.policy, self.config, self.map_data, 1, duration=2)

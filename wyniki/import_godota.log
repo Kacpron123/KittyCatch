@@ -1,0 +1,81 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Inicjalizacja projektu (5 steps)
+[  16% ] first_scan_filesystem | Wczytywanie globalnych nazw klas...
+[  33% ] first_scan_filesystem | Weryfikowanie GDExtension...
+[  50% ] first_scan_filesystem | Tworzenie skryptów autoładowania...
+[  66% ] first_scan_filesystem | Inicjalizacja wtyczek...
+[  83% ] first_scan_filesystem | Uruchamianie skanu systemu plików...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Rejestrowanie globalnych klas... (17 steps)
+[   0% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | GameEnums
+[  22% ] update_scripts_classes | LevelMaster
+[  27% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | MapManager
+[  61% ] update_scripts_classes | WaveManager
+[  66% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started Akcje skanowania... (12 steps)
+[   0% ] _update_scan_actions | BASIC_BASE.png
+[   7% ] _update_scan_actions | BASIC_TURRET.png
+[  15% ] _update_scan_actions | Projectile.png
+[  23% ] _update_scan_actions | SCOUT.png
+[  30% ] _update_scan_actions | SNIPER_BASE.png
+[  38% ] _update_scan_actions | SNIPER_TURRET.png
+[  46% ] _update_scan_actions | SPEED.png
+[  53% ] _update_scan_actions | TANK.png
+[  61% ] _update_scan_actions | Topdown RPG 32x32 - Bushes 1.1.PNG
+[  69% ] _update_scan_actions | Topdown RPG 32x32 - Ground Tileset 1.2.PNG
+[  76% ] _update_scan_actions | Tower-sniper.png
+[  84% ] _update_scan_actions | icon.svg
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Ponowne) importowanie zasobów (11 steps)
+[   0% ] reimport | Przygotowywanie plików do ponownego importu...
+[   8% ] reimport | Przygotowywanie plików do ponownego importu...
+[  16% ] reimport | Przygotowywanie plików do ponownego importu...
+[  25% ] reimport | Przygotowywanie plików do ponownego importu...
+[  33% ] reimport | Przygotowywanie plików do ponownego importu...
+[  41% ] reimport | Przygotowywanie plików do ponownego importu...
+[  50% ] reimport | Przygotowywanie plików do ponownego importu...
+[  58% ] reimport | Przygotowywanie plików do ponownego importu...
+[  66% ] reimport | Przygotowywanie plików do ponownego importu...
+[  75% ] reimport | Przygotowywanie plików do ponownego importu...
+[  83% ] reimport | Przygotowywanie plików do ponownego importu...
+[   0% ] reimport | Wykonywanie operacji przed importem...
+[   0% ] reimport | BASIC_BASE.png
+[   8% ] reimport | BASIC_TURRET.png
+[  16% ] reimport | Projectile.png
+[  25% ] reimport | SCOUT.png
+[  33% ] reimport | SNIPER_BASE.png
+[  41% ] reimport | SNIPER_TURRET.png
+[  50% ] reimport | SPEED.png
+[  58% ] reimport | TANK.png
+[  66% ] reimport | Topdown RPG 32x32 - Bushes 1.1.PNG
+[  75% ] reimport | Topdown RPG 32x32 - Ground Tileset 1.2.PNG
+[  83% ] reimport | icon.svg
+[  91% ] reimport | Finalizowanie importu zasobów...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Ponowne) importowanie zasobów (11 steps)
+[   0% ] reimport | Wykonywanie operacji po imporcie...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Wczytywanie edytora (5 steps)
+[   0% ] loading_editor_layout | Wczytywanie układu edytora...
+[  16% ] loading_editor_layout | Wczytywanie doków...
+[ DONE ] loading_editor_layout
+

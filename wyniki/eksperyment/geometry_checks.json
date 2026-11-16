@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "dimensions": true,
+    "buildable_grid": true,
+    "route_samples_with_tolerance_1e_9": true,
+    "units": true,
+    "towers": true,
+    "combat": true
+  },
+  "max_route_error_cells": 1.7763568394002505e-15
+}

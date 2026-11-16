@@ -1,6 +1,0 @@
-strategy,seed,fitness,damage,kills,sent,energy_spent,damage_per_energy,elapsed
-GENETIC,2,0,0,1,10,50,0.0,4.0
-SCOUT,2,0,0,1,10,50,0.0,4.0
-TANK,2,0,0,0,4,40,0.0,4.0
-SPEED,2,0,0,0,6,42,0.0,4.0
-MIXED,2,0,0,0,7,47,0.0,4.0

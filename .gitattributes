@@ -1,0 +1,9 @@
+# Preserve binary documents byte for byte on Windows and Linux.
+*.pdf binary
+*.pptx binary
+*.png binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
+*.docx binary

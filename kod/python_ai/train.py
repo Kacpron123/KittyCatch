@@ -5,6 +5,7 @@ import statistics
 import hashlib
 from dataclasses import asdict
 from pathlib import Path
+from concurrent.futures import ProcessPoolExecutor
 
 from src.data import load_game_data
 from src.genetic_ai import Strategy, baseline_strategies, rollout, train
@@ -28,9 +29,13 @@ def main():
     parser.add_argument("--strategy", type=Path, help="Evaluate a saved tower strategy")
     parser.add_argument("--gif", action="store_true")
     parser.add_argument("--pdf", action="store_true", help="Export PDF (requires reportlab)")
+    parser.add_argument("--workers", type=int, default=1, help="Independent rollout worker processes")
+    parser.add_argument("--record-populations", action="store_true", help="Record every population and genetic operation")
     args = parser.parse_args()
     if set(args.train_seeds) & set(args.test_seeds):
         parser.error("Training and test seeds must be disjoint")
+    if args.workers < 1:
+        parser.error("--workers must be positive")
     if args.pdf:
         try:
             from src.pdf_report import export_pdf
@@ -40,6 +45,7 @@ def main():
     settings = {"duration": args.duration, "dt": args.dt}
     search_runs = []
     previous = json.loads(args.previous_report.read_text(encoding="utf-8")) if args.previous_report else None
+    pool = ProcessPoolExecutor(max_workers=args.workers) if args.workers > 1 else None
     try:
         if args.strategy:
             best, history = Strategy.load(args.strategy), []
@@ -47,11 +53,25 @@ def main():
                 parser.error("--duration must match the saved strategy duration")
         else:
             for search_seed in dict.fromkeys(args.search_seeds or [args.seed]):
-                candidate, candidate_history = train(config, map_data, population_size=args.population,
-                    generations=args.generations, seeds=tuple(args.train_seeds), seed=search_seed,
-                    slots=args.slots, mutation_rate=args.mutation_rate, **settings,
-                    progress=lambda row, run_seed=search_seed: print(f"Run {run_seed} | generation {row['generation'] + 1}/{args.generations}: "
-                        f"best={row['best']:.4f}, mean={row['mean']:.4f}", flush=True))
+                telemetry_file = None
+                if args.record_populations:
+                    trace_folder = args.output / "genetic_analysis"
+                    trace_folder.mkdir(parents=True, exist_ok=True)
+                    telemetry_file = (trace_folder / f"population_seed_{search_seed}.jsonl").open("w", encoding="utf-8")
+                def capture(record):
+                    stamped = {**record, "config_sha256": hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()}
+                    telemetry_file.write(json.dumps(stamped, separators=(",", ":")) + "\n")
+                    telemetry_file.flush()
+                try:
+                    candidate, candidate_history = train(config, map_data, population_size=args.population,
+                        generations=args.generations, seeds=tuple(args.train_seeds), seed=search_seed,
+                        slots=args.slots, mutation_rate=args.mutation_rate, **settings, executor=pool,
+                        telemetry=capture if telemetry_file else None,
+                        progress=lambda row, run_seed=search_seed: print(f"Run {run_seed} | generation {row['generation'] + 1}/{args.generations}: "
+                            f"best={row['best']:.4f}, mean={row['mean']:.4f}", flush=True))
+                finally:
+                    if telemetry_file:
+                        telemetry_file.close()
                 search_runs.append({"seed": search_seed, "strategy": asdict(candidate),
                     "history": candidate_history, "training_fitness": candidate_history[-1]["best"]})
                 # Save every completed run so a long experiment remains reviewable.
@@ -81,6 +101,9 @@ def main():
         training_scores = [rollout(best, config, map_data, seed, **settings) for seed in args.train_seeds] if history else []
     except ValueError as error:
         parser.error(str(error))
+    finally:
+        if pool:
+            pool.shutdown()
     args.output.mkdir(parents=True, exist_ok=True)
     best.save(args.output / "best_strategy.json")
     report = {"role": "tower_defense", "strategy": asdict(best), "config": config, "map": map_data,

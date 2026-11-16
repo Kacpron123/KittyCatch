@@ -97,7 +97,7 @@ def build(source_path, target):
     plan=Strategy(tuple(data["tower_types"]),tuple(data["genes"]),data["duration"]).decode(geometry.width,geometry.height)
     table(["Slot","Typ","x","y","Najwcześniej [s]"],[[p["slot"],p["tower_type"],p["x"],p["y"],f"{p['earliest']:.2f}"] for p in plan],[.12,.28,.12,.12,.36])
     paragraph("Tabela opisuje plan wybranego chromosomu. Slot może pozostać niewykonany, jeśli zabraknie "
-        "środków, czasu lub miejsca. Pełne wartości genów zapisano w models/best_strategy.json oraz "
+        "środków, czasu lub miejsca. Pełne wartości genów zapisano w modele/best_strategy.json oraz "
         "w rozszerzonym raporcie; nie zastępujemy ich samą ilustracją.")
     figure(output/f"layout_seed_{settings['seed']}.png","Przykładowe faktyczne rozmieszczenie; liczby oznaczają kolejność budowy.",235)
 
@@ -111,8 +111,8 @@ def build(source_path, target):
     paragraph("Populacja początkowa zawiera trzy plany regułowe oraz losowe chromosomy. W każdej epoce "
         "oceniamy populację, kopiujemy elitę i tworzymy potomków z rodziców wybranych turniejowo. "
         "Cache oszczędza ponowną symulację identycznych genotypów. Remisy rozstrzygamy losowo ze stałym ziarnem.")
-    paragraph("<b>Epoka</b> oznacza ocenę jednej populacji: epoka 1 to inicjalizacja, zatem 24 epoki obejmują "
-        "23 przejścia reprodukcyjne. Nie jest to trenowanie sieci neuronowej metodą gradientową.")
+    paragraph(f"<b>Epoka</b> oznacza ocenę jednej populacji: epoka 1 to inicjalizacja, zatem {settings['generations']} epok obejmuje "
+        f"{settings['generations']-1} przejść reprodukcyjnych. Nie jest to trenowanie sieci neuronowej metodą gradientową.")
     figure(folder/"operators_example.png","Rzeczywisty potomek: maska pochodzenia genów i zaznaczone próby mutacji.",260)
     paragraph(f"W wybranym przebiegu zapisano {summary['offspring']} potomków, "
         f"{summary['mutation_attempts']} prób mutacji i {summary['actual_changes']} faktycznych zmian. "
@@ -156,9 +156,11 @@ def build(source_path, target):
     figure(folder/"benchmark_damage.png","Średnie obrażenia bazy: GA, heurystyki, poprzedni model i kontrola losowa.",245)
     genetic=next(r for r in included if r["strategy"]=="GENETIC")
     random=next(r for r in included if r["strategy"]=="RANDOM")
+    better = [name for name, stats in source['comparison'].items()
+              if name != 'GENETIC' and stats['mean_damage'] < genetic['damage']]
+    comparison_note = ("Niższą średnią testową uzyskały: " + ", ".join(better) + ". " if better else "")
     paragraph(f"GENETIC uzyskał średnio {genetic['damage']:.2f} obrażeń, RANDOM {random['damage']:.2f}. "
-        "W tym teście BASIC oraz wariant GA_137 mają nieco niższe średnie niż wybrany GENETIC; "
-        "wynik nie uzasadnia twierdzenia o bezwarunkowej przewadze GA nad każdą heurystyką. "
+        + comparison_note + "Zwycięzcę wybrano na treningu; test nie służy ponownemu wyborowi modelu. "
         "SD w kontroli losowej zawiera zmienność planów i scenariuszy, nie tylko błąd średniej.")
     paragraph("Wydatki obejmują reinwestowane nagrody i mogą przekroczyć startowe 150. Wskaźnik zabicia/100 "
         "wydanych środków opisuje efektywność, ale nie zastępuje ochrony bazy. Zwroty energii zależą od zabijania "
@@ -205,8 +207,8 @@ def build(source_path, target):
 
     page("9. Wnioski, ograniczenia i odtwarzalność")
     paragraph("Algorytm skutecznie wyszukuje legalne plany obrony i wyraźnie przewyższa losowe rozmieszczenie "
-        "w badanych warunkach. Dobra heurystyka jest konkurencyjna, dlatego same wysokie wyniki GA nie "
-        "dowodzą jej gorszej jakości. Telemetria pozwala śledzić jakość, genotypy, presję selekcyjną i mutacje, "
+        "w badanych warunkach. Heurystyki stanowią punkt odniesienia; przewaga w tym eksperymencie nie jest "
+        "gwarancją na innych mapach i falach. Telemetria pozwala śledzić jakość, genotypy, presję selekcyjną i mutacje, "
         "zamiast ograniczać analizę do końcowego zwycięzcy.")
     paragraph("<b>Ograniczenia:</b> jedna mapa, pięć automatycznych profili fal, skończona liczba ziaren i limit "
         "10 slotów. Geny czasów są powiązane z horyzontem epizodu. Symulacja przybliża kolejność zdarzeń, "
@@ -220,11 +222,11 @@ def build(source_path, target):
         "do PDF, biblioteka standardowa do GA, socketów i JSON. PyMuPDF służy kontroli gotowego PDF. "
         "Nie używano gotowej biblioteki optymalizacji ewolucyjnej. Koncepcja GA jest klasyczną metodą; "
         "własny wkład obejmuje reprezentację planu, ocenę w symulatorze, politykę, integrację i eksperymenty.")
-    paragraph("<b>Uruchomienie od zera</b> (Python 3.14, z katalogu python_ai; Godot uruchamiany osobno):")
-    code="python -m pip install -r requirements-analysis.txt\npython -m src.serwer --strategy models/best_strategy.json\n# Otworz godot_game/project.godot w Godocie i nacisnij F5.\n# Przyklad lokalny bez treningu:\npython train.py --strategy models/best_strategy.json --duration 120 --output evaluation"
+    paragraph("<b>Uruchomienie od zera</b> (Python 3.14, początkowo z katalogu głównego paczki; Godot uruchamiany osobno):")
+    code="python -m pip install -r uruchomienie/wymagania.txt\n# PowerShell:\nSet-Location kod/python_ai\npython -m src.serwer --strategy ../../modele/best_strategy.json\n# Otworz kod/godot_game/project.godot w Godocie i nacisnij F5.\n# Przyklad lokalny bez treningu:\npython train.py --strategy ../../modele/best_strategy.json --duration 120 --output ../../wyniki/ocena"
     story.append(Preformatted(code,ParagraphStyle("CourseCode",fontName="Report",fontSize=7.5,leading=10,spaceAfter=8),maxLineLength=105))
     paragraph("<b>Materiały:</b> README repozytorium opisuje zależności, konfigurację i komendy odtworzenia. "
-        "models/ zawiera gotowy chromosom i migawki reguł/mapy. training_results/ zawiera obszerny raport, "
+        "modele/ zawiera gotowy chromosom i migawki reguł/mapy. wyniki/ zawiera obszerny raport, "
         "surowe populacje JSONL, maski krzyżowania, mutacje, CSV, figury, wyniki silnika i animacje. "
         "Numery losowań i hash konfiguracji umożliwiają identyfikację eksperymentu.")
     paragraph("<b>Repozytorium:</b> "+metadata["repository"]+". "

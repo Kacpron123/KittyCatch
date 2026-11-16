@@ -1,5 +1,13 @@
 # Python AI: obrona bazy i socket Godota
 
+Układ do oddania jest opisany w głównym [README](../README.md). W repo są to robocze źródła;
+aktualny komplet do przekazania obejmuje `kod/`, `dane/`, `modele/`, `wyniki/` i `uruchomienie/`.
+W kopii `kod/python_ai` uruchamiaj serwer z modelem `../../modele/best_strategy.json`;
+instrukcja PDF znajduje się w `../../uruchomienie/`.
+Rozwój jakości **całej populacji dla wszystkich trzech przebiegów** opisano w
+[`wyniki/rozwoj_populacji.pdf`](../wyniki/rozwoj_populacji.pdf): średnia, mediana, najlepszy,
+najgorszy i kwartyle 25–75%, wraz z CSV wszystkich 90 populacji.
+
 ## Ponowny trening po zmianie zasad — 16.11.2026
 
 Nowy eksperyment: [`training_results/rebalance_2026-11-16_0f863932/`](training_results/rebalance_2026-11-16_0f863932/).

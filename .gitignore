@@ -1,6 +1,9 @@
 # Godot 4.2+ specific ignores
 ~*.dll
 
+# Local safety copies created when arranging submission materials.
+/archiwum/
+
 # Godot 4+ specific ignores
 .godot/
 .nomedia

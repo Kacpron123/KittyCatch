@@ -49,9 +49,9 @@ class TowerGeneticTests(unittest.TestCase):
         agent(init_message(self.sim))
         self.assertIsNone(agent(self.state()))
         self.sim.sim_time, self.sim.step_number = 20, 20
-        self.sim.ai_money = 49
+        self.sim.ai_money = self.config["towers"]["BASIC"]["cost"] - 1
         self.assertIsNone(agent(self.state()))
-        self.sim.ai_money = 50
+        self.sim.ai_money = self.config["towers"]["BASIC"]["cost"]
         self.sim.step_number += 1
         action = agent(self.state())
         self.assertIsNotNone(action)
@@ -184,6 +184,13 @@ class TowerGeneticTests(unittest.TestCase):
             self.assertEqual(len(record["births"]), 4)
             self.assertTrue(all(tuple(p["genes"]) in originals for p in record["population"]))
             self.assertTrue(all(not b["mutations"] and set(b["source_mask"]) == {0} for b in record["births"]))
+
+    def test_parallel_evaluation_preserves_deterministic_search(self):
+        from concurrent.futures import ProcessPoolExecutor
+        arguments = dict(population_size=4, generations=2, slots=2, seeds=(10,11), duration=1)
+        expected = train(self.config, self.map_data, **arguments)
+        with ProcessPoolExecutor(max_workers=2) as pool:
+            self.assertEqual(expected, train(self.config, self.map_data, executor=pool, **arguments))
 
 
 if __name__ == "__main__":
