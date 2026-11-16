@@ -8,12 +8,16 @@ W `training_results/` znajdują się `prezentacja.pdf` i edytowalna
 `prezentacja_notatki.md` zawiera podział między prelegentów i wskazówki;
 te same notatki są osadzone w PPTX. `prezentacja_demo.gif` jest zapasowym
 pokazem prawdziwych obserwacji Godota i jest również osadzony w PPTX.
+`prezentacja_pomoc.pdf` wyjaśnia prostym językiem pojęcia, wzory i liczby
+slajd po slajdzie. Zawiera też przykłady krzyżowania i mutacji, gotowe
+wypowiedzi oraz odpowiedzi na pytania prowadzącego.
 
 Ponowne zbudowanie obu formatów z tych samych danych:
 
 ```powershell
 python -m pip install -r requirements-presentation.txt
 python build_presentation.py
+python build_presentation_guide.py
 ```
 
 PDF zawiera nieruchomy kadr demonstracji. Do pokazu na żywo uruchom serwer
