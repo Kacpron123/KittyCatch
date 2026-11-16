@@ -29,13 +29,13 @@
 	"max_enemy_speed_bonus": 0.1
   },
   "units": {
-	"SCOUT": {"hp": 10, "speed": 1.0, "energy_cost": 5, "ai_reward": 5},
-	"TANK": {"hp": 30, "speed": 0.8, "energy_cost": 10, "ai_reward": 12},
-	"SPEED": {"hp": 15, "speed": 1.4, "energy_cost": 7, "ai_reward": 8}
+	"SCOUT": {"hp": 20, "speed": 1.0, "energy_cost": 4, "ai_reward": 4},
+	"TANK": {"hp": 60, "speed": 0.8, "energy_cost": 5, "ai_reward": 5},
+	"SPEED": {"hp": 30, "speed": 1.4, "energy_cost": 7, "ai_reward": 5}
   },
   "towers": {
-	"BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},
-	"SNIPER": {"cost": 80, "range": 4.5, "damage": 12, "attack_speed": 0.25, "rotation": 45}
+	"BASIC": {"cost": 70, "range": 2.0, "damage": 19, "attack_speed": 1.25, "rotation": 90},
+	"SNIPER": {"cost": 100, "range": 4.5, "damage": 30, "attack_speed": 0.25, "rotation": 45}
   },
   "map": {
 	"tile_size_px": 64,

@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://by5f22ucxfol4"]
+
+[ext_resource type="Script" uid="uid://cv0y7x6rysant" path="res://scenes/core/level_selector.gd" id="1_vlf68"]
+
+[node name="LevelSelector" type="Control" unique_id=69361763]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vlf68")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1557522271]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1141346335]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer" unique_id=856475488]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "B"
+
+[node name="DifficultyLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Poziom trudności"
+
+[node name="DifficultySelector" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+
+[node name="LevelContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1814625141]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Button" to="." method="_on_back_pressed"]

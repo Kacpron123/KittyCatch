@@ -1,0 +1,8895 @@
+{
+  "settings": {
+    "population": 24,
+    "generations": 20,
+    "duration": 90,
+    "dt": 0.2,
+    "seed": 42,
+    "train_seeds": [
+      11,
+      22,
+      33
+    ],
+    "test_seeds": [
+      101,
+      202,
+      303,
+      404,
+      505
+    ],
+    "mutation_rate": 0.15,
+    "output": "training_results",
+    "strategy": null
+  },
+  "config": {
+    "economy": {
+      "player": {
+        "starting_energy": 40,
+        "max_energy": 100,
+        "energy_regen_per_second": 2.0,
+        "kill_energy_refund_fraction": 0.6
+      },
+      "ai": {
+        "starting_money": 150
+      }
+    },
+    "combat": {
+      "enemy_speed_bonus_per_base_hit": 0.005,
+      "max_enemy_speed_bonus": 0.1
+    },
+    "units": {
+      "SCOUT": {
+        "hp": 10,
+        "speed": 1.0,
+        "energy_cost": 5,
+        "ai_reward": 5
+      },
+      "TANK": {
+        "hp": 20,
+        "speed": 0.8,
+        "energy_cost": 10,
+        "ai_reward": 12
+      },
+      "SPEED": {
+        "hp": 15,
+        "speed": 1.2,
+        "energy_cost": 7,
+        "ai_reward": 8
+      }
+    },
+    "towers": {
+      "BASIC": {
+        "cost": 50,
+        "range": 2.0,
+        "damage": 9,
+        "attack_speed": 1.25,
+        "rotation": 90
+      },
+      "SNIPER": {
+        "cost": 80,
+        "range": 4.5,
+        "damage": 12,
+        "attack_speed": 0.25,
+        "rotation": 45
+      }
+    },
+    "map": {
+      "tile_size_px": 64,
+      "cell_size_px": 32,
+      "width_tiles": 20,
+      "height_tiles": 15
+    }
+  },
+  "map": {
+    "grid": [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    ],
+    "path": [
+      [
+        1,
+        7
+      ],
+      [
+        12,
+        7
+      ],
+      [
+        12,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        14,
+        12
+      ]
+    ]
+  },
+  "history": [
+    {
+      "generation": 0,
+      "best": 1,
+      "mean": 0.09722222222222222,
+      "worst": 0,
+      "std": 0.2449332234520611,
+      "diversity": 1.0
+    },
+    {
+      "generation": 1,
+      "best": 1,
+      "mean": 0.25,
+      "worst": 0,
+      "std": 0.35026445035884696,
+      "diversity": 0.9583333333333334
+    },
+    {
+      "generation": 2,
+      "best": 2,
+      "mean": 0.6666666666666666,
+      "worst": 0,
+      "std": 0.5853140973807077,
+      "diversity": 1.0
+    },
+    {
+      "generation": 3,
+      "best": 5,
+      "mean": 1.6388888888888888,
+      "worst": 0,
+      "std": 1.4172112243137887,
+      "diversity": 1.0
+    },
+    {
+      "generation": 4,
+      "best": 6.333333333333333,
+      "mean": 3.138888888888889,
+      "worst": 0.3333333333333333,
+      "std": 1.6127864852216427,
+      "diversity": 0.9583333333333334
+    },
+    {
+      "generation": 5,
+      "best": 6.333333333333333,
+      "mean": 4.291666666666667,
+      "worst": 0.3333333333333333,
+      "std": 1.2992608297427055,
+      "diversity": 1.0
+    },
+    {
+      "generation": 6,
+      "best": 6.333333333333333,
+      "mean": 5.013888888888888,
+      "worst": 1.6666666666666667,
+      "std": 1.0429621573807915,
+      "diversity": 0.9166666666666666
+    },
+    {
+      "generation": 7,
+      "best": 7.333333333333333,
+      "mean": 5.638888888888888,
+      "worst": 2.6666666666666665,
+      "std": 0.9570240653862342,
+      "diversity": 0.875
+    },
+    {
+      "generation": 8,
+      "best": 7.666666666666667,
+      "mean": 5.902777777777778,
+      "worst": 1.3333333333333333,
+      "std": 1.5883813291881708,
+      "diversity": 0.75
+    },
+    {
+      "generation": 9,
+      "best": 8.333333333333334,
+      "mean": 6.972222222222222,
+      "worst": 3.6666666666666665,
+      "std": 1.0797662069764895,
+      "diversity": 1.0
+    },
+    {
+      "generation": 10,
+      "best": 8.333333333333334,
+      "mean": 7.75,
+      "worst": 6.333333333333333,
+      "std": 0.39965262694272674,
+      "diversity": 0.875
+    },
+    {
+      "generation": 11,
+      "best": 8.333333333333334,
+      "mean": 7.236111111111111,
+      "worst": 4,
+      "std": 1.0250526936169468,
+      "diversity": 0.9166666666666666
+    },
+    {
+      "generation": 12,
+      "best": 8.333333333333334,
+      "mean": 7.666666666666667,
+      "worst": 5.333333333333333,
+      "std": 0.7391185942027819,
+      "diversity": 0.875
+    },
+    {
+      "generation": 13,
+      "best": 8.333333333333334,
+      "mean": 7.736111111111112,
+      "worst": 4,
+      "std": 0.8712441437534554,
+      "diversity": 0.9166666666666666
+    },
+    {
+      "generation": 14,
+      "best": 8.666666666666666,
+      "mean": 7.652777777777778,
+      "worst": 2.6666666666666665,
+      "std": 1.2113627414437118,
+      "diversity": 0.875
+    },
+    {
+      "generation": 15,
+      "best": 8.666666666666666,
+      "mean": 8.125,
+      "worst": 7,
+      "std": 0.5427339911827754,
+      "diversity": 0.9166666666666666
+    },
+    {
+      "generation": 16,
+      "best": 8.666666666666666,
+      "mean": 7.861111111111111,
+      "worst": 4,
+      "std": 1.088307668008874,
+      "diversity": 0.8333333333333334
+    },
+    {
+      "generation": 17,
+      "best": 8.666666666666666,
+      "mean": 7.805555555555555,
+      "worst": 5,
+      "std": 0.9423997474270762,
+      "diversity": 0.9166666666666666
+    },
+    {
+      "generation": 18,
+      "best": 9,
+      "mean": 8.097222222222221,
+      "worst": 6,
+      "std": 0.8359911320340101,
+      "diversity": 0.8333333333333334
+    },
+    {
+      "generation": 19,
+      "best": 9,
+      "mean": 8.055555555555555,
+      "worst": 4,
+      "std": 1.0700755713476788,
+      "diversity": 0.9166666666666666
+    }
+  ],
+  "comparison": {
+    "GENETIC": {
+      "mean_damage": 15,
+      "std_damage": 1.4142135623730951,
+      "episodes": [
+        {
+          "seed": 101,
+          "fitness": 17,
+          "damage": 17,
+          "kills": 26,
+          "sent": 55,
+          "energy_spent": 299,
+          "damage_per_energy": 0.056856187290969896,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 202,
+          "fitness": 15,
+          "damage": 15,
+          "kills": 33,
+          "sent": 59,
+          "energy_spent": 319,
+          "damage_per_energy": 0.047021943573667714,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 303,
+          "fitness": 14,
+          "damage": 14,
+          "kills": 30,
+          "sent": 56,
+          "energy_spent": 304,
+          "damage_per_energy": 0.046052631578947366,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 404,
+          "fitness": 13,
+          "damage": 13,
+          "kills": 36,
+          "sent": 61,
+          "energy_spent": 329,
+          "damage_per_energy": 0.03951367781155015,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 505,
+          "fitness": 16,
+          "damage": 16,
+          "kills": 40,
+          "sent": 63,
+          "energy_spent": 339,
+          "damage_per_energy": 0.0471976401179941,
+          "elapsed": 90.0
+        }
+      ]
+    },
+    "SCOUT": {
+      "mean_damage": 4.4,
+      "std_damage": 0.8,
+      "episodes": [
+        {
+          "seed": 101,
+          "fitness": 5,
+          "damage": 5,
+          "kills": 63,
+          "sent": 81,
+          "energy_spent": 405,
+          "damage_per_energy": 0.012345679012345678,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 202,
+          "fitness": 5,
+          "damage": 5,
+          "kills": 80,
+          "sent": 91,
+          "energy_spent": 455,
+          "damage_per_energy": 0.01098901098901099,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 303,
+          "fitness": 4,
+          "damage": 4,
+          "kills": 62,
+          "sent": 81,
+          "energy_spent": 405,
+          "damage_per_energy": 0.009876543209876543,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 404,
+          "fitness": 3,
+          "damage": 3,
+          "kills": 73,
+          "sent": 87,
+          "energy_spent": 435,
+          "damage_per_energy": 0.006896551724137931,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 505,
+          "fitness": 5,
+          "damage": 5,
+          "kills": 86,
+          "sent": 95,
+          "energy_spent": 475,
+          "damage_per_energy": 0.010526315789473684,
+          "elapsed": 90.0
+        }
+      ]
+    },
+    "TANK": {
+      "mean_damage": 0,
+      "std_damage": 0.0,
+      "episodes": [
+        {
+          "seed": 101,
+          "fitness": 0,
+          "damage": 0,
+          "kills": 40,
+          "sent": 45,
+          "energy_spent": 450,
+          "damage_per_energy": 0.0,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 202,
+          "fitness": 0,
+          "damage": 0,
+          "kills": 53,
+          "sent": 53,
+          "energy_spent": 530,
+          "damage_per_energy": 0.0,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 303,
+          "fitness": 0,
+          "damage": 0,
+          "kills": 43,
+          "sent": 47,
+          "energy_spent": 470,
+          "damage_per_energy": 0.0,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 404,
+          "fitness": 0,
+          "damage": 0,
+          "kills": 48,
+          "sent": 50,
+          "energy_spent": 500,
+          "damage_per_energy": 0.0,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 505,
+          "fitness": 0,
+          "damage": 0,
+          "kills": 53,
+          "sent": 53,
+          "energy_spent": 530,
+          "damage_per_energy": 0.0,
+          "elapsed": 90.0
+        }
+      ]
+    },
+    "SPEED": {
+      "mean_damage": 3.2,
+      "std_damage": 1.3266499161421599,
+      "episodes": [
+        {
+          "seed": 101,
+          "fitness": 4,
+          "damage": 4,
+          "kills": 52,
+          "sent": 61,
+          "energy_spent": 427,
+          "damage_per_energy": 0.00936768149882904,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 202,
+          "fitness": 3,
+          "damage": 3,
+          "kills": 64,
+          "sent": 67,
+          "energy_spent": 469,
+          "damage_per_energy": 0.006396588486140725,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 303,
+          "fitness": 3,
+          "damage": 3,
+          "kills": 54,
+          "sent": 61,
+          "energy_spent": 427,
+          "damage_per_energy": 0.00702576112412178,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 404,
+          "fitness": 1,
+          "damage": 1,
+          "kills": 66,
+          "sent": 69,
+          "energy_spent": 483,
+          "damage_per_energy": 0.002070393374741201,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 505,
+          "fitness": 5,
+          "damage": 5,
+          "kills": 59,
+          "sent": 65,
+          "energy_spent": 455,
+          "damage_per_energy": 0.01098901098901099,
+          "elapsed": 90.0
+        }
+      ]
+    },
+    "MIXED": {
+      "mean_damage": 3,
+      "std_damage": 1.0954451150103321,
+      "episodes": [
+        {
+          "seed": 101,
+          "fitness": 3,
+          "damage": 3,
+          "kills": 65,
+          "sent": 81,
+          "energy_spent": 417,
+          "damage_per_energy": 0.007194244604316547,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 202,
+          "fitness": 3,
+          "damage": 3,
+          "kills": 73,
+          "sent": 86,
+          "energy_spent": 442,
+          "damage_per_energy": 0.006787330316742082,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 303,
+          "fitness": 2,
+          "damage": 2,
+          "kills": 66,
+          "sent": 82,
+          "energy_spent": 422,
+          "damage_per_energy": 0.004739336492890996,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 404,
+          "fitness": 2,
+          "damage": 2,
+          "kills": 83,
+          "sent": 92,
+          "energy_spent": 472,
+          "damage_per_energy": 0.00423728813559322,
+          "elapsed": 90.0
+        },
+        {
+          "seed": 505,
+          "fitness": 5,
+          "damage": 5,
+          "kills": 84,
+          "sent": 93,
+          "energy_spent": 477,
+          "damage_per_energy": 0.010482180293501049,
+          "elapsed": 90.0
+        }
+      ]
+    }
+  },
+  "replay": {
+    "seed": 101,
+    "fitness": 17,
+    "damage": 17,
+    "kills": 26,
+    "sent": 55,
+    "energy_spent": 299,
+    "damage_per_energy": 0.056856187290969896,
+    "elapsed": 90.0,
+    "history": [
+      {
+        "time": 0.2,
+        "base_hp": 1000,
+        "energy": 40,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 0.4,
+        "base_hp": 1000,
+        "energy": 40,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 0.6000000000000001,
+        "base_hp": 1000,
+        "energy": 41,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 0.8,
+        "base_hp": 1000,
+        "energy": 41,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.0,
+        "base_hp": 1000,
+        "energy": 42,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.2,
+        "base_hp": 1000,
+        "energy": 42,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.4,
+        "base_hp": 1000,
+        "energy": 42,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.5999999999999999,
+        "base_hp": 1000,
+        "energy": 43,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.7999999999999998,
+        "base_hp": 1000,
+        "energy": 43,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 1.9999999999999998,
+        "base_hp": 1000,
+        "energy": 44,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 2.1999999999999997,
+        "base_hp": 1000,
+        "energy": 44,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 2.4,
+        "base_hp": 1000,
+        "energy": 44,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 2.6,
+        "base_hp": 1000,
+        "energy": 45,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 2.8000000000000003,
+        "base_hp": 1000,
+        "energy": 45,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 3.0000000000000004,
+        "base_hp": 1000,
+        "energy": 46,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 3.2000000000000006,
+        "base_hp": 1000,
+        "energy": 46,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 3.400000000000001,
+        "base_hp": 1000,
+        "energy": 46,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 3.600000000000001,
+        "base_hp": 1000,
+        "energy": 47,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 3.800000000000001,
+        "base_hp": 1000,
+        "energy": 47,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 4.000000000000001,
+        "base_hp": 1000,
+        "energy": 48,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 4.200000000000001,
+        "base_hp": 1000,
+        "energy": 48,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 4.400000000000001,
+        "base_hp": 1000,
+        "energy": 48,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 4.600000000000001,
+        "base_hp": 1000,
+        "energy": 49,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 4.800000000000002,
+        "base_hp": 1000,
+        "energy": 49,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 5.000000000000002,
+        "base_hp": 1000,
+        "energy": 50,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 5.200000000000002,
+        "base_hp": 1000,
+        "energy": 50,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 5.400000000000002,
+        "base_hp": 1000,
+        "energy": 50,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 5.600000000000002,
+        "base_hp": 1000,
+        "energy": 51,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 5.8000000000000025,
+        "base_hp": 1000,
+        "energy": 51,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 6.000000000000003,
+        "base_hp": 1000,
+        "energy": 52,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 6.200000000000003,
+        "base_hp": 1000,
+        "energy": 52,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 6.400000000000003,
+        "base_hp": 1000,
+        "energy": 52,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 6.600000000000003,
+        "base_hp": 1000,
+        "energy": 53,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 6.800000000000003,
+        "base_hp": 1000,
+        "energy": 53,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 7.0000000000000036,
+        "base_hp": 1000,
+        "energy": 54,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 7.200000000000004,
+        "base_hp": 1000,
+        "energy": 54,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 7.400000000000004,
+        "base_hp": 1000,
+        "energy": 54,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 7.600000000000004,
+        "base_hp": 1000,
+        "energy": 55,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 7.800000000000004,
+        "base_hp": 1000,
+        "energy": 55,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 8.000000000000004,
+        "base_hp": 1000,
+        "energy": 56,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 8.200000000000003,
+        "base_hp": 1000,
+        "energy": 56,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 8.400000000000002,
+        "base_hp": 1000,
+        "energy": 56,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 8.600000000000001,
+        "base_hp": 1000,
+        "energy": 57,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 8.8,
+        "base_hp": 1000,
+        "energy": 57,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.0,
+        "base_hp": 1000,
+        "energy": 58,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.2,
+        "base_hp": 1000,
+        "energy": 58,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.399999999999999,
+        "base_hp": 1000,
+        "energy": 58,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.599999999999998,
+        "base_hp": 1000,
+        "energy": 59,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.799999999999997,
+        "base_hp": 1000,
+        "energy": 59,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 9.999999999999996,
+        "base_hp": 1000,
+        "energy": 60,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 10.199999999999996,
+        "base_hp": 1000,
+        "energy": 60,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 10.399999999999995,
+        "base_hp": 1000,
+        "energy": 60,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 10.599999999999994,
+        "base_hp": 1000,
+        "energy": 61,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 10.799999999999994,
+        "base_hp": 1000,
+        "energy": 61,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 10.999999999999993,
+        "base_hp": 1000,
+        "energy": 62,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 11.199999999999992,
+        "base_hp": 1000,
+        "energy": 62,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 11.399999999999991,
+        "base_hp": 1000,
+        "energy": 62,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 11.59999999999999,
+        "base_hp": 1000,
+        "energy": 63,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 11.79999999999999,
+        "base_hp": 1000,
+        "energy": 63,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 11.99999999999999,
+        "base_hp": 1000,
+        "energy": 64,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 12.199999999999989,
+        "base_hp": 1000,
+        "energy": 64,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 12.399999999999988,
+        "base_hp": 1000,
+        "energy": 64,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 12.599999999999987,
+        "base_hp": 1000,
+        "energy": 65,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 12.799999999999986,
+        "base_hp": 1000,
+        "energy": 65,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 12.999999999999986,
+        "base_hp": 1000,
+        "energy": 66,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 13.199999999999985,
+        "base_hp": 1000,
+        "energy": 66,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 13.399999999999984,
+        "base_hp": 1000,
+        "energy": 66,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 13.599999999999984,
+        "base_hp": 1000,
+        "energy": 67,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 13.799999999999983,
+        "base_hp": 1000,
+        "energy": 67,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 13.999999999999982,
+        "base_hp": 1000,
+        "energy": 68,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 14.199999999999982,
+        "base_hp": 1000,
+        "energy": 68,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 14.39999999999998,
+        "base_hp": 1000,
+        "energy": 68,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 14.59999999999998,
+        "base_hp": 1000,
+        "energy": 69,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 14.79999999999998,
+        "base_hp": 1000,
+        "energy": 69,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 14.999999999999979,
+        "base_hp": 1000,
+        "energy": 70,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 15.199999999999978,
+        "base_hp": 1000,
+        "energy": 70,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 15.399999999999977,
+        "base_hp": 1000,
+        "energy": 70,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 15.599999999999977,
+        "base_hp": 1000,
+        "energy": 71,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 15.799999999999976,
+        "base_hp": 1000,
+        "energy": 71,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 15.999999999999975,
+        "base_hp": 1000,
+        "energy": 72,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 16.199999999999974,
+        "base_hp": 1000,
+        "energy": 72,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 16.399999999999974,
+        "base_hp": 1000,
+        "energy": 72,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 16.599999999999973,
+        "base_hp": 1000,
+        "energy": 73,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 16.799999999999972,
+        "base_hp": 1000,
+        "energy": 73,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 16.99999999999997,
+        "base_hp": 1000,
+        "energy": 74,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 17.19999999999997,
+        "base_hp": 1000,
+        "energy": 74,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 17.39999999999997,
+        "base_hp": 1000,
+        "energy": 74,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 17.59999999999997,
+        "base_hp": 1000,
+        "energy": 75,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 17.79999999999997,
+        "base_hp": 1000,
+        "energy": 75,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 17.999999999999968,
+        "base_hp": 1000,
+        "energy": 76,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 18.199999999999967,
+        "base_hp": 1000,
+        "energy": 76,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 18.399999999999967,
+        "base_hp": 1000,
+        "energy": 76,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 18.599999999999966,
+        "base_hp": 1000,
+        "energy": 77,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 18.799999999999965,
+        "base_hp": 1000,
+        "energy": 77,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 18.999999999999964,
+        "base_hp": 1000,
+        "energy": 78,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 19.199999999999964,
+        "base_hp": 1000,
+        "energy": 78,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 19.399999999999963,
+        "base_hp": 1000,
+        "energy": 78,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 19.599999999999962,
+        "base_hp": 1000,
+        "energy": 79,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 19.79999999999996,
+        "base_hp": 1000,
+        "energy": 79,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 19.99999999999996,
+        "base_hp": 1000,
+        "energy": 80,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 20.19999999999996,
+        "base_hp": 1000,
+        "energy": 80,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 20.39999999999996,
+        "base_hp": 1000,
+        "energy": 80,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 20.59999999999996,
+        "base_hp": 1000,
+        "energy": 81,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 20.799999999999958,
+        "base_hp": 1000,
+        "energy": 81,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 20.999999999999957,
+        "base_hp": 1000,
+        "energy": 82,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 21.199999999999957,
+        "base_hp": 1000,
+        "energy": 82,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 21.399999999999956,
+        "base_hp": 1000,
+        "energy": 82,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 21.599999999999955,
+        "base_hp": 1000,
+        "energy": 83,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 21.799999999999955,
+        "base_hp": 1000,
+        "energy": 83,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 21.999999999999954,
+        "base_hp": 1000,
+        "energy": 84,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 22.199999999999953,
+        "base_hp": 1000,
+        "energy": 84,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 22.399999999999952,
+        "base_hp": 1000,
+        "energy": 84,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 22.59999999999995,
+        "base_hp": 1000,
+        "energy": 85,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 22.79999999999995,
+        "base_hp": 1000,
+        "energy": 85,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 22.99999999999995,
+        "base_hp": 1000,
+        "energy": 86,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 23.19999999999995,
+        "base_hp": 1000,
+        "energy": 86,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 23.39999999999995,
+        "base_hp": 1000,
+        "energy": 86,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 23.599999999999948,
+        "base_hp": 1000,
+        "energy": 87,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 23.799999999999947,
+        "base_hp": 1000,
+        "energy": 87,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 23.999999999999947,
+        "base_hp": 1000,
+        "energy": 88,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 24.199999999999946,
+        "base_hp": 1000,
+        "energy": 88,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 24.399999999999945,
+        "base_hp": 1000,
+        "energy": 88,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 24.599999999999945,
+        "base_hp": 1000,
+        "energy": 89,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 24.799999999999944,
+        "base_hp": 1000,
+        "energy": 89,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 24.999999999999943,
+        "base_hp": 1000,
+        "energy": 90,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 25.199999999999942,
+        "base_hp": 1000,
+        "energy": 90,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 25.39999999999994,
+        "base_hp": 1000,
+        "energy": 90,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 25.59999999999994,
+        "base_hp": 1000,
+        "energy": 91,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 25.79999999999994,
+        "base_hp": 1000,
+        "energy": 91,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 25.99999999999994,
+        "base_hp": 1000,
+        "energy": 92,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 26.19999999999994,
+        "base_hp": 1000,
+        "energy": 92,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 26.399999999999938,
+        "base_hp": 1000,
+        "energy": 92,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 26.599999999999937,
+        "base_hp": 1000,
+        "energy": 93,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 26.799999999999937,
+        "base_hp": 1000,
+        "energy": 93,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 26.999999999999936,
+        "base_hp": 1000,
+        "energy": 94,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 27.199999999999935,
+        "base_hp": 1000,
+        "energy": 94,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 27.399999999999935,
+        "base_hp": 1000,
+        "energy": 94,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 27.599999999999934,
+        "base_hp": 1000,
+        "energy": 95,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 27.799999999999933,
+        "base_hp": 1000,
+        "energy": 95,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 27.999999999999932,
+        "base_hp": 1000,
+        "energy": 96,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 28.199999999999932,
+        "base_hp": 1000,
+        "energy": 96,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 28.39999999999993,
+        "base_hp": 1000,
+        "energy": 96,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 28.59999999999993,
+        "base_hp": 1000,
+        "energy": 97,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 28.79999999999993,
+        "base_hp": 1000,
+        "energy": 97,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 28.99999999999993,
+        "base_hp": 1000,
+        "energy": 98,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 29.19999999999993,
+        "base_hp": 1000,
+        "energy": 98,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 29.399999999999928,
+        "base_hp": 1000,
+        "energy": 98,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 29.599999999999927,
+        "base_hp": 1000,
+        "energy": 99,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 29.799999999999926,
+        "base_hp": 1000,
+        "energy": 99,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 29.999999999999925,
+        "base_hp": 1000,
+        "energy": 100,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 30.199999999999925,
+        "base_hp": 1000,
+        "energy": 1,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 0,
+        "towers": 2
+      },
+      {
+        "time": 30.399999999999924,
+        "base_hp": 1000,
+        "energy": 1,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 1,
+        "towers": 2
+      },
+      {
+        "time": 30.599999999999923,
+        "base_hp": 1000,
+        "energy": 2,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 2,
+        "towers": 2
+      },
+      {
+        "time": 30.799999999999923,
+        "base_hp": 1000,
+        "energy": 2,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 2,
+        "towers": 2
+      },
+      {
+        "time": 30.999999999999922,
+        "base_hp": 1000,
+        "energy": 3,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 3,
+        "towers": 2
+      },
+      {
+        "time": 31.19999999999992,
+        "base_hp": 1000,
+        "energy": 3,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 4,
+        "towers": 2
+      },
+      {
+        "time": 31.39999999999992,
+        "base_hp": 1000,
+        "energy": 3,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 4,
+        "towers": 2
+      },
+      {
+        "time": 31.59999999999992,
+        "base_hp": 1000,
+        "energy": 4,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 5,
+        "towers": 2
+      },
+      {
+        "time": 31.79999999999992,
+        "base_hp": 1000,
+        "energy": 4,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 6,
+        "towers": 2
+      },
+      {
+        "time": 31.99999999999992,
+        "base_hp": 1000,
+        "energy": 5,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 6,
+        "towers": 2
+      },
+      {
+        "time": 32.19999999999992,
+        "base_hp": 1000,
+        "energy": 5,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 7,
+        "towers": 2
+      },
+      {
+        "time": 32.39999999999992,
+        "base_hp": 1000,
+        "energy": 5,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 8,
+        "towers": 2
+      },
+      {
+        "time": 32.59999999999992,
+        "base_hp": 1000,
+        "energy": 6,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 8,
+        "towers": 2
+      },
+      {
+        "time": 32.799999999999926,
+        "base_hp": 1000,
+        "energy": 6,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 9,
+        "towers": 2
+      },
+      {
+        "time": 32.99999999999993,
+        "base_hp": 1000,
+        "energy": 7,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 33.19999999999993,
+        "base_hp": 1000,
+        "energy": 7,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 33.399999999999935,
+        "base_hp": 1000,
+        "energy": 7,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 11,
+        "towers": 2
+      },
+      {
+        "time": 33.59999999999994,
+        "base_hp": 1000,
+        "energy": 8,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 33.79999999999994,
+        "base_hp": 1000,
+        "energy": 8,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 33.99999999999994,
+        "base_hp": 1000,
+        "energy": 9,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 34.199999999999946,
+        "base_hp": 1000,
+        "energy": 9,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 34.39999999999995,
+        "base_hp": 1000,
+        "energy": 9,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 34.59999999999995,
+        "base_hp": 1000,
+        "energy": 10,
+        "kills": 0,
+        "leaks": 0,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 34.799999999999955,
+        "base_hp": 1000,
+        "energy": 14,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 34.99999999999996,
+        "base_hp": 1000,
+        "energy": 15,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 35.19999999999996,
+        "base_hp": 1000,
+        "energy": 15,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 35.39999999999996,
+        "base_hp": 1000,
+        "energy": 15,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 35.599999999999966,
+        "base_hp": 1000,
+        "energy": 16,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 35.79999999999997,
+        "base_hp": 1000,
+        "energy": 16,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 35.99999999999997,
+        "base_hp": 1000,
+        "energy": 17,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 36.199999999999974,
+        "base_hp": 1000,
+        "energy": 17,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 36.39999999999998,
+        "base_hp": 1000,
+        "energy": 17,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 36.59999999999998,
+        "base_hp": 1000,
+        "energy": 18,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 36.79999999999998,
+        "base_hp": 1000,
+        "energy": 18,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 36.999999999999986,
+        "base_hp": 1000,
+        "energy": 19,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 37.19999999999999,
+        "base_hp": 1000,
+        "energy": 19,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 37.39999999999999,
+        "base_hp": 1000,
+        "energy": 19,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 37.599999999999994,
+        "base_hp": 1000,
+        "energy": 20,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 37.8,
+        "base_hp": 1000,
+        "energy": 20,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 38.0,
+        "base_hp": 1000,
+        "energy": 21,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 38.2,
+        "base_hp": 1000,
+        "energy": 21,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 38.400000000000006,
+        "base_hp": 1000,
+        "energy": 21,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 38.60000000000001,
+        "base_hp": 1000,
+        "energy": 22,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 38.80000000000001,
+        "base_hp": 1000,
+        "energy": 22,
+        "kills": 1,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 39.000000000000014,
+        "base_hp": 1000,
+        "energy": 26,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 39.20000000000002,
+        "base_hp": 1000,
+        "energy": 26,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 39.40000000000002,
+        "base_hp": 1000,
+        "energy": 26,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 39.60000000000002,
+        "base_hp": 1000,
+        "energy": 27,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 39.800000000000026,
+        "base_hp": 1000,
+        "energy": 27,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 40.00000000000003,
+        "base_hp": 1000,
+        "energy": 28,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 40.20000000000003,
+        "base_hp": 1000,
+        "energy": 28,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 40.400000000000034,
+        "base_hp": 1000,
+        "energy": 28,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 40.60000000000004,
+        "base_hp": 1000,
+        "energy": 29,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 40.80000000000004,
+        "base_hp": 1000,
+        "energy": 29,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 41.00000000000004,
+        "base_hp": 1000,
+        "energy": 30,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 41.200000000000045,
+        "base_hp": 1000,
+        "energy": 30,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 41.40000000000005,
+        "base_hp": 1000,
+        "energy": 30,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 41.60000000000005,
+        "base_hp": 1000,
+        "energy": 31,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 41.800000000000054,
+        "base_hp": 1000,
+        "energy": 31,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 42.00000000000006,
+        "base_hp": 1000,
+        "energy": 32,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 42.20000000000006,
+        "base_hp": 1000,
+        "energy": 32,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 42.40000000000006,
+        "base_hp": 1000,
+        "energy": 32,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 42.600000000000065,
+        "base_hp": 1000,
+        "energy": 33,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 42.80000000000007,
+        "base_hp": 1000,
+        "energy": 33,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 43.00000000000007,
+        "base_hp": 1000,
+        "energy": 34,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 43.200000000000074,
+        "base_hp": 1000,
+        "energy": 34,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 43.40000000000008,
+        "base_hp": 1000,
+        "energy": 34,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 43.60000000000008,
+        "base_hp": 1000,
+        "energy": 35,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 43.80000000000008,
+        "base_hp": 1000,
+        "energy": 35,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 44.000000000000085,
+        "base_hp": 1000,
+        "energy": 36,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 44.20000000000009,
+        "base_hp": 1000,
+        "energy": 36,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 44.40000000000009,
+        "base_hp": 1000,
+        "energy": 36,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 44.600000000000094,
+        "base_hp": 1000,
+        "energy": 37,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 44.8000000000001,
+        "base_hp": 1000,
+        "energy": 37,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 45.0000000000001,
+        "base_hp": 1000,
+        "energy": 38,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 45.2000000000001,
+        "base_hp": 1000,
+        "energy": 3,
+        "kills": 2,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 45.400000000000105,
+        "base_hp": 1000,
+        "energy": 7,
+        "kills": 3,
+        "leaks": 0,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 45.60000000000011,
+        "base_hp": 1000,
+        "energy": 8,
+        "kills": 3,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 45.80000000000011,
+        "base_hp": 1000,
+        "energy": 8,
+        "kills": 3,
+        "leaks": 0,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 46.000000000000114,
+        "base_hp": 1000,
+        "energy": 9,
+        "kills": 3,
+        "leaks": 0,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 46.20000000000012,
+        "base_hp": 1000,
+        "energy": 9,
+        "kills": 3,
+        "leaks": 0,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 46.40000000000012,
+        "base_hp": 1000,
+        "energy": 12,
+        "kills": 4,
+        "leaks": 0,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 46.60000000000012,
+        "base_hp": 1000,
+        "energy": 13,
+        "kills": 4,
+        "leaks": 0,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 46.800000000000125,
+        "base_hp": 1000,
+        "energy": 13,
+        "kills": 4,
+        "leaks": 0,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 47.00000000000013,
+        "base_hp": 1000,
+        "energy": 14,
+        "kills": 4,
+        "leaks": 0,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 47.20000000000013,
+        "base_hp": 1000,
+        "energy": 18,
+        "kills": 5,
+        "leaks": 0,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 47.400000000000134,
+        "base_hp": 1000,
+        "energy": 18,
+        "kills": 5,
+        "leaks": 0,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 47.600000000000136,
+        "base_hp": 999,
+        "energy": 4,
+        "kills": 5,
+        "leaks": 1,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 47.80000000000014,
+        "base_hp": 999,
+        "energy": 4,
+        "kills": 5,
+        "leaks": 1,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 48.00000000000014,
+        "base_hp": 998,
+        "energy": 5,
+        "kills": 5,
+        "leaks": 2,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 48.200000000000145,
+        "base_hp": 997,
+        "energy": 5,
+        "kills": 5,
+        "leaks": 3,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 48.40000000000015,
+        "base_hp": 997,
+        "energy": 5,
+        "kills": 5,
+        "leaks": 3,
+        "alive": 17,
+        "towers": 2
+      },
+      {
+        "time": 48.60000000000015,
+        "base_hp": 996,
+        "energy": 6,
+        "kills": 5,
+        "leaks": 4,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 48.80000000000015,
+        "base_hp": 995,
+        "energy": 1,
+        "kills": 5,
+        "leaks": 5,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 49.000000000000156,
+        "base_hp": 995,
+        "energy": 2,
+        "kills": 5,
+        "leaks": 5,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 49.20000000000016,
+        "base_hp": 995,
+        "energy": 2,
+        "kills": 5,
+        "leaks": 5,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 49.40000000000016,
+        "base_hp": 994,
+        "energy": 2,
+        "kills": 5,
+        "leaks": 6,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 49.600000000000165,
+        "base_hp": 993,
+        "energy": 3,
+        "kills": 5,
+        "leaks": 7,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 49.80000000000017,
+        "base_hp": 992,
+        "energy": 3,
+        "kills": 5,
+        "leaks": 8,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 50.00000000000017,
+        "base_hp": 992,
+        "energy": 4,
+        "kills": 5,
+        "leaks": 8,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 50.20000000000017,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 5,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 50.400000000000176,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 5,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 50.60000000000018,
+        "base_hp": 991,
+        "energy": 8,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 11,
+        "towers": 2
+      },
+      {
+        "time": 50.80000000000018,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 11,
+        "towers": 2
+      },
+      {
+        "time": 51.000000000000185,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 51.20000000000019,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 51.40000000000019,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 51.60000000000019,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 51.800000000000196,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 52.0000000000002,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 12,
+        "towers": 2
+      },
+      {
+        "time": 52.2000000000002,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 52.400000000000205,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 52.60000000000021,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 52.80000000000021,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 53.00000000000021,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 53.200000000000216,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 53.40000000000022,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 53.60000000000022,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 53.800000000000225,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 54.00000000000023,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 54.20000000000023,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 54.40000000000023,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 54.600000000000236,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 54.80000000000024,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 6,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 55.00000000000024,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 55.200000000000244,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 55.40000000000025,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 55.60000000000025,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 55.80000000000025,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 56.000000000000256,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 56.20000000000026,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 56.40000000000026,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 56.600000000000264,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 56.80000000000027,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 57.00000000000027,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 57.20000000000027,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 57.400000000000276,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 57.60000000000028,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 57.80000000000028,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 58.000000000000284,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 58.20000000000029,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 7,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 58.40000000000029,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 58.60000000000029,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 58.800000000000296,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 59.0000000000003,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 59.2000000000003,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 59.400000000000304,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 59.60000000000031,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 59.80000000000031,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 60.00000000000031,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 60.200000000000315,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 60.40000000000032,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 60.60000000000032,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 60.800000000000324,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 61.00000000000033,
+        "base_hp": 991,
+        "energy": 5,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 61.20000000000033,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 61.40000000000033,
+        "base_hp": 991,
+        "energy": 0,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 61.600000000000335,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 61.80000000000034,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 62.00000000000034,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 62.200000000000344,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 62.40000000000035,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 8,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 62.60000000000035,
+        "base_hp": 991,
+        "energy": 6,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 62.80000000000035,
+        "base_hp": 991,
+        "energy": 1,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 63.000000000000355,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 63.20000000000036,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 63.40000000000036,
+        "base_hp": 991,
+        "energy": 2,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 63.600000000000364,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 63.80000000000037,
+        "base_hp": 991,
+        "energy": 3,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 64.00000000000037,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 64.20000000000037,
+        "base_hp": 991,
+        "energy": 4,
+        "kills": 9,
+        "leaks": 9,
+        "alive": 16,
+        "towers": 2
+      },
+      {
+        "time": 64.40000000000038,
+        "base_hp": 990,
+        "energy": 4,
+        "kills": 9,
+        "leaks": 10,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 64.60000000000038,
+        "base_hp": 990,
+        "energy": 5,
+        "kills": 9,
+        "leaks": 10,
+        "alive": 15,
+        "towers": 2
+      },
+      {
+        "time": 64.80000000000038,
+        "base_hp": 989,
+        "energy": 0,
+        "kills": 9,
+        "leaks": 11,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 65.00000000000038,
+        "base_hp": 988,
+        "energy": 1,
+        "kills": 9,
+        "leaks": 12,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 65.20000000000039,
+        "base_hp": 988,
+        "energy": 1,
+        "kills": 9,
+        "leaks": 12,
+        "alive": 14,
+        "towers": 2
+      },
+      {
+        "time": 65.40000000000039,
+        "base_hp": 987,
+        "energy": 1,
+        "kills": 9,
+        "leaks": 13,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 65.60000000000039,
+        "base_hp": 987,
+        "energy": 2,
+        "kills": 9,
+        "leaks": 13,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 65.8000000000004,
+        "base_hp": 987,
+        "energy": 2,
+        "kills": 9,
+        "leaks": 13,
+        "alive": 13,
+        "towers": 2
+      },
+      {
+        "time": 66.0000000000004,
+        "base_hp": 985,
+        "energy": 3,
+        "kills": 9,
+        "leaks": 15,
+        "alive": 11,
+        "towers": 2
+      },
+      {
+        "time": 66.2000000000004,
+        "base_hp": 985,
+        "energy": 3,
+        "kills": 9,
+        "leaks": 15,
+        "alive": 11,
+        "towers": 2
+      },
+      {
+        "time": 66.4000000000004,
+        "base_hp": 984,
+        "energy": 3,
+        "kills": 9,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 66.6000000000004,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 9,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 66.80000000000041,
+        "base_hp": 984,
+        "energy": 7,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 9,
+        "towers": 2
+      },
+      {
+        "time": 67.00000000000041,
+        "base_hp": 984,
+        "energy": 3,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 9,
+        "towers": 2
+      },
+      {
+        "time": 67.20000000000041,
+        "base_hp": 984,
+        "energy": 3,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 67.40000000000042,
+        "base_hp": 984,
+        "energy": 3,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 67.60000000000042,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 67.80000000000042,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 68.00000000000043,
+        "base_hp": 984,
+        "energy": 5,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 68.20000000000043,
+        "base_hp": 984,
+        "energy": 0,
+        "kills": 10,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 68.40000000000043,
+        "base_hp": 984,
+        "energy": 3,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 68.60000000000043,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 68.80000000000044,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 69.00000000000044,
+        "base_hp": 984,
+        "energy": 5,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 2
+      },
+      {
+        "time": 69.20000000000044,
+        "base_hp": 984,
+        "energy": 5,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 69.40000000000045,
+        "base_hp": 984,
+        "energy": 0,
+        "kills": 11,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 69.60000000000045,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 12,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 69.80000000000045,
+        "base_hp": 984,
+        "energy": 4,
+        "kills": 12,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 70.00000000000045,
+        "base_hp": 984,
+        "energy": 5,
+        "kills": 12,
+        "leaks": 16,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 70.20000000000046,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 12,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 70.40000000000046,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 12,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 70.60000000000046,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 8,
+        "towers": 3
+      },
+      {
+        "time": 70.80000000000047,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 71.00000000000047,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 71.20000000000047,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 71.40000000000047,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 71.60000000000048,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 71.80000000000048,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 72.00000000000048,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 72.20000000000049,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 72.40000000000049,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 13,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 72.60000000000049,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 72.8000000000005,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 73.0000000000005,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 73.2000000000005,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 73.4000000000005,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 73.6000000000005,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 14,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 73.80000000000051,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 15,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 74.00000000000051,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 15,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 74.20000000000051,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 15,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 74.40000000000052,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 74.60000000000052,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 74.80000000000052,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 75.00000000000053,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 75.20000000000053,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 75.40000000000053,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 9,
+        "towers": 3
+      },
+      {
+        "time": 75.60000000000053,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 75.80000000000054,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 76.00000000000054,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 76.20000000000054,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 76.40000000000055,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 76.60000000000055,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 76.80000000000055,
+        "base_hp": 983,
+        "energy": 0,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 77.00000000000055,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 77.20000000000056,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 77.40000000000056,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 77.60000000000056,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 16,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 77.80000000000057,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 17,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 78.00000000000057,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 17,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 78.20000000000057,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 17,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 78.40000000000057,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 17,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 78.60000000000058,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 78.80000000000058,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 79.00000000000058,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 79.20000000000059,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 3
+      },
+      {
+        "time": 79.40000000000059,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 79.60000000000059,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 79.8000000000006,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 80.0000000000006,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 80.2000000000006,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 80.4000000000006,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 80.6000000000006,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 80.80000000000061,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 81.00000000000061,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 81.20000000000061,
+        "base_hp": 983,
+        "energy": 0,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 81.40000000000062,
+        "base_hp": 983,
+        "energy": 0,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 81.60000000000062,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 18,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 81.80000000000062,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 19,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 82.00000000000063,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 19,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 82.20000000000063,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 19,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 82.40000000000063,
+        "base_hp": 983,
+        "energy": 0,
+        "kills": 19,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 82.60000000000063,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 82.80000000000064,
+        "base_hp": 983,
+        "energy": 4,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 83.00000000000064,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 83.20000000000064,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 83.40000000000065,
+        "base_hp": 983,
+        "energy": 5,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 83.60000000000065,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 83.80000000000065,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 84.00000000000065,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 84.20000000000066,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 84.40000000000066,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 84.60000000000066,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 84.80000000000067,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 20,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 3
+      },
+      {
+        "time": 85.00000000000067,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 21,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 3
+      },
+      {
+        "time": 85.20000000000067,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 21,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 85.40000000000067,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 21,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 85.60000000000068,
+        "base_hp": 983,
+        "energy": 3,
+        "kills": 21,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 85.80000000000068,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 22,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 86.00000000000068,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 22,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 86.20000000000068,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 22,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 86.40000000000069,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 22,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 86.60000000000069,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 23,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 86.8000000000007,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 23,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 87.0000000000007,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 23,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 87.2000000000007,
+        "base_hp": 983,
+        "energy": 7,
+        "kills": 23,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 87.4000000000007,
+        "base_hp": 983,
+        "energy": 10,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 4
+      },
+      {
+        "time": 87.6000000000007,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 10,
+        "towers": 4
+      },
+      {
+        "time": 87.80000000000071,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 88.00000000000071,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 88.20000000000071,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 88.40000000000072,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 24,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 88.60000000000072,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 25,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 88.80000000000072,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 25,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 89.00000000000072,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 25,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 89.20000000000073,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 25,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 89.40000000000073,
+        "base_hp": 983,
+        "energy": 2,
+        "kills": 25,
+        "leaks": 17,
+        "alive": 12,
+        "towers": 4
+      },
+      {
+        "time": 89.60000000000073,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 26,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 89.80000000000074,
+        "base_hp": 983,
+        "energy": 6,
+        "kills": 26,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      },
+      {
+        "time": 90.0,
+        "base_hp": 983,
+        "energy": 1,
+        "kills": 26,
+        "leaks": 17,
+        "alive": 11,
+        "towers": 4
+      }
+    ],
+    "waves": [
+      {
+        "time": 29.999999999999925,
+        "cost": 99,
+        "action": "launch_wave",
+        "unit_types": [
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SCOUT",
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SPEED",
+          "SCOUT",
+          "SPEED",
+          "SPEED",
+          "SCOUT"
+        ],
+        "cooldown": 0
+      },
+      {
+        "time": 45.0000000000001,
+        "cost": 35,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT",
+          "SCOUT",
+          "SCOUT",
+          "SCOUT",
+          "SCOUT",
+          "SCOUT",
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 47.400000000000134,
+        "cost": 15,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT",
+          "SCOUT",
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 48.60000000000015,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 50.60000000000018,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 51.800000000000196,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 54.00000000000023,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 55.200000000000244,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 57.60000000000028,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 58.800000000000296,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 61.00000000000033,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 62.60000000000035,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 64.60000000000038,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 66.80000000000041,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 68.00000000000043,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 69.20000000000044,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 70.40000000000046,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 71.60000000000048,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 72.8000000000005,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 74.00000000000051,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 75.20000000000053,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 76.60000000000055,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 77.80000000000057,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 79.00000000000058,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 81.00000000000061,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 82.20000000000063,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 83.40000000000065,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 85.00000000000067,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 86.20000000000068,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 87.4000000000007,
+        "cost": 10,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT",
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 88.60000000000072,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      },
+      {
+        "time": 89.80000000000074,
+        "cost": 5,
+        "action": "launch_wave",
+        "unit_types": [
+          "SCOUT"
+        ],
+        "cooldown": 1.088544991407766
+      }
+    ],
+    "final_state": {
+      "protocol_version": 2,
+      "type": "update",
+      "episode_id": "simulation-101",
+      "step": 450,
+      "elapsed_seconds": 90.0,
+      "map_grid": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          2,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          2,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          2,
+          0,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          2,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "ai_money": 29,
+      "enemy_speed_multiplier": 1.0849999999999982,
+      "resources": {
+        "ai_money": 29,
+        "ai_money_earned_total": 139,
+        "ai_money_spent_total": 260,
+        "player_energy": 1,
+        "player_max_energy": 100,
+        "base_health": 983,
+        "base_max_health": 1000
+      },
+      "player": {
+        "energy": 1,
+        "max_energy": 100
+      },
+      "base": {
+        "health": 983,
+        "max_health": 1000
+      },
+      "wave": {
+        "active": true,
+        "queued_units": [
+          "SCOUT"
+        ],
+        "queued_count": 1,
+        "active_unit_count": 11,
+        "spawn_interval": 0.3,
+        "spawn_time_left": 0.10000000000073611
+      },
+      "terminal": false,
+      "map": {
+        "width": 20,
+        "height": 15,
+        "orientation": "x_major",
+        "cell_size_px": 32.0,
+        "game_tile_size_px": 64.0,
+        "grid_origin_world": [
+          0.0,
+          0.0
+        ],
+        "buildable_grid": [
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "available_buildable_cells": 258,
+        "route_grid": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "tower_type_grid": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "kill_grid": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            3,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "leak_grid": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            17,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "units": [
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.9022631578946912,
+          "speed": 69.43999999999988,
+          "grid_x": 10,
+          "grid_y": 12,
+          "x": 329,
+          "y": 384
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 1,
+          "max_health": 10,
+          "health_fraction": 0.1,
+          "progress": 0.833736842105218,
+          "speed": 69.43999999999988,
+          "grid_x": 7,
+          "grid_y": 12,
+          "x": 246,
+          "y": 384
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 1,
+          "max_health": 10,
+          "health_fraction": 0.1,
+          "progress": 0.6167368421052193,
+          "speed": 69.43999999999988,
+          "grid_x": 6,
+          "grid_y": 5,
+          "x": 192,
+          "y": 174
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.5025263157894305,
+          "speed": 69.43999999999988,
+          "grid_x": 7,
+          "grid_y": 3,
+          "x": 253,
+          "y": 96
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.4339999999999572,
+          "speed": 69.43999999999988,
+          "grid_x": 10,
+          "grid_y": 3,
+          "x": 336,
+          "y": 96
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.3654736842104837,
+          "speed": 69.43999999999988,
+          "grid_x": 12,
+          "grid_y": 4,
+          "x": 384,
+          "y": 132
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.2741052631578523,
+          "speed": 69.43999999999988,
+          "grid_x": 11,
+          "grid_y": 7,
+          "x": 365,
+          "y": 224
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.20557894736837867,
+          "speed": 69.43999999999988,
+          "grid_x": 8,
+          "grid_y": 7,
+          "x": 282,
+          "y": 224
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.13705263157890513,
+          "speed": 69.43999999999988,
+          "grid_x": 6,
+          "grid_y": 7,
+          "x": 199,
+          "y": 224
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.12563157894732618,
+          "speed": 69.43999999999988,
+          "grid_x": 5,
+          "grid_y": 7,
+          "x": 185,
+          "y": 224
+        },
+        {
+          "type": "SCOUT",
+          "type_id": 0,
+          "health": 10,
+          "max_health": 10,
+          "health_fraction": 1.0,
+          "progress": 0.06852631578943154,
+          "speed": 69.43999999999988,
+          "grid_x": 3,
+          "grid_y": 7,
+          "x": 115,
+          "y": 224
+        }
+      ],
+      "towers": [
+        {
+          "type": "SNIPER",
+          "type_id": 1,
+          "x": 7,
+          "y": 11,
+          "damage": 12,
+          "range": 4.5,
+          "range_cells": 9.0,
+          "attack_speed": 0.25,
+          "target_progress": -1.0
+        },
+        {
+          "type": "BASIC",
+          "type_id": 0,
+          "x": 14,
+          "y": 13,
+          "damage": 9,
+          "range": 2.0,
+          "range_cells": 4.0,
+          "attack_speed": 1.25,
+          "target_progress": -1.0
+        },
+        {
+          "type": "SNIPER",
+          "type_id": 1,
+          "x": 11,
+          "y": 2,
+          "damage": 12,
+          "range": 4.5,
+          "range_cells": 9.0,
+          "attack_speed": 0.25,
+          "target_progress": -1.0
+        },
+        {
+          "type": "BASIC",
+          "type_id": 0,
+          "x": 9,
+          "y": 2,
+          "damage": 9,
+          "range": 2.0,
+          "range_cells": 4.0,
+          "attack_speed": 1.25,
+          "target_progress": -1.0
+        }
+      ],
+      "counts": {
+        "enemies_by_type": {
+          "SCOUT": 11,
+          "TANK": 0,
+          "SPEED": 0
+        },
+        "towers_by_type": {
+          "BASIC": 2,
+          "SNIPER": 2
+        }
+      },
+      "metrics": {
+        "kills_total": 26,
+        "leaks_total": 17,
+        "base_damage_total": 17,
+        "ai_money_earned_total": 139,
+        "ai_money_spent_total": 260,
+        "ai_actions_accepted": 4,
+        "ai_actions_rejected": 0,
+        "kills_by_type": {
+          "SCOUT": 23,
+          "TANK": 0,
+          "SPEED": 3
+        },
+        "leaks_by_type": {
+          "SCOUT": 8,
+          "TANK": 0,
+          "SPEED": 9
+        }
+      },
+      "events": [
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:6",
+          "step": 155,
+          "elapsed_seconds": 30.999999999999922
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:7",
+          "step": 156,
+          "elapsed_seconds": 31.19999999999992
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:8",
+          "step": 158,
+          "elapsed_seconds": 31.59999999999992
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:9",
+          "step": 159,
+          "elapsed_seconds": 31.79999999999992
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:10",
+          "step": 161,
+          "elapsed_seconds": 32.19999999999992
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:11",
+          "step": 162,
+          "elapsed_seconds": 32.39999999999992
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:12",
+          "step": 164,
+          "elapsed_seconds": 32.799999999999926
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:13",
+          "step": 165,
+          "elapsed_seconds": 32.99999999999993
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:14",
+          "step": 167,
+          "elapsed_seconds": 33.399999999999935
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:15",
+          "step": 168,
+          "elapsed_seconds": 33.59999999999994
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:16",
+          "step": 170,
+          "elapsed_seconds": 33.99999999999994
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:17",
+          "step": 171,
+          "elapsed_seconds": 34.199999999999946
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SPEED",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:18",
+          "step": 173,
+          "elapsed_seconds": 34.59999999999995
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SPEED",
+          "grid_x": 12,
+          "grid_y": 6,
+          "ai_money_earned": 8,
+          "player_energy_refunded": 4,
+          "event_id": "simulation-101:19",
+          "step": 174,
+          "elapsed_seconds": 34.799999999999955
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 9,
+          "grid_y": 3,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:20",
+          "step": 195,
+          "elapsed_seconds": 39.000000000000014
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT",
+            "SCOUT",
+            "SCOUT",
+            "SCOUT",
+            "SCOUT",
+            "SCOUT",
+            "SCOUT"
+          ],
+          "energy_cost": 35,
+          "event_id": "simulation-101:21",
+          "step": 225,
+          "elapsed_seconds": 45.0000000000001
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:22",
+          "step": 227,
+          "elapsed_seconds": 45.400000000000105
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SPEED",
+          "grid_x": 11,
+          "grid_y": 12,
+          "ai_money_earned": 8,
+          "player_energy_refunded": 4,
+          "event_id": "simulation-101:23",
+          "step": 227,
+          "elapsed_seconds": 45.400000000000105
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:24",
+          "step": 228,
+          "elapsed_seconds": 45.60000000000011
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:25",
+          "step": 230,
+          "elapsed_seconds": 46.000000000000114
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:26",
+          "step": 231,
+          "elapsed_seconds": 46.20000000000012
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:27",
+          "step": 232,
+          "elapsed_seconds": 46.40000000000012
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:28",
+          "step": 233,
+          "elapsed_seconds": 46.60000000000012
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:29",
+          "step": 234,
+          "elapsed_seconds": 46.800000000000125
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:30",
+          "step": 236,
+          "elapsed_seconds": 47.20000000000013
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SPEED",
+          "grid_x": 13,
+          "grid_y": 12,
+          "ai_money_earned": 8,
+          "player_energy_refunded": 4,
+          "event_id": "simulation-101:31",
+          "step": 236,
+          "elapsed_seconds": 47.20000000000013
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT",
+            "SCOUT",
+            "SCOUT"
+          ],
+          "energy_cost": 15,
+          "event_id": "simulation-101:32",
+          "step": 237,
+          "elapsed_seconds": 47.400000000000134
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.005,
+          "event_id": "simulation-101:33",
+          "step": 238,
+          "elapsed_seconds": 47.600000000000136
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:34",
+          "step": 239,
+          "elapsed_seconds": 47.80000000000014
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:35",
+          "step": 240,
+          "elapsed_seconds": 48.00000000000014
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0099999999999998,
+          "event_id": "simulation-101:36",
+          "step": 240,
+          "elapsed_seconds": 48.00000000000014
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0149999999999997,
+          "event_id": "simulation-101:37",
+          "step": 241,
+          "elapsed_seconds": 48.200000000000145
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:38",
+          "step": 242,
+          "elapsed_seconds": 48.40000000000015
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0199999999999996,
+          "event_id": "simulation-101:39",
+          "step": 243,
+          "elapsed_seconds": 48.60000000000015
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:40",
+          "step": 243,
+          "elapsed_seconds": 48.60000000000015
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0249999999999995,
+          "event_id": "simulation-101:41",
+          "step": 244,
+          "elapsed_seconds": 48.80000000000015
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:42",
+          "step": 245,
+          "elapsed_seconds": 49.000000000000156
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0299999999999994,
+          "event_id": "simulation-101:43",
+          "step": 247,
+          "elapsed_seconds": 49.40000000000016
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0349999999999993,
+          "event_id": "simulation-101:44",
+          "step": 248,
+          "elapsed_seconds": 49.600000000000165
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0399999999999991,
+          "event_id": "simulation-101:45",
+          "step": 249,
+          "elapsed_seconds": 49.80000000000017
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SPEED",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.044999999999999,
+          "event_id": "simulation-101:46",
+          "step": 251,
+          "elapsed_seconds": 50.20000000000017
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 10,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:47",
+          "step": 253,
+          "elapsed_seconds": 50.60000000000018
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:48",
+          "step": 253,
+          "elapsed_seconds": 50.60000000000018
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:49",
+          "step": 255,
+          "elapsed_seconds": 51.000000000000185
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:50",
+          "step": 259,
+          "elapsed_seconds": 51.800000000000196
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:51",
+          "step": 261,
+          "elapsed_seconds": 52.2000000000002
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:52",
+          "step": 270,
+          "elapsed_seconds": 54.00000000000023
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:53",
+          "step": 272,
+          "elapsed_seconds": 54.40000000000023
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 3,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:54",
+          "step": 275,
+          "elapsed_seconds": 55.00000000000024
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:55",
+          "step": 276,
+          "elapsed_seconds": 55.200000000000244
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:56",
+          "step": 278,
+          "elapsed_seconds": 55.60000000000025
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:57",
+          "step": 288,
+          "elapsed_seconds": 57.60000000000028
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:58",
+          "step": 290,
+          "elapsed_seconds": 58.000000000000284
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 8,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:59",
+          "step": 292,
+          "elapsed_seconds": 58.40000000000029
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:60",
+          "step": 294,
+          "elapsed_seconds": 58.800000000000296
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:61",
+          "step": 296,
+          "elapsed_seconds": 59.2000000000003
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:62",
+          "step": 305,
+          "elapsed_seconds": 61.00000000000033
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:63",
+          "step": 307,
+          "elapsed_seconds": 61.40000000000033
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 10,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:64",
+          "step": 313,
+          "elapsed_seconds": 62.60000000000035
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:65",
+          "step": 313,
+          "elapsed_seconds": 62.60000000000035
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:66",
+          "step": 315,
+          "elapsed_seconds": 63.000000000000355
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.049999999999999,
+          "event_id": "simulation-101:67",
+          "step": 322,
+          "elapsed_seconds": 64.40000000000038
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:68",
+          "step": 323,
+          "elapsed_seconds": 64.60000000000038
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0549999999999988,
+          "event_id": "simulation-101:69",
+          "step": 324,
+          "elapsed_seconds": 64.80000000000038
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:70",
+          "step": 325,
+          "elapsed_seconds": 65.00000000000038
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0599999999999987,
+          "event_id": "simulation-101:71",
+          "step": 325,
+          "elapsed_seconds": 65.00000000000038
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0649999999999986,
+          "event_id": "simulation-101:72",
+          "step": 327,
+          "elapsed_seconds": 65.40000000000039
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0699999999999985,
+          "event_id": "simulation-101:73",
+          "step": 330,
+          "elapsed_seconds": 66.0000000000004
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0749999999999984,
+          "event_id": "simulation-101:74",
+          "step": 330,
+          "elapsed_seconds": 66.0000000000004
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0799999999999983,
+          "event_id": "simulation-101:75",
+          "step": 332,
+          "elapsed_seconds": 66.4000000000004
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 13,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:76",
+          "step": 334,
+          "elapsed_seconds": 66.80000000000041
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:77",
+          "step": 334,
+          "elapsed_seconds": 66.80000000000041
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:78",
+          "step": 336,
+          "elapsed_seconds": 67.20000000000041
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:79",
+          "step": 340,
+          "elapsed_seconds": 68.00000000000043
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:80",
+          "step": 342,
+          "elapsed_seconds": 68.40000000000043
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 13,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:81",
+          "step": 342,
+          "elapsed_seconds": 68.40000000000043
+        },
+        {
+          "kind": "action_result",
+          "action": "build_tower",
+          "accepted": true,
+          "reason": "built",
+          "tower_type": "SNIPER",
+          "grid_x": 11,
+          "grid_y": 2,
+          "cost": 80,
+          "command_id": "sim-345-81",
+          "event_id": "simulation-101:82",
+          "step": 345,
+          "elapsed_seconds": 69.00000000000044
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:83",
+          "step": 346,
+          "elapsed_seconds": 69.20000000000044
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:84",
+          "step": 348,
+          "elapsed_seconds": 69.60000000000045
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 6,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:85",
+          "step": 348,
+          "elapsed_seconds": 69.60000000000045
+        },
+        {
+          "kind": "base_damaged",
+          "unit_type": "SCOUT",
+          "grid_x": 14,
+          "grid_y": 12,
+          "base_damage": 1,
+          "enemy_speed_multiplier": 1.0849999999999982,
+          "event_id": "simulation-101:86",
+          "step": 351,
+          "elapsed_seconds": 70.20000000000046
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:87",
+          "step": 352,
+          "elapsed_seconds": 70.40000000000046
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 10,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:88",
+          "step": 353,
+          "elapsed_seconds": 70.60000000000046
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:89",
+          "step": 354,
+          "elapsed_seconds": 70.80000000000047
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:90",
+          "step": 358,
+          "elapsed_seconds": 71.60000000000048
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:91",
+          "step": 360,
+          "elapsed_seconds": 72.00000000000048
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 12,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:92",
+          "step": 363,
+          "elapsed_seconds": 72.60000000000049
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:93",
+          "step": 364,
+          "elapsed_seconds": 72.8000000000005
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:94",
+          "step": 366,
+          "elapsed_seconds": 73.2000000000005
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 8,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:95",
+          "step": 369,
+          "elapsed_seconds": 73.80000000000051
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:96",
+          "step": 370,
+          "elapsed_seconds": 74.00000000000051
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:97",
+          "step": 372,
+          "elapsed_seconds": 74.40000000000052
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 8,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:98",
+          "step": 372,
+          "elapsed_seconds": 74.40000000000052
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:99",
+          "step": 376,
+          "elapsed_seconds": 75.20000000000053
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:100",
+          "step": 378,
+          "elapsed_seconds": 75.60000000000053
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:101",
+          "step": 383,
+          "elapsed_seconds": 76.60000000000055
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:102",
+          "step": 385,
+          "elapsed_seconds": 77.00000000000055
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 10,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:103",
+          "step": 389,
+          "elapsed_seconds": 77.80000000000057
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:104",
+          "step": 389,
+          "elapsed_seconds": 77.80000000000057
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:105",
+          "step": 391,
+          "elapsed_seconds": 78.20000000000057
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 10,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:106",
+          "step": 393,
+          "elapsed_seconds": 78.60000000000058
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:107",
+          "step": 395,
+          "elapsed_seconds": 79.00000000000058
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:108",
+          "step": 397,
+          "elapsed_seconds": 79.40000000000059
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:109",
+          "step": 405,
+          "elapsed_seconds": 81.00000000000061
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:110",
+          "step": 407,
+          "elapsed_seconds": 81.40000000000062
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 8,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:111",
+          "step": 409,
+          "elapsed_seconds": 81.80000000000062
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:112",
+          "step": 411,
+          "elapsed_seconds": 82.20000000000063
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:113",
+          "step": 413,
+          "elapsed_seconds": 82.60000000000063
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 9,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:114",
+          "step": 413,
+          "elapsed_seconds": 82.60000000000063
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:115",
+          "step": 417,
+          "elapsed_seconds": 83.40000000000065
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:116",
+          "step": 419,
+          "elapsed_seconds": 83.80000000000065
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 12,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:117",
+          "step": 425,
+          "elapsed_seconds": 85.00000000000067
+        },
+        {
+          "kind": "action_result",
+          "action": "build_tower",
+          "accepted": true,
+          "reason": "built",
+          "tower_type": "BASIC",
+          "grid_x": 9,
+          "grid_y": 2,
+          "cost": 50,
+          "command_id": "sim-425-117",
+          "event_id": "simulation-101:118",
+          "step": 425,
+          "elapsed_seconds": 85.00000000000067
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:119",
+          "step": 425,
+          "elapsed_seconds": 85.00000000000067
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:120",
+          "step": 427,
+          "elapsed_seconds": 85.40000000000067
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 9,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:121",
+          "step": 429,
+          "elapsed_seconds": 85.80000000000068
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:122",
+          "step": 431,
+          "elapsed_seconds": 86.20000000000068
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:123",
+          "step": 433,
+          "elapsed_seconds": 86.60000000000069
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 10,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:124",
+          "step": 433,
+          "elapsed_seconds": 86.60000000000069
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 5,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:125",
+          "step": 437,
+          "elapsed_seconds": 87.4000000000007
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT",
+            "SCOUT"
+          ],
+          "energy_cost": 10,
+          "event_id": "simulation-101:126",
+          "step": 437,
+          "elapsed_seconds": 87.4000000000007
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:127",
+          "step": 439,
+          "elapsed_seconds": 87.80000000000071
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:128",
+          "step": 440,
+          "elapsed_seconds": 88.00000000000071
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 12,
+          "grid_y": 12,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:129",
+          "step": 443,
+          "elapsed_seconds": 88.60000000000072
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:130",
+          "step": 443,
+          "elapsed_seconds": 88.60000000000072
+        },
+        {
+          "kind": "unit_spawned",
+          "unit_type": "SCOUT",
+          "grid_x": 1,
+          "grid_y": 7,
+          "event_id": "simulation-101:131",
+          "step": 445,
+          "elapsed_seconds": 89.00000000000072
+        },
+        {
+          "kind": "unit_killed",
+          "unit_type": "SCOUT",
+          "grid_x": 6,
+          "grid_y": 7,
+          "ai_money_earned": 5,
+          "player_energy_refunded": 3,
+          "event_id": "simulation-101:132",
+          "step": 448,
+          "elapsed_seconds": 89.60000000000073
+        },
+        {
+          "kind": "wave_started",
+          "unit_types": [
+            "SCOUT"
+          ],
+          "energy_cost": 5,
+          "event_id": "simulation-101:133",
+          "step": 449,
+          "elapsed_seconds": 89.80000000000074
+        }
+      ],
+      "features": {
+        "ai_money_fraction": 0.10034602076124567,
+        "player_energy_fraction": 0.01,
+        "base_health_fraction": 0.983,
+        "enemy_speed_bonus_fraction": 0.8499999999999819,
+        "buildable_occupancy_fraction": 0.015267175572519083
+      },
+      "feature_vector": [
+        0.10034602076124567,
+        0.01,
+        0.983,
+        0.8499999999999819,
+        0.015267175572519083,
+        11.0,
+        0.0,
+        0.0,
+        2.0,
+        2.0,
+        1.0
+      ]
+    }
+  },
+  "objective": "Mean base damage; early destruction breaks ties. No global optimum guarantee."
+}

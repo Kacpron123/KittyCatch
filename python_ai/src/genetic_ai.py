@@ -282,12 +282,18 @@ def random_strategy(config: dict, map_data: dict, *, seed: int, slots: int = 10,
     return Strategy(names, tuple(genes), duration)
 
 
+def _evaluate_policy(arguments):
+    policy, config, map_data, seeds, duration, dt = arguments
+    return [rollout(policy, config, map_data, seed, duration=duration, dt=dt) for seed in seeds]
+
+
 def train(config: dict, map_data: dict, *, population_size: int = 32, generations: int = 30,
           seeds: tuple[int, ...] = (10, 11, 12, 13, 14), seed: int = 42, duration: float = 90,
           dt: float = 0.1, mutation_rate: float = 0.15, slots: int = 10,
           progress: Callable[[dict], None] | None = None,
           telemetry: Callable[[dict], None] | None = None,
-          crossover: bool = True, elite_count: int | None = None) -> tuple[Strategy, list[dict]]:
+          crossover: bool = True, elite_count: int | None = None,
+          executor: Any = None) -> tuple[Strategy, list[dict]]:
     if population_size < 4 or generations < 1 or not seeds or not 0 <= mutation_rate <= 1 or slots < 1:
         raise ValueError("Need population >= 4, generations >= 1, seeds, slots >= 1 and mutation rate in [0,1]")
     elites = max(1, population_size // 8) if elite_count is None else elite_count
@@ -318,14 +324,14 @@ def train(config: dict, map_data: dict, *, population_size: int = 32, generation
 
     for generation in range(generations):
         generation_started = time.perf_counter()
-        new_evaluations = 0
-        for policy in population:
-            if policy not in cache:
-                episodes = [rollout(policy, config, map_data, s, duration=duration, dt=dt) for s in seeds]
-                cache[policy] = statistics.mean(episode["fitness"] for episode in episodes)
-                metrics[policy] = {key: statistics.mean(episode[key] for episode in episodes)
-                    for key in ("damage", "kills", "spawned", "money_spent", "tower_count")}
-                new_evaluations += 1
+        pending = list(dict.fromkeys(policy for policy in population if policy not in cache))
+        arguments = [(policy, config, map_data, seeds, duration, dt) for policy in pending]
+        evaluated = executor.map(_evaluate_policy, arguments) if executor else map(_evaluate_policy, arguments)
+        for policy, episodes in zip(pending, evaluated):
+            cache[policy] = statistics.mean(episode["fitness"] for episode in episodes)
+            metrics[policy] = {key: statistics.mean(episode[key] for episode in episodes)
+                for key in ("damage", "kills", "spawned", "money_spent", "tower_count")}
+        new_evaluations = len(pending)
         evaluation_count += new_evaluations * len(seeds)
         # Seeded tie breaking explores equally good layouts instead of always
         # returning the first heuristic when several candidates reach zero leaks.

@@ -32,17 +32,29 @@ def collect_main(source, folder):
                 print(f"Telemetry seed {seed}: using completed checkpoint", flush=True)
                 continue
         records = []
-        with (folder / f"population_seed_{seed}.jsonl").open("w", encoding="utf-8") as stream:
-            def capture(record):
-                stream.write(json.dumps(record, separators=(",", ":")) + "\n")
-                stream.flush()
-                records.append(record)
-            best, history = train(config, map_data, population_size=settings["population"],
-                generations=settings["generations"], slots=settings["slots"], duration=settings["duration"],
-                dt=settings["dt"], mutation_rate=settings["mutation_rate"], seeds=tuple(settings["train_seeds"]),
-                seed=seed, telemetry=capture,
-                progress=lambda row, s=seed: print(f"Telemetry {s}: epoch {row['generation']+1}/{settings['generations']} "
-                    f"best={row['best']:.4f}, median={row['median']:.4f}, diversity={row['diversity']:.2f}", flush=True))
+        trace_path = folder / f"population_seed_{seed}.jsonl"
+        if trace_path.exists():
+            existing = [json.loads(line) for line in trace_path.read_text(encoding="utf-8").splitlines()]
+            if (len(existing) == settings["generations"] and
+                    existing[0].get("config_sha256") == source["config_sha256"] and
+                    existing[-1]["best_genes"] == expected["strategy"]["genes"]):
+                records = existing
+        if records:
+            best = Strategy(tuple(expected["strategy"]["tower_types"]),tuple(expected["strategy"]["genes"]),expected["strategy"]["duration"])
+            history = [record["summary"] for record in records]
+            print(f"Telemetry seed {seed}: reusing populations recorded during training", flush=True)
+        else:
+            with trace_path.open("w", encoding="utf-8") as stream:
+                def capture(record):
+                    stream.write(json.dumps(record, separators=(",", ":")) + "\n")
+                    stream.flush()
+                    records.append(record)
+                best, history = train(config, map_data, population_size=settings["population"],
+                    generations=settings["generations"], slots=settings["slots"], duration=settings["duration"],
+                    dt=settings["dt"], mutation_rate=settings["mutation_rate"], seeds=tuple(settings["train_seeds"]),
+                    seed=seed, telemetry=capture,
+                    progress=lambda row, s=seed: print(f"Telemetry {s}: epoch {row['generation']+1}/{settings['generations']} "
+                        f"best={row['best']:.4f}, median={row['median']:.4f}, diversity={row['diversity']:.2f}", flush=True))
         if asdict(best) != {**expected["strategy"], "tower_types": tuple(expected["strategy"]["tower_types"]),
                             "genes": tuple(expected["strategy"]["genes"])}:
             raise RuntimeError("Instrumentation changed the saved run; production strategy was not replaced")

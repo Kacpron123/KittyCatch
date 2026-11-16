@@ -1,0 +1,46 @@
+{
+  "base": {
+	"health": 200
+  },
+  "economy": {
+	"player": {
+	  "starting_energy": 40,
+	  "max_energy": 100,
+	  "energy_regen_per_second": 2.0,
+	  "kill_energy_refund_fraction": 1.0
+	},
+	"ai": {
+	  "starting_money": 150
+	}
+  },
+  "difficulty": {
+	"default": "hard",
+	"player_energy_limits": {
+	  "hard": 100,
+	  "medium": 300,
+	  "easy": 1000
+	}
+  },
+  "combat": {
+	"tower_range_scale": 0.4,
+	"enemy_hit_radius_px": 8.0,
+	"enemy_path_spread_px": 8.0,
+	"enemy_speed_bonus_per_base_hit": 0.005,
+	"max_enemy_speed_bonus": 0.1
+  },
+  "units": {
+	"SCOUT": {"hp": 10, "speed": 1.0, "energy_cost": 5, "ai_reward": 5},
+	"TANK": {"hp": 30, "speed": 0.8, "energy_cost": 10, "ai_reward": 12},
+	"SPEED": {"hp": 15, "speed": 1.4, "energy_cost": 7, "ai_reward": 8}
+  },
+  "towers": {
+	"BASIC": {"cost": 50, "range": 2.0, "damage": 9, "attack_speed": 1.25, "rotation": 90},
+	"SNIPER": {"cost": 80, "range": 4.5, "damage": 12, "attack_speed": 0.25, "rotation": 45}
+  },
+  "map": {
+	"tile_size_px": 64,
+	"cell_size_px": 32,
+	"width_tiles": 20,
+	"height_tiles": 15
+  }
+}

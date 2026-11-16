@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://y0288cmjxbk3"]
+
+[ext_resource type="Script" uid="uid://crwaqhelhj8up" path="res://scenes/ui/control_panel.gd" id="1_gb3ym"]
+
+[node name="ControlPanel" type="Panel" unique_id=938676144]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("1_gb3ym")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=621066992]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1434037280]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1588014108]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2081738066]
+layout_mode = 2
+text = "Create Wave"
+
+[node name="Pause" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=28316661]
+custom_minimum_size = Vector2(35, 35)
+layout_mode = 2
+size_flags_horizontal = 10
+text = "P"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=414959743]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=2118400198]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnemyList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1542526517]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=1194061638]
+layout_mode = 2
+
+[node name="DensityLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1832069380]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Density"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=425861086]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnSlow" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1818767051]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "slow"
+
+[node name="BtnNormal" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1684700081]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "normal"
+
+[node name="BtnFast" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1217325786]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "fast"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=2143851522]
+layout_mode = 2
+
+[node name="WaveCostLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Wave cost: 0 | Energy: 40"
+
+[node name="BtnStartWave" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1165516962]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "START WAVE"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer2/Pause" to="." method="_on_pause_button"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/BtnStartWave" to="." method="_on_start_wave_pressed"]

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://rcxjttbgf8k7"]
+
+[ext_resource type="Script" uid="uid://e2b0nilvxomr" path="res://scenes/entities/enemy.gd" id="1_55jtl"]
+[ext_resource type="Texture2D" uid="uid://ddmuj0pq2m8vk" path="res://assets/SCOUT.png" id="2_m8eof"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sy6b1"]
+radius = 8.0
+
+[node name="Enemy" type="PathFollow2D" unique_id=1375380625]
+loop = false
+script = ExtResource("1_55jtl")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1149638341]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1378541515]
+shape = SubResource("CircleShape2D_sy6b1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1111704716]
+rotation = 1.5707964
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_m8eof")
+hframes = 4
