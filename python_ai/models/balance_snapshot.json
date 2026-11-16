@@ -30,36 +30,36 @@
   },
   "units": {
     "SCOUT": {
-      "hp": 10,
+      "hp": 20,
       "speed": 1.0,
+      "energy_cost": 4,
+      "ai_reward": 4
+    },
+    "TANK": {
+      "hp": 60,
+      "speed": 0.8,
       "energy_cost": 5,
       "ai_reward": 5
     },
-    "TANK": {
-      "hp": 30,
-      "speed": 0.8,
-      "energy_cost": 10,
-      "ai_reward": 12
-    },
     "SPEED": {
-      "hp": 15,
+      "hp": 30,
       "speed": 1.4,
       "energy_cost": 7,
-      "ai_reward": 8
+      "ai_reward": 5
     }
   },
   "towers": {
     "BASIC": {
-      "cost": 50,
+      "cost": 70,
       "range": 2.0,
-      "damage": 9,
+      "damage": 19,
       "attack_speed": 1.25,
       "rotation": 90
     },
     "SNIPER": {
-      "cost": 80,
+      "cost": 100,
       "range": 4.5,
-      "damage": 12,
+      "damage": 30,
       "attack_speed": 0.25,
       "rotation": 45
     }

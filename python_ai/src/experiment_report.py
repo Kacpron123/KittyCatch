@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import hashlib
+import math
 from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
@@ -277,13 +278,17 @@ def build_report(source: dict, strategy: Strategy, output: Path, *, make_gif=Fal
         for name, unit in config["units"].items():
             for key, label in (("hp", "HP"), ("speed", "prędkość"), ("energy_cost", "koszt")):
                 changes.append([f"{name}: {label}", old["units"].get(name, {}).get(key, "brak"), unit[key]])
+        for name, tower in config["towers"].items():
+            for key in ("cost", "range", "damage", "attack_speed", "rotation_speed"):
+                if key in tower:
+                    changes.append([f"{name}: {key}", old["towers"].get(name, {}).get(key, "brak"), tower[key]])
         lines += table(["Parametr", "Poprzednia konfiguracja", "Aktualna konfiguracja"], changes)
-        lines += ["Mniejsze HP bazy zapisano w balance.json i podłączono do startu poziomu. "
-            "Wcześniej zmienna base_health=200 była nadpisywana przez start_new_game(1000). "
-            "Teraz Godot i symulator zaczynają z 200 HP. Przyspieszonym typem zapisanym w pliku jest SPEED; "
-            "SCOUT ma nadal prędkość 1,0 kafla/s.", "",
-            "Dotarcie do celu zwraca ceil(koszt/2): SCOUT 3, TANK 5, SPEED 4. "
-            "Zwrot za zabicie wynosi obecnie pełny koszt jednostki; oba zwroty respektują limit energii.", ""]
+        refunds = ", ".join(f"{name} {math.ceil(unit['energy_cost'] / 2)}" for name, unit in config["units"].items())
+        lines += ["Tabela porównuje zapis poprzedniego eksperymentu z konfiguracją używaną w tym treningu. "
+            "Wartości niezmienione pozostają widoczne dla pełnego kontekstu.", "",
+            f"Dotarcie do celu zwraca ceil(koszt/2): {refunds}. "
+            f"Zwrot za zabicie wynosi {config['economy']['player']['kill_energy_refund_fraction'] * 100:g}% kosztu jednostki; "
+            "oba zwroty respektują limit energii.", ""]
     lines += ["## Wyniki na oddzielnych scenariuszach testowych", ""]
     lines += table(["Strategia obrony", "Śr. obrażenia ↓", "Odchylenie", "Min–maks", "Śr. zabicia", "Śr. wieże"], [
         [name, f"{stats['mean_damage']:.2f}", f"{stats['std_damage']:.2f}",

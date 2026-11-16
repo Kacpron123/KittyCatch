@@ -1,0 +1,38 @@
+{
+  "role": "tower_defense",
+  "config_sha256": "d9f8324878a66f907d4ad596921f12ff8e38a056fc8cfa2545039b3bd4bd6c8a",
+  "duration": 120.0,
+  "seed": 42,
+  "training_seeds": [
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "test_seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "objective": "Minimize base damage received; kill fraction breaks ties. AI only builds towers.",
+  "local_test_mean_damage": 0.1,
+  "notes": "Local results do not guarantee a global optimum. See the experiment reports for engine validation."
+}

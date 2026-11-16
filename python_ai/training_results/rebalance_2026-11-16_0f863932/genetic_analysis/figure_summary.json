@@ -1,0 +1,217 @@
+{
+  "offspring": 812,
+  "mutation_attempts": 4875,
+  "actual_changes": 4385,
+  "clipped": 767,
+  "improved": 51,
+  "tied": 36,
+  "worse": 725,
+  "figures": [
+    {
+      "file": "fitness_distribution.png",
+      "title": "Fitness, mediana i kwartyle",
+      "caption": "Pasma i statystyki dotycz\u0105 wszystkich ocenionych osobnik\u00f3w, a nie wy\u0142\u0105cznie elity."
+    },
+    {
+      "file": "best_runs.png",
+      "title": "Powtarzalno\u015b\u0107 zbie\u017cno\u015bci",
+      "caption": "Por\u00f3wnujemy ziarna losowania operator\u00f3w, nie r\u00f3\u017cne zbiory treningowe."
+    },
+    {
+      "file": "diversity_detail.png",
+      "title": "R\u00f3\u017cnorodno\u015b\u0107 genotypu i fenotypu",
+      "caption": "Genotypy mog\u0105 by\u0107 r\u00f3\u017cne mimo takiego samego typu wie\u017cy, pola i przedzia\u0142u czasowego po dekodowaniu."
+    },
+    {
+      "file": "chromosome_evolution.png",
+      "title": "Ewolucja 40 gen\u00f3w zwyci\u0119zcy epoki",
+      "caption": "Kolor to surowa warto\u015b\u0107 genu [0,1]. Zmiana koloru nie musi zmienia\u0107 odkodowanego rozwi\u0105zania ani fitness."
+    },
+    {
+      "file": "gene_diversity.png",
+      "title": "Rozrzut gen\u00f3w w populacji",
+      "caption": "Niska wariancja wskazuje koncentracj\u0119 warto\u015bci, ale sama nie dowodzi znaczenia przyczynowego danego genu."
+    },
+    {
+      "file": "population_fitness.png",
+      "title": "Macierz jako\u015bci populacji",
+      "caption": "Wszystkie osobniki pozostaj\u0105 widoczne, w tym s\u0142abi potomkowie powstaj\u0105cy wskutek eksploracji."
+    },
+    {
+      "file": "generalization.png",
+      "title": "Generalizacja najlepszego osobnika epoki",
+      "caption": "Krzywa testowa to dodatkowa analiza po treningu. Nie stosowano early stopping na podstawie tych danych."
+    },
+    {
+      "file": "genotype_fitness.png",
+      "title": "Odleg\u0142o\u015b\u0107 chromosom\u00f3w a fitness",
+      "caption": "Odleg\u0142o\u015b\u0107 RMS liczona jest w przestrzeni surowych gen\u00f3w i nie jest odleg\u0142o\u015bci\u0105 mi\u0119dzy zachowaniami w grze."
+    },
+    {
+      "file": "evaluation_cost.png",
+      "title": "Rzeczywisty koszt treningu",
+      "caption": "Cache dzia\u0142a po ca\u0142ym genotypie. Wykres nie obejmuje p\u00f3\u017aniejszych test\u00f3w, baseline'\u00f3w i ablacji."
+    },
+    {
+      "file": "mutation_by_gene.png",
+      "title": "Cz\u0119sto\u015b\u0107 mutacji w 40 pozycjach",
+      "caption": "Przerywana linia to zadane prawdopodobie\u0144stwo 0,15, a nie dopasowanie do zmierzonych s\u0142upk\u00f3w."
+    },
+    {
+      "file": "operator_rates.png",
+      "title": "Co faktycznie robi\u0142a mutacja",
+      "caption": "Szum mo\u017ce zosta\u0107 obci\u0119ty na 0 lub 1; dlatego pr\u00f3ba mutacji nie zawsze zmienia gen."
+    },
+    {
+      "file": "selection_pressure.png",
+      "title": "Presja selekcyjna",
+      "caption": "Rodzice zwykle maj\u0105 wy\u017cszy fitness od przeci\u0119tnego osobnika, ale selekcja nadal dopuszcza eksploracj\u0119."
+    },
+    {
+      "file": "operators_example.png",
+      "title": "Pochodzenie gen\u00f3w rzeczywistego potomka",
+      "caption": "Przedstawiono zmierzony przyk\u0142ad. Zestawienie nie rozdziela przyczynowo efektu krzy\u017cowania od efektu mutacji."
+    },
+    {
+      "file": "tower_types.png",
+      "title": "Zmiany typ\u00f3w wie\u017c",
+      "caption": "Rozk\u0142ad obejmuje wszystkie sloty chromosomu, tak\u017ce niewykonane z braku \u015brodk\u00f3w."
+    },
+    {
+      "file": "build_times.png",
+      "title": "Uczenie momentu budowy",
+      "caption": "Gen czasu ustala doln\u0105 granic\u0119, a nie bezwarunkow\u0105 komend\u0119 zakupu."
+    },
+    {
+      "file": "layout_evolution.png",
+      "title": "Jak zmienia\u0142o si\u0119 rozmieszczenie",
+      "caption": "Ka\u017cd\u0105 epok\u0119 odtworzono na tym samym scenariuszu treningowym. To nie s\u0105 wybrane najlepsze scenariusze testowe."
+    },
+    {
+      "file": "benchmark_damage.png",
+      "title": "Por\u00f3wnanie z regu\u0142ami i uk\u0142adami losowymi",
+      "caption": "Przeciwnik otrzymuje zwroty energii, a AI reinwestuje nagrody. Wydatki ca\u0142kowite mog\u0105 przekroczy\u0107 bud\u017cet startowy 150."
+    },
+    {
+      "file": "benchmark_efficiency.png",
+      "title": "Skuteczno\u015b\u0107 wykorzystania \u015brodk\u00f3w AI",
+      "caption": "Przeciwnik otrzymuje zwroty energii, a AI reinwestuje nagrody. Wydatki ca\u0142kowite mog\u0105 przekroczy\u0107 bud\u017cet startowy 150."
+    },
+    {
+      "file": "benchmark_kill_rate.png",
+      "title": "Udzia\u0142 zatrzymanych przeciwnik\u00f3w",
+      "caption": "Przeciwnik otrzymuje zwroty energii, a AI reinwestuje nagrody. Wydatki ca\u0142kowite mog\u0105 przekroczy\u0107 bud\u017cet startowy 150."
+    },
+    {
+      "file": "ablations.png",
+      "title": "Badanie ablacyjne operator\u00f3w",
+      "caption": "FULL jest kontrol\u0105 przy mniejszym bud\u017cecie oblicze\u0144 ni\u017c g\u0142\u00f3wny eksperyment. Krzy\u017cowanie, mutacja i elitaryzm s\u0105 wy\u0142\u0105czane pojedynczo."
+    },
+    {
+      "file": "ablation_test.png",
+      "title": "Operator a generalizacja",
+      "caption": "Trzy powt\u00f3rzenia to ma\u0142a pr\u00f3ba. Wynik nie uprawnia do uniwersalnego rankingu wariant\u00f3w GA."
+    }
+  ],
+  "benchmark": [
+    {
+      "strategy": "GENETIC",
+      "episodes": 20,
+      "damage": 8.6,
+      "damage_std": 15.051245795614395,
+      "base_hp": 191.4,
+      "kills": 51.95,
+      "kill_fraction": 0.8346290490940339,
+      "money_spent": 350,
+      "kills_per_100_money": 14.283333333333333
+    },
+    {
+      "strategy": "BASIC",
+      "episodes": 20,
+      "damage": 11.8,
+      "damage_std": 15.210522673465235,
+      "base_hp": 188.2,
+      "kills": 47.1,
+      "kill_fraction": 0.7632828954829387,
+      "money_spent": 325.5,
+      "kills_per_100_money": 13.904761904761905
+    },
+    {
+      "strategy": "SNIPER",
+      "episodes": 20,
+      "damage": 23.6,
+      "damage_std": 15.34079528577316,
+      "base_hp": 176.4,
+      "kills": 35.35,
+      "kill_fraction": 0.5874215570523486,
+      "money_spent": 260,
+      "kills_per_100_money": 13.1
+    },
+    {
+      "strategy": "MIXED",
+      "episodes": 20,
+      "damage": 13,
+      "damage_std": 15.029970059850418,
+      "base_hp": 187,
+      "kills": 45.7,
+      "kill_fraction": 0.7401978368818377,
+      "money_spent": 322,
+      "kills_per_100_money": 13.628571428571428
+    },
+    {
+      "strategy": "NO_DEFENSE",
+      "episodes": 20,
+      "damage": 54.45,
+      "damage_std": 7.990463065429938,
+      "base_hp": 145.55,
+      "kills": 0,
+      "kill_fraction": 0.0,
+      "money_spent": 0,
+      "kills_per_100_money": 0.0
+    },
+    {
+      "strategy": "GA_42",
+      "episodes": 20,
+      "damage": 10,
+      "damage_std": 17.10847743079436,
+      "base_hp": 190,
+      "kills": 49.45,
+      "kill_fraction": 0.797600371513336,
+      "money_spent": 343,
+      "kills_per_100_money": 13.666666666666666
+    },
+    {
+      "strategy": "GA_2026",
+      "episodes": 20,
+      "damage": 8.5,
+      "damage_std": 15.308494374039531,
+      "base_hp": 191.5,
+      "kills": 50.95,
+      "kill_fraction": 0.8202407001968282,
+      "money_spent": 350,
+      "kills_per_100_money": 13.992857142857142
+    },
+    {
+      "strategy": "PREVIOUS",
+      "episodes": 20,
+      "damage": 12.1,
+      "damage_std": 16.600903589865222,
+      "base_hp": 187.9,
+      "kills": 47.85,
+      "kill_fraction": 0.7743228511578731,
+      "money_spent": 339.5,
+      "kills_per_100_money": 13.395238095238096
+    },
+    {
+      "strategy": "RANDOM",
+      "episodes": 400,
+      "damage": 46.1225,
+      "damage_std": 12.790719047418719,
+      "base_hp": 153.8775,
+      "kills": 9.1375,
+      "kill_fraction": 0.14964412113387068,
+      "money_spent": 161.05,
+      "kills_per_100_money": 4.343169106352218
+    }
+  ]
+}

@@ -250,9 +250,9 @@ def render(source_path):
         "Epoka oznacza ocenę jednej populacji. Epoka 1 zawiera populację początkową, "
         f"więc {settings['generations']} epoki oceny oznaczają {settings['generations']-1} przejść reprodukcyjnych. "
         "GA jest algorytmem ewolucyjnym; nie stosuje gradientów ani epok uczenia sieci neuronowej.","",
-        "Telemetria została zebrana w powtórzeniu tych samych treningów. Sprawdzono, że zapis operatorów "
-        "nie zmienił chromosomów końcowych. Dzięki temu wcześniejsze wyniki Godota i prób przeciążeniowych "
-        "dotyczą nadal tych samych zapisanych strategii.",""]
+        "Telemetria opisuje przebiegi treningowe zapisane w tym eksperymencie. Zgodność końcowych "
+        "chromosomów jest sprawdzana podczas analizy. Krzywe testowe obliczono po treningu; "
+        "nie służyły do selekcji ani wyboru zwycięskiego modelu.",""]
     text += ["[Animacja zmian chromosomu i układu obrony epoka po epoce](genetic_analysis/genetic_evolution.gif). "
         "Każdy plan odtworzono na tym samym scenariuszu treningowym; pasek pod mapą przedstawia wartości 40 genów.",""]
     text+=table(["Ziarno","Epoki","Pierwsza epoka najlepszego zaobserwowanego fitness","Wykonane symulacje treningowe"],
@@ -263,8 +263,8 @@ def render(source_path):
         ["Mutacje obcięte do granic",summary["clipped"]],["Potomkowie lepsi od lepszego rodzica",summary["improved"]],
         ["Remisy względem lepszego rodzica",summary["tied"]],["Potomkowie gorsi",summary["worse"]]])
     text += ["Identyfikator rodowodu jest hashem genotypu. Duplikaty genotypów mają ten sam identyfikator; "
-        "indeks w populacji rozróżnia osobniki. Ocenę wpływu operatorów wspierają osobne ablacje, "
-        "a nie przypisywanie całej poprawy jednej zaobserwowanej mutacji.", ""]
+        "indeks w populacji rozróżnia osobniki. Statystyki potomstwa opisują zaobserwowane operacje; "
+        "same nie dowodzą przyczynowego wpływu pojedynczej mutacji lub krzyżowania.", ""]
     for figure in figures:
         text += [f"### {figure['title']}","",f"![{figure['title']}](genetic_analysis/{figure['file']})","",figure["caption"],""]
     if groups:
@@ -281,7 +281,7 @@ def render(source_path):
         [r["strategy"],f"{r['damage']:.3f}",f"{r['base_hp']:.2f}",f"{r['kills']:.2f}",
          f"{100*r['kill_fraction']:.2f}",f"{r['money_spent']:.2f}",f"{r['kills_per_100_money']:.2f}"] for r in benchmark])
     text += ["Pełne źródła: genetic_analysis/population_seed_*.jsonl, populations.csv, offspring.csv, "
-        "operators.csv, random_benchmark.json i ablation_*.json. Pliki zawierają surowe pomiary, "
+        "operators.csv i random_benchmark.json. " + ("Dostępne są też osobne ablation_*.json. " if groups else "") + "Pliki zawierają surowe pomiary, "
         "maski pochodzenia wszystkich genów i zmiany przed/po każdej próbie mutacji.",""]
     (folder/"analysis_report.md").write_text("\n".join(text),encoding="utf-8")
     print(f"Generated {len(figures)} genetic figures and full data appendix in {folder}")

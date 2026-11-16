@@ -3,6 +3,8 @@ import argparse
 import hashlib
 import json
 import statistics
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import nullcontext
 from dataclasses import asdict
 from pathlib import Path
 
@@ -102,7 +104,7 @@ def collect_random(source, folder, count):
     return saved
 
 
-def collect_ablations(source, folder):
+def collect_ablations(source, folder, executor=None):
     settings = source["settings"]
     groups = {"FULL": {}, "NO_MUTATION": {"mutation_rate": 0},
               "NO_CROSSOVER": {"crossover": False}, "NO_ELITISM": {"elite_count": 0}}
@@ -118,7 +120,7 @@ def collect_ablations(source, folder):
             parameters = {"population_size": 12, "generations": 12, "slots": settings["slots"],
                 "duration": settings["duration"], "dt": settings["dt"], "seed": seed,
                 "seeds": tuple(settings["train_seeds"]), "mutation_rate": settings["mutation_rate"], **options}
-            best, history = train(source["config"], source["map"], **parameters,
+            best, history = train(source["config"], source["map"], **parameters, executor=executor,
                 progress=lambda row, n=name, s=seed: print(f"Ablation {n}/{s}: epoch {row['generation']+1}/12 "
                     f"best={row['best']:.4f}", flush=True))
             episodes = [rollout(best, source["config"], source["map"], s,
@@ -137,9 +139,12 @@ def main():
     parser.add_argument("--input", type=Path, default=Path("training_results/report.json"))
     parser.add_argument("--random-layouts", type=int, default=20)
     parser.add_argument("--phase", choices=("all", "main", "ablations", "random"), default="all")
+    parser.add_argument("--workers", type=int, default=1, help="Parallel chromosome evaluation in ablations")
     args = parser.parse_args()
     if args.random_layouts < 2:
         parser.error("Use at least two random layouts")
+    if args.workers < 1:
+        parser.error("Workers must be positive")
     source = json.loads(args.input.read_text(encoding="utf-8"))
     folder = args.input.parent / "genetic_analysis"
     folder.mkdir(parents=True, exist_ok=True)
@@ -155,7 +160,8 @@ def main():
         result["random"] = collect_random(source, folder, args.random_layouts)
         write_json(path, result)
     if args.phase in ("all", "ablations"):
-        result["ablations"] = collect_ablations(source, folder)
+        with ProcessPoolExecutor(max_workers=args.workers) if args.workers > 1 else nullcontext() as executor:
+            result["ablations"] = collect_ablations(source, folder, executor)
         write_json(path, result)
     source["genetic_analysis"] = {"path": "genetic_analysis/analysis.json", "telemetry_version": 1}
     if "random" in result:

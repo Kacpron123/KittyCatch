@@ -1,5 +1,23 @@
 # Python AI: obrona bazy i socket Godota
 
+## Ponowny trening po zmianie zasad — 16.11.2026
+
+Nowy eksperyment: [`training_results/rebalance_2026-11-16_0f863932/`](training_results/rebalance_2026-11-16_0f863932/).
+Zawiera nowy [raport PDF](training_results/rebalance_2026-11-16_0f863932/report.pdf),
+trzy układy wież, pełną telemetrię populacji i wyniki walidacji w Godocie.
+Trening: 3 ziarna × 32 osobniki × 30 pokoleń, epizody po 120 s,
+5 scenariuszy treningowych i 20 osobnych testowych. Zwycięzcę wybiera fitness treningowy.
+
+```powershell
+python train.py --population 32 --generations 30 --duration 120 --search-seeds 42 137 2026 --test-seeds 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 --previous-report training_results/report.json --workers 4 --record-populations --gif --pdf --output training_results/nowy_eksperyment
+```
+
+`--workers` przyspiesza ocenę niezależnych chromosomów, zachowując deterministyczny wynik.
+`--record-populations` zapisuje chromosomy, rodziców, maski krzyżowania i mutacje podczas treningu;
+analiza może wykorzystać ten zapis bez powtarzania wyszukiwania.
+Prezentacja, pomoc do prezentacji i dokumenty bezpośrednio w `training_results/`
+opisują poprzedni eksperyment i poprzednie zasady. Aktualne liczby są w nowym podfolderze.
+
 ## Prezentacja na zajęcia
 
 W `training_results/` znajdują się `prezentacja.pdf` i edytowalna
@@ -274,7 +292,7 @@ przelicznik `game_tile_size_px / cell_size_px`; prędkość pocisków jest
 przeliczana z pikseli na komórki mapy.
 
 Dotarcie gołębia do celu zwraca graczowi `ceil(koszt energii / 2)`:
-SCOUT 3, TANK 5, SPEED 4 energii, do wybranego limitu energii.
+Przy aktualnych kosztach: SCOUT 2, TANK 3, SPEED 4 energii, do wybranego limitu energii.
 Zdarzenie `base_damaged` zawiera `player_energy_refunded` z naliczonym zwrotem.
 
 `to_dict()` zwraca stan w kształcie protokołu v2: `map`, `resources`, `units`,

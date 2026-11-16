@@ -1,8 +1,11 @@
 {
   "role": "tower_defense",
-  "config_sha256": "d9f8324878a66f907d4ad596921f12ff8e38a056fc8cfa2545039b3bd4bd6c8a",
+  "config_sha256": "0f863932a7a358c6dd450f3e5370c1a970d6cbfa7f7a3b2f7c0c44fb49379775",
+  "strategy_sha256": "22fe39b97eecdb3072e8fe0d29e9d962e0bcd1d7fd38f78334a8fbf9c83f06e1",
   "duration": 120.0,
-  "seed": 42,
+  "seed": 137,
+  "population": 32,
+  "generations": 30,
   "training_seeds": [
     10,
     11,
@@ -33,6 +36,35 @@
     119
   ],
   "objective": "Minimize base damage received; kill fraction breaks ties. AI only builds towers.",
-  "local_test_mean_damage": 0.1,
-  "notes": "Local results do not guarantee a global optimum. See the experiment reports for engine validation."
+  "local_test_mean_damage": 8.6,
+  "previous_model_current_rules_mean_damage": 12.1,
+  "experiment": "training_results/rebalance_2026-11-16_0f863932",
+  "godot_validation": {
+    "seeds": [
+      300,
+      301,
+      302,
+      303,
+      304
+    ],
+    "damage": [
+      0,
+      32,
+      0,
+      0,
+      1
+    ],
+    "time_scale": 4.0,
+    "rejected_actions": 0
+  },
+  "notes": "Winner chosen using training fitness. No global optimality guarantee. A running server must reload this model.",
+  "godot_validation_normal_speed": {
+    "seeds": [
+      301
+    ],
+    "damage": [
+      31
+    ],
+    "rejected_actions": 0
+  }
 }

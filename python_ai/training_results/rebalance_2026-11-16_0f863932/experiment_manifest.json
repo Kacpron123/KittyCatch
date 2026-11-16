@@ -1,0 +1,24 @@
+{
+  "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "config_sha256": "0f863932a7a358c6dd450f3e5370c1a970d6cbfa7f7a3b2f7c0c44fb49379775",
+  "strategy_sha256": "22fe39b97eecdb3072e8fe0d29e9d962e0bcd1d7fd38f78334a8fbf9c83f06e1",
+  "main_training_rollouts": 12655,
+  "population_rows": 2880,
+  "unit_tests": {
+    "command": "python -m unittest discover -s tests -v",
+    "passed": 37
+  },
+  "file_sha256": {
+    "report.json": "1ef93a18dd6c16010d8c8c9672b9f54f480aed2d60c60a2bc53b33656eff7d8d",
+    "best_strategy.json": "c0819f3e3326670c5b75bc681f719ac0381f934846160555fb1e581ca2634621",
+    "genetic_analysis\\analysis.json": "5bbbfd5443f08e7b2ed827ce7ccb69929d61b4983879d4ac1b626d83638041dc",
+    "godot_validation_1x_0f863932.json": "d07b2bc50c4330acfe9a3f1ecc32c71432ad86b650e2aa0cb0b77b800dcba7a4",
+    "godot_validation_4x_0f863932.json": "486a32ee1b9e8e5091d2f4e90849bde498fef54d64c1ffb1076bde486542aaa8",
+    "report.pdf": "70460b775cff1794df56b57c3153e54032e83f0aed3955f86ce9af916b9fd3a1",
+    "README.md": "ae3e51ec7c3bab1ee6d24388d67e9271cde30931789bff7ecbbe9c17bc2f8269",
+    "model_card.json": "278ce52e3b1d5ad095040f06e36a82045837ec16205939bf30ac553cf3b39d40",
+    "genetic_analysis\\figure_summary.json": "6a2112d8b19bb5c92763ef52b8b5c15cfc1259270f7e2eb7fce8aa458f56e22f"
+  },
+  "pdf_pages": 33
+}
